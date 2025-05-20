@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x64</Platforms>
+    <ApplicationIcon>Icons\tax.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Icons\columns.png" />
+    <None Remove="Icons\excel.png" />
+    <None Remove="Icons\open.png" />
+    <None Remove="Icons\save.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Icons\tax.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Exporters\" />
+    <Folder Include="Readers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.Data" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Wpf" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Wpf.Core" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Wpf.Grid" Version="24.1.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Icons\columns.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\excel.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\open.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\save.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+</Project>

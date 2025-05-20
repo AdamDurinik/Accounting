@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="Accounting.Views.MainView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Accounting.Views" 
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" 
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars" 
+             xmlns:viewmodels="clr-namespace:Accounting.ViewModels"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance viewmodels:MainViewModel}" 
+             Loaded="UserControl_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <dxb:BarManager Grid.Row="0" >
+            <dxb:BarManager.Bars>
+                <dxb:Bar IsMainMenu="True">
+                        <dxb:BarButtonItem Content="Otvoriť súbor" Name="OpenFileButton" Glyph="/Icons/open.png" LargeGlyph="/Icons/open.png" Padding="5" 
+                                           Command="{Binding }" />
+                    <dxb:BarButtonItem Content="Uložiť súbor" Name="SaveFileButton" Glyph="/Icons/save.png" LargeGlyph="/Icons/save.png" Padding="5"/>
+                    <dxb:BarButtonItem Content="Exportovať do Excelu" Name="ExportExcelButton" Glyph="/Icons/excel.png" LargeGlyph="/Icons/excel.png" Padding="5"/>
+                    <dxb:BarButtonItem Content="Pridať stĺpec" Name="AddColumnButton" Glyph="/Icons/columns.png" LargeGlyph="/Icons/columns.png" Padding="5"
+                                       Command="{Binding AddColumnCommand}"/>
+                </dxb:Bar>
+            </dxb:BarManager.Bars>
+        </dxb:BarManager>
+
+        <dxg:GridControl Grid.Row="1" x:Name="MainGrid"  ItemsSource="{Binding Items}" >
+            <dxg:GridControl.View>
+                <dxg:TableView AutoWidth="True" ShowGroupPanel="False" NewItemRowPosition="Bottom" AllowPerPixelScrolling="True"
+                               InitNewRow="OnNewRow" AllowEditing="True" />
+            </dxg:GridControl.View>
+        </dxg:GridControl>
+    </Grid>
+</UserControl>
