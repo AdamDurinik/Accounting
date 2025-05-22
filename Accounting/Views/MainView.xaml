@@ -7,33 +7,92 @@
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" 
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars" 
              xmlns:viewmodels="clr-namespace:Accounting.ViewModels"
+             xmlns:dxmvvm="clr-namespace:DevExpress.Mvvm.UI.Interactivity;assembly=DevExpress.Xpf.Core.v24.1" 
+             xmlns:dx="clr-namespace:DevExpress.Xpf.Core;assembly=DevExpress.Xpf.Core.v24.1" xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance viewmodels:MainViewModel}" 
-             Loaded="UserControl_Loaded">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
+             d:DataContext="{d:DesignInstance viewmodels:MainViewModel}" >
 
-        <dxb:BarManager Grid.Row="0" >
-            <dxb:BarManager.Bars>
-                <dxb:Bar IsMainMenu="True">
-                        <dxb:BarButtonItem Content="Otvoriť súbor" Name="OpenFileButton" Glyph="/Icons/open.png" LargeGlyph="/Icons/open.png" Padding="5" 
-                                           Command="{Binding }" />
-                    <dxb:BarButtonItem Content="Uložiť súbor" Name="SaveFileButton" Glyph="/Icons/save.png" LargeGlyph="/Icons/save.png" Padding="5"/>
-                    <dxb:BarButtonItem Content="Exportovať do Excelu" Name="ExportExcelButton" Glyph="/Icons/excel.png" LargeGlyph="/Icons/excel.png" Padding="5"/>
-                    <dxb:BarButtonItem Content="Pridať stĺpec" Name="AddColumnButton" Glyph="/Icons/columns.png" LargeGlyph="/Icons/columns.png" Padding="5"
-                                       Command="{Binding AddColumnCommand}"/>
-                </dxb:Bar>
-            </dxb:BarManager.Bars>
-        </dxb:BarManager>
+    <dxmvvm:Interaction.Behaviors>
+        <dx:DialogService x:Name="SelectFileService"  DialogWindowStartupLocation="CenterOwner">
+            <dx:DialogService.ViewTemplate>
+                <DataTemplate>
+                    <local:SelectFileView />
+                </DataTemplate>
+            </dx:DialogService.ViewTemplate>
+            <dx:DialogService.DialogStyle>
+                <Style TargetType="Window">
+                    <Setter Property="Height" Value="600"/>
+                    <Setter Property="Width" Value="400"/>
+                    <Setter Property="ResizeMode" Value="NoResize"/>
+                </Style>
+            </dx:DialogService.DialogStyle>
+        </dx:DialogService>
+        <dx:DialogService x:Name="SaveFileService" DialogWindowStartupLocation="CenterOwner">
+            <dx:DialogService.ViewTemplate>
+                <DataTemplate>
+                    <local:SaveDialogView />
+                </DataTemplate>
+            </dx:DialogService.ViewTemplate>
+            <dx:DialogService.DialogStyle>
+                <Style TargetType="Window">
+                    <Setter Property="ResizeMode" Value="NoResize"/>
+                    <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+                </Style>
+            </dx:DialogService.DialogStyle>
+        </dx:DialogService>
+        <dx:DXMessageBoxService/>
+    </dxmvvm:Interaction.Behaviors>
 
-        <dxg:GridControl Grid.Row="1" x:Name="MainGrid"  ItemsSource="{Binding Items}" >
-            <dxg:GridControl.View>
-                <dxg:TableView AutoWidth="True" ShowGroupPanel="False" NewItemRowPosition="Bottom" AllowPerPixelScrolling="True"
-                               InitNewRow="OnNewRow" AllowEditing="True" />
-            </dxg:GridControl.View>
-        </dxg:GridControl>
-    </Grid>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+            <dxb:BarManager>
+                <dxb:BarManager.Bars>
+                    <dxb:Bar IsMainMenu="True" BarItemDisplayMode="ContentAndGlyph" >
+                        <dxb:BarButtonItem Content="Otvoriť súbor" Glyph="/Icons/open.png" Padding="5"
+                                           Command="{Binding OpenFileCommand}"/>
+                        <dxb:BarButtonItem Content="Uložiť" Glyph="/Icons/save.png" Padding="5" 
+                                           Command="{Binding SaveFileCommand}"/>
+                        <dxb:BarButtonItem Content="Uložiť ako" Glyph="/Icons/save.png" Padding="5" 
+                                           Command="{Binding SaveAsFileCommand}"/>
+                        <dxb:BarButtonItem Content="Exportovať do Excelu" Glyph="/Icons/excel.png" Padding="5" />
+                        <dxb:BarButtonItem Content="Pridať tabulku" Glyph="/Icons/columns.png" Padding="5"
+                               Command="{Binding AddTableCommand}" />
+                    </dxb:Bar>
+                </dxb:BarManager.Bars>
+            </dxb:BarManager>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Columns}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="Gray" BorderThickness="1" Margin="-1,0,0,0" Width="250">
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="5">
+                                        <TextBlock Text="DPH:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                        <dxe:TextEdit Width="60" Text="{Binding Tax, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MaskType="Regex" Mask="\d*"/>
+                                    </StackPanel>
+
+                                    <dxg:GridControl ItemsSource="{Binding Items}" Width="250" Height="400">
+                                        <dxg:GridControl.View>
+                                            <dxg:TableView AutoWidth="True" ShowGroupPanel="False"
+                                               NewItemRowPosition="Bottom" AllowEditing="True"/>
+                                        </dxg:GridControl.View>
+                                        <dxg:GridColumn FieldName="PriceWithoutTax" Header="Cena"/>
+                                        <dxg:GridColumn FieldName="Tax" Header="DPH"/>
+                                        <dxg:GridColumn FieldName="PriceWithTax" Header="Celkovo"/>
+                                    </dxg:GridControl>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

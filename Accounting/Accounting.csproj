@@ -13,7 +13,9 @@
   <ItemGroup>
     <None Remove="Icons\columns.png" />
     <None Remove="Icons\excel.png" />
+    <None Remove="Icons\folder.png" />
     <None Remove="Icons\open.png" />
+    <None Remove="Icons\plus.png" />
     <None Remove="Icons\save.png" />
   </ItemGroup>
 
@@ -40,7 +42,13 @@
     <Resource Include="Icons\excel.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Icons\folder.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Icons\open.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\plus.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Icons\save.png">
