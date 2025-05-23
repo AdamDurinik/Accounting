@@ -14,19 +14,6 @@ namespace Accounting.ViewModels
     {
         public MainViewModel()
         {
-            LoadData();
-            var items = new ObservableCollection<ItemModel>()
-                {
-                    new ItemModel(){PriceWithoutTax=10.0},
-                    new ItemModel(){PriceWithoutTax=10.0},
-                    new ItemModel(){PriceWithoutTax=10.0},
-                    new ItemModel(){PriceWithoutTax=10.0},
-                };
-            Columns.Add(new ColumnModel()
-            {
-                Items = items,
-                Tax = 10
-            });
         }
 
         public ICommand NewCommand => new DelegateCommand(New);
@@ -35,23 +22,22 @@ namespace Accounting.ViewModels
         public ICommand SaveAsFileCommand => new DelegateCommand(() => Save(false));
         public ICommand ExportToExcelCommand => new DelegateCommand(ExportToExcel);
         public ICommand AddTableCommand => new DelegateCommand(AddTable);
-      
+
+        public ICommand DeleteRowCommand => new DelegateCommand<ItemModel>(DeleteRow);
+        public ICommand DeleteColumnCommand => new DelegateCommand<ColumnModel>(DeleteColumn);
+
         public ObservableCollection<GridColumn> GridColumns { get; set; } = new ObservableCollection<GridColumn>();
         public ObservableCollection<ColumnModel> Columns { get; set; } = new ObservableCollection<ColumnModel>();
 
         public MainWindow Window { get; internal set; }
         public string SelectedFile { get; internal set; }
 
-        private IMessageBoxService GetMessageBoxService() => GetService<IMessageBoxService>();
-        private IDialogService GetSelectFileService() => GetService<IDialogService>("SelectFileService");
-        private IDialogService GetSaveFileService() => GetService<IDialogService>("SaveFileService");
-
-        private void LoadData(string path = null)
+        public void LoadData(string filePath = null)
         {
-            bool flowControl = GetPathFromRegistryIfNull(ref path);
-            if (!flowControl || string.IsNullOrWhiteSpace(path))
+            bool flowControl = GetFileNameFromRegistryIfNull(ref filePath);
+            if (!flowControl || string.IsNullOrWhiteSpace(filePath))
             {
-                return ;
+                return;
             }
 
             try
@@ -59,8 +45,8 @@ namespace Accounting.ViewModels
                 var serializer = new System.Xml.Serialization.XmlSerializer(typeof(RootEntity));
                 var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                 var accountingPath = System.IO.Path.Combine(appData, "Accounting");
-                Window.Title = $"Účtovníctvo: {path}";
-                SelectedFile = System.IO.Path.Combine(accountingPath, path);
+                Window.Title = $"Účtovníctvo: {filePath}";
+                SelectedFile = System.IO.Path.Combine(accountingPath, filePath);
 
                 using (var stream = System.IO.File.OpenRead(SelectedFile))
                 {
@@ -83,9 +69,13 @@ namespace Accounting.ViewModels
             }
         }
 
-        private static bool GetPathFromRegistryIfNull(ref string path)
+        private IMessageBoxService GetMessageBoxService() => GetService<IMessageBoxService>();
+        private IDialogService GetSelectFileService() => GetService<IDialogService>("SelectFileService");
+        private IDialogService GetSaveFileService() => GetService<IDialogService>("SaveFileService");
+
+        private static bool GetFileNameFromRegistryIfNull(ref string fileName)
         {
-            if (path == null)
+            if (fileName == null)
             {
                 try
                 {
@@ -96,7 +86,7 @@ namespace Accounting.ViewModels
                         var regPath = key.GetValue("CsvFilePath") as string;
                         if (string.IsNullOrWhiteSpace(regPath)) return false;
 
-                        path = regPath;
+                        fileName = regPath;
                     }
                 }
                 catch
@@ -118,7 +108,7 @@ namespace Accounting.ViewModels
             for (int i = 0; i < col.Items.Count(); i++)
             {
                 var items = col.Items[i];
-                var rowModel = new ItemModel(items, col.Tax);
+                var rowModel = new ItemModel(columnModel, items, col.Tax);
                 columnModel.Items.Add(rowModel);
             }
 
@@ -154,6 +144,13 @@ namespace Accounting.ViewModels
         private void LoadData(SelectFileViewModel viewModel)
         {
             LoadData(viewModel.SelectedFile.FileName);
+
+            using (var key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"SOFTWARE\FoxHint\Accounting"))
+            {
+                if (key == null) return;
+
+                key.SetValue("CsvFilePath", viewModel.SelectedFile.FileName);
+            }
         }
 
         private void Save(bool saveToExisting = false)
@@ -221,6 +218,25 @@ namespace Accounting.ViewModels
             };
             Columns.Add(columnModel);
             RaisePropertiesChanged();
+        }
+
+        private void DeleteRow(ItemModel model)
+        {
+            if (model == null)
+            {
+                return;
+            }
+            model.Parent.Items.Remove(model);
+        }
+
+        private void DeleteColumn(ColumnModel model)
+        {
+            if(model == null)
+            {
+                return;
+            }
+
+            Columns.Remove(model);
         }
     }
 }

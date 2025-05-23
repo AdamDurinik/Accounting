@@ -1,9 +1,15 @@
-﻿using System.Windows;
+﻿using DevExpress.Xpf.Grid;
+using System.Windows;
 
 namespace Accounting
 {
     public partial class App : System.Windows.Application
     {
+        static App()
+        {
+            GridControl.AllowInfiniteGridSize = true;
+        }
+
         private void OnStartUp(object sender, StartupEventArgs e)
         {
             var viewModel = new ViewModels.MainViewModel();
@@ -11,6 +17,8 @@ namespace Accounting
             mainWindow.Title = "Účtovníctvo";
             viewModel.Window = mainWindow;
             mainWindow.Show();
+
+            viewModel.LoadData();
         }
     }
 

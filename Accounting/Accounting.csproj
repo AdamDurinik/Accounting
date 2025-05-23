@@ -16,6 +16,7 @@
     <None Remove="Icons\folder.png" />
     <None Remove="Icons\open.png" />
     <None Remove="Icons\plus.png" />
+    <None Remove="Icons\remove.png" />
     <None Remove="Icons\save.png" />
   </ItemGroup>
 
@@ -49,6 +50,9 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Icons\plus.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\remove.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Icons\save.png">
