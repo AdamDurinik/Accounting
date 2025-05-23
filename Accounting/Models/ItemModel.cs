@@ -43,9 +43,7 @@ namespace Accounting.Models
                 if (SetProperty(() => PriceWithoutTax, RoundUp(value)) && !_isUpdating)
                 {
                     _isUpdating = true;
-                    // compute tax on new base price
-                    Tax = RoundUp(value * TaxValue);
-                    // compute total
+                    Tax = RoundUp(value * (TaxValue/100.0));
                     PriceWithTax = RoundUp(value + (Tax ?? 0));
                     _isUpdating = false;
                 }
@@ -62,9 +60,7 @@ namespace Accounting.Models
                     if (TaxValue > 0 && value.HasValue)
                     {
                         _isUpdating = true;
-                        // recompute base price from new tax
-                        PriceWithoutTax = RoundUp(value.Value / TaxValue);
-                        // recompute total
+                        PriceWithoutTax = RoundUp(value.Value / (TaxValue/100.0));
                         PriceWithTax = RoundUp((PriceWithoutTax ?? 0) + value.Value);
                         _isUpdating = false;
                     }
@@ -80,9 +76,7 @@ namespace Accounting.Models
                 if (SetProperty(() => PriceWithTax, RoundUp(value)) && !_isUpdating)
                 {
                     _isUpdating = true;
-                    // recompute tax from new total
-                    Tax = RoundUp((value * TaxValue) / (1 + TaxValue));
-                    // recompute base
+                    Tax = RoundUp((value * TaxValue) / (1 + (TaxValue/100.0)));
                     PriceWithoutTax = RoundUp((value ?? 0) - (Tax ?? 0));
                     _isUpdating = false;
                 }
@@ -91,17 +85,8 @@ namespace Accounting.Models
 
         public void UpdateWithTax(int taxPercent)
         {
-            try
-            {
-                TaxValue = taxPercent / 100.0;
-                // Kick off a full recalculation
-                RecalculateFromPrice();
-
-            }
-            catch
-            {
-
-            }
+            TaxValue = taxPercent / 100.0;
+            RecalculateFromPrice();
         }
 
         private void RecalculateFromPrice()
@@ -115,13 +100,13 @@ namespace Accounting.Models
             }
         }
 
-        /// <summary>
-        /// Rounds up (ceiling) to 2 decimal places.
-        /// </summary>
         private double? RoundUp(double? value)
         {
-            if (!value.HasValue) return null;
-            // Multiply, ceiling, then divide
+            if (!value.HasValue)
+            {
+                return null;
+            }
+
             return Math.Ceiling(value.Value * 100) / 100.0;
         }
     }

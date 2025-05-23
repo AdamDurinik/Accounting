@@ -1,4 +1,5 @@
 ﻿using Accounting.Entity;
+using Accounting.Exporters;
 using Accounting.Models;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.Xpf;
@@ -16,7 +17,7 @@ namespace Accounting.ViewModels
         {
         }
 
-        public ICommand NewCommand => new DelegateCommand(New);
+        public ICommand CreateNewFileCommand => new DelegateCommand(New);
         public ICommand OpenFileCommand => new DelegateCommand(OpenLoadWindow);
         public ICommand SaveFileCommand => new DelegateCommand(() => Save(true));
         public ICommand SaveAsFileCommand => new DelegateCommand(() => Save(false));
@@ -32,10 +33,10 @@ namespace Accounting.ViewModels
         public MainWindow Window { get; internal set; }
         public string SelectedFile { get; internal set; }
 
-        public void LoadData(string filePath = null)
+        public void LoadData(string fileName = null)
         {
-            bool flowControl = GetFileNameFromRegistryIfNull(ref filePath);
-            if (!flowControl || string.IsNullOrWhiteSpace(filePath))
+            bool flowControl = GetFileNameFromRegistryIfNull(ref fileName);
+            if (!flowControl || string.IsNullOrWhiteSpace(fileName))
             {
                 return;
             }
@@ -45,10 +46,15 @@ namespace Accounting.ViewModels
                 var serializer = new System.Xml.Serialization.XmlSerializer(typeof(RootEntity));
                 var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                 var accountingPath = System.IO.Path.Combine(appData, "Accounting");
-                Window.Title = $"Účtovníctvo: {filePath}";
-                SelectedFile = System.IO.Path.Combine(accountingPath, filePath);
+                Window.Title = $"Účtovníctvo: {fileName}";
+                if (!fileName.Contains(".xaml"))
+                {
+                    fileName = fileName + ".xaml";
+                }
+                SelectedFile = System.IO.Path.GetFileNameWithoutExtension(fileName);
+                var filaPath = System.IO.Path.Combine(accountingPath, fileName);
 
-                using (var stream = System.IO.File.OpenRead(SelectedFile))
+                using (var stream = System.IO.File.OpenRead(filaPath))
                 {
                     var root = serializer.Deserialize(stream) as RootEntity;
 
@@ -72,6 +78,7 @@ namespace Accounting.ViewModels
         private IMessageBoxService GetMessageBoxService() => GetService<IMessageBoxService>();
         private IDialogService GetSelectFileService() => GetService<IDialogService>("SelectFileService");
         private IDialogService GetSaveFileService() => GetService<IDialogService>("SaveFileService");
+        private ISaveFileDialogService GetSaveDialogService() => GetService<ISaveFileDialogService>("SaveFileDialogService");
 
         private static bool GetFileNameFromRegistryIfNull(ref string fileName)
         {
@@ -119,6 +126,21 @@ namespace Accounting.ViewModels
         private void New()
         {
             Columns.Clear();
+
+            Columns.Add(new ColumnModel()
+            {
+                Tax = 20,
+            });
+            Columns.Add(new ColumnModel()
+            {
+                Tax = 19,
+            });
+            Columns.Add(new ColumnModel()
+            {
+                Tax = 5,
+            });
+
+            SaveAs();
         }
 
         //AppData\Roaming\Accounting\
@@ -145,16 +167,28 @@ namespace Accounting.ViewModels
         {
             LoadData(viewModel.SelectedFile.FileName);
 
+            bool flowControl = SaveToRegistry(viewModel.SelectedFile.FileName);
+            if (!flowControl)
+            {
+                return;
+            }
+        }
+
+        private static bool SaveToRegistry(string fileName)
+        {
             using (var key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"SOFTWARE\FoxHint\Accounting"))
             {
-                if (key == null) return;
+                if (key == null) return false;
 
-                key.SetValue("CsvFilePath", viewModel.SelectedFile.FileName);
+                key.SetValue("CsvFilePath", fileName);
             }
+
+            return true;
         }
 
         private void Save(bool saveToExisting = false)
         {
+            SaveToRegistry(SelectedFile);
             if (saveToExisting)
             {
                 if (File.Exists(SelectedFile))
@@ -178,6 +212,7 @@ namespace Accounting.ViewModels
                 serializer.Serialize(fileStream, rootEntity);
                 return;
             }
+
             SaveAs();
         }
 
@@ -196,7 +231,12 @@ namespace Accounting.ViewModels
                 IsCancel = true
             };
 
-            GetSaveFileService().ShowDialog(new List<UICommand>() { okCommand, cancelCommand }, "Uložiť súbor", viewModel);
+            var service = GetSaveFileService();
+            if(service == null)
+            {
+                GetMessageBoxService().ShowMessage("Niečo sa pokazilo, zavolaj Adamovy. \n Nenašla sa SaveFileService.", "Niečo sa pokazilo", MessageButton.OK, MessageIcon.Error);
+            }
+            service?.ShowDialog(new List<UICommand>() { okCommand, cancelCommand }, "Uložiť súbor", viewModel);
         }
 
         private void SaveData(SaveDialogViewModel viewModel)
@@ -207,7 +247,17 @@ namespace Accounting.ViewModels
 
         private void ExportToExcel()
         {
-            throw new NotImplementedException();
+            var service = GetSaveDialogService();
+            service.DefaultFileName = SelectedFile;
+            if (service != null && service.ShowDialog())
+            {
+                var fileInfo = service.File.Name;
+                var directory = service.File.DirectoryName;
+                var filePath = System.IO.Path.Combine(directory, fileInfo);
+                var exporter = new ExcelExporter();
+                exporter.Export(filePath, Columns.ToList());
+
+            }
         }
 
         private void AddTable()

@@ -26,7 +26,7 @@ namespace Accounting.ViewModels
             var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             var accountingPath = System.IO.Path.Combine(appData, "Accounting");
             var filePath = System.IO.Path.Combine(accountingPath, FileName);
-            var file = File.Create(filePath+".xaml");
+            var fileStream = File.Create(filePath + ".xaml");
 
             var serializer = new System.Xml.Serialization.XmlSerializer(typeof(RootEntity));
 
@@ -42,7 +42,7 @@ namespace Accounting.ViewModels
                 }).ToList()
             }; 
 
-            serializer.Serialize(file, rootEntity);
+            serializer.Serialize(fileStream, rootEntity);
 
             return FileName;
         }

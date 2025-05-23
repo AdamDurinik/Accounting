@@ -9,12 +9,44 @@
              xmlns:viewmodels="clr-namespace:Accounting.ViewModels"
              xmlns:dxmvvm="clr-namespace:DevExpress.Mvvm.UI.Interactivity;assembly=DevExpress.Xpf.Core.v24.1" 
              xmlns:dx="clr-namespace:DevExpress.Xpf.Core;assembly=DevExpress.Xpf.Core.v24.1"
-             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" xmlns:dmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewmodels:MainViewModel}">
 
     <dxmvvm:Interaction.Behaviors>
-        <!-- Dialog & message services as before… -->
+        <dx:DialogService x:Name="SelectFileService"  DialogWindowStartupLocation="CenterOwner">
+            <dx:DialogService.ViewTemplate>
+                <DataTemplate>
+                    <local:SelectFileView />
+                </DataTemplate>
+            </dx:DialogService.ViewTemplate>
+            <dx:DialogService.DialogStyle>
+                <Style TargetType="Window">
+                    <Setter Property="Height" Value="600"/>
+                    <Setter Property="Width" Value="400"/>
+                    <Setter Property="ResizeMode" Value="NoResize"/>
+                </Style>
+            </dx:DialogService.DialogStyle>
+        </dx:DialogService>
+        <dx:DialogService x:Name="SaveFileService" DialogWindowStartupLocation="CenterOwner">
+            <dx:DialogService.ViewTemplate>
+                <DataTemplate>
+                    <local:SaveDialogView />
+                </DataTemplate>
+            </dx:DialogService.ViewTemplate>
+            <dx:DialogService.DialogStyle>
+                <Style TargetType="Window">
+                    <Setter Property="ResizeMode" Value="NoResize"/>
+                    <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+                </Style>
+            </dx:DialogService.DialogStyle>
+        </dx:DialogService>
+        <dx:DXMessageBoxService/>
+        <dmvvm:SaveFileDialogService 
+            x:Name="SaveFileDialogService"
+            DefaultExt="xlsx"
+            Filter="Excel files (*.xlsx)|*.xlsx|All files (*.*)|*.*"
+            OverwritePrompt="True"/>
     </dxmvvm:Interaction.Behaviors>
     <Grid>
         <Grid.RowDefinitions>
@@ -35,6 +67,9 @@
                         <dxb:BarManager.Bars>
 
                             <dxb:Bar IsMainMenu="True" BarItemDisplayMode="ContentAndGlyph">
+                                <dxb:BarButtonItem Content="Nový" Glyph="/Icons/plus.png"
+                                      Padding="5" Margin="5"
+                                      Command="{Binding CreateNewFileCommand}"/>
                                 <dxb:BarButtonItem Content="Otvoriť súbor" Glyph="/Icons/open.png"
                                       Padding="5" Margin="5"
                                       Command="{Binding OpenFileCommand}"/>
@@ -45,7 +80,8 @@
                                       Padding="5" Margin="5"
                                       Command="{Binding SaveAsFileCommand}"/>
                                 <dxb:BarButtonItem Content="Exportovať do Excelu" Glyph="/Icons/excel.png"
-                                      Padding="5" Margin="5"/>
+                                      Padding="5" Margin="5"
+                                      Command="{Binding ExportToExcelCommand}"/>
                             </dxb:Bar>
                         </dxb:BarManager.Bars>
                     </dxb:BarManager>
