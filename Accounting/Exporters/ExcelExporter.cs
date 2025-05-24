@@ -19,6 +19,9 @@ namespace Accounting.Exporters
                 var ws = package.Workbook.Worksheets.Add(sheetName);
 
                 int startCol = 1;
+
+                var maxRows = columns.Max(c => c.Items.Count);
+
                 foreach (var column in columns)
                 {
                     ws.Cells[1, startCol].Value = "Cena bez DPH";
@@ -39,7 +42,7 @@ namespace Accounting.Exporters
 
                     int rowEnd = rowStart + column.Items.Count - 1;
                     int blankRows = 5;
-                    int labelRow = rowEnd + blankRows + 1;   
+                    int labelRow = maxRows + blankRows + 1;   
                     int sumRow = labelRow + 1;             
 
                     ws.Cells[labelRow, startCol].Value = "Spolu";

@@ -7,7 +7,6 @@ using DevExpress.Xpf.Grid;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Input;
-using System.Windows.Shapes;
 
 namespace Accounting.ViewModels
 {
@@ -19,10 +18,10 @@ namespace Accounting.ViewModels
 
         public ICommand CreateNewFileCommand => new DelegateCommand(New);
         public ICommand OpenFileCommand => new DelegateCommand(OpenLoadWindow);
-        public ICommand SaveFileCommand => new DelegateCommand(() => Save(true));
-        public ICommand SaveAsFileCommand => new DelegateCommand(() => Save(false));
-        public ICommand ExportToExcelCommand => new DelegateCommand(ExportToExcel);
-        public ICommand AddTableCommand => new DelegateCommand(AddTable);
+        public ICommand SaveFileCommand => new DelegateCommand(() => Save(true), () => !string.IsNullOrEmpty(SelectedFile));
+        public ICommand SaveAsFileCommand => new DelegateCommand(() => Save(false), () => !string.IsNullOrEmpty(SelectedFile));
+        public ICommand ExportToExcelCommand => new DelegateCommand(ExportToExcel, () => !string.IsNullOrEmpty(SelectedFile));
+        public ICommand AddTableCommand => new DelegateCommand(AddTable, () => !string.IsNullOrEmpty(SelectedFile));
 
         public ICommand DeleteRowCommand => new DelegateCommand<ItemModel>(DeleteRow);
         public ICommand DeleteColumnCommand => new DelegateCommand<ColumnModel>(DeleteColumn);
@@ -33,12 +32,12 @@ namespace Accounting.ViewModels
         public MainWindow Window { get; internal set; }
         public string SelectedFile { get; internal set; }
 
-        public void LoadData(string fileName = null)
+        public bool LoadData(string fileName = null)
         {
             bool flowControl = GetFileNameFromRegistryIfNull(ref fileName);
             if (!flowControl || string.IsNullOrWhiteSpace(fileName))
             {
-                return;
+                return false;
             }
 
             try
@@ -46,13 +45,18 @@ namespace Accounting.ViewModels
                 var serializer = new System.Xml.Serialization.XmlSerializer(typeof(RootEntity));
                 var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                 var accountingPath = System.IO.Path.Combine(appData, "Accounting");
-                Window.Title = $"Účtovníctvo: {fileName}";
                 if (!fileName.Contains(".xaml"))
                 {
                     fileName = fileName + ".xaml";
                 }
                 SelectedFile = System.IO.Path.GetFileNameWithoutExtension(fileName);
                 var filaPath = System.IO.Path.Combine(accountingPath, fileName);
+
+                if (!File.Exists(filaPath))
+                {
+                    return false;
+                }
+                Window.Title = $"Účtovníctvo: {SelectedFile}";
 
                 using (var stream = System.IO.File.OpenRead(filaPath))
                 {
@@ -71,8 +75,42 @@ namespace Accounting.ViewModels
             }
             catch (Exception ex)
             {
-                GetMessageBoxService().ShowMessage($"Niečo sa pokazilo sprav screashot a pošli Adamovy. \n {ex.Message}", "Niečo sa pokazilo", MessageButton.OK, MessageIcon.Error);
+                GetMessageBoxService().ShowMessage($"Niečo sa pokazilo sprav screashot a pošli Adamovi. \n {ex.Message}", "Niečo sa pokazilo", MessageButton.OK, MessageIcon.Error);
+                return false;
             }
+
+            return true;
+        }
+
+        public void Save(bool saveToExisting = false)
+        {
+            SaveToRegistry(SelectedFile);
+            if (saveToExisting)
+            {
+                var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Accounting", SelectedFile + ".xaml");
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+
+                using var fileStream = new FileStream(filePath, FileMode.CreateNew);
+                var serializer = new System.Xml.Serialization.XmlSerializer(typeof(RootEntity));
+                var rootEntity = new RootEntity()
+                {
+                    Columns = Columns.Select(c => new ColumnEntity()
+                    {
+                        Tax = c.Tax,
+                        Items = c.Items.Where(item => item.PriceWithoutTax != null).Select(i => new ItemEntity()
+                        {
+                            PriceWithoutTax = i.PriceWithoutTax!.Value
+                        }).ToList()
+                    }).ToList()
+                };
+                serializer.Serialize(fileStream, rootEntity);
+                return;
+            }
+
+            SaveAs();
         }
 
         private IMessageBoxService GetMessageBoxService() => GetService<IMessageBoxService>();
@@ -125,6 +163,30 @@ namespace Accounting.ViewModels
 
         private void New()
         {
+            var viewModel = new SaveDialogViewModel(Columns.ToList());
+            var okCommand = new UICommand()
+            {
+                Caption = "Pridať",
+                Command = new DelegateCommand(() => CreateNewTable(viewModel), () => !string.IsNullOrEmpty(viewModel.FileName)),
+                IsDefault = true
+            };
+            var cancelCommand = new UICommand()
+            {
+                Caption = "Zrušiť",
+                Command = new DelegateCommand(() => { }),
+                IsCancel = true
+            };
+
+            var service = GetSaveFileService();
+            if (service == null)
+            {
+                GetMessageBoxService().ShowMessage("Niečo sa pokazilo, zavolaj Adamovi. \n Nenašla sa SaveFileService.", "Niečo sa pokazilo", MessageButton.OK, MessageIcon.Error);
+            }
+            service?.ShowDialog(new List<UICommand>() { okCommand, cancelCommand }, "Pridať súbor", viewModel);
+        }
+
+        private void CreateNewTable(SaveDialogViewModel viewModel)
+        {
             Columns.Clear();
 
             Columns.Add(new ColumnModel()
@@ -140,18 +202,21 @@ namespace Accounting.ViewModels
                 Tax = 5,
             });
 
-            SaveAs();
+            viewModel.Save();
+            Window.Title = $"Účtovníctvo: {System.IO.Path.GetFileName(viewModel.FileName)}";
+            SelectedFile = viewModel.FileName;
+            SaveToRegistry(viewModel.FileName);
         }
 
-        //AppData\Roaming\Accounting\
         private void OpenLoadWindow()
         {
             var viewModel = new SelectFileViewModel();
 
-            var okCommand = new UICommand() 
-            { 
+            var okCommand = new UICommand()
+            {
                 Caption = "Vybrať",
-                Command = new DelegateCommand(() => LoadData(viewModel)),
+                Command = new DelegateCommand(() => LoadData(viewModel), () => viewModel.SelectedFile != null),
+                IsDefault = true
             };
             var cancelCommand = new UICommand()
             {
@@ -160,12 +225,24 @@ namespace Accounting.ViewModels
                 IsCancel = true
             };
 
-            var result = GetSelectFileService().ShowDialog(new List<UICommand>() { okCommand, cancelCommand}, "Otvoriť súbor", viewModel);
+            viewModel.OkCommand = okCommand;
+            try
+            {
+                var service = GetSelectFileService();
+                var result = GetSelectFileService().ShowDialog(new List<UICommand>() { okCommand, cancelCommand }, "Otvoriť súbor", viewModel);
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+            }
         }
 
         private void LoadData(SelectFileViewModel viewModel)
         {
-            LoadData(viewModel.SelectedFile.FileName);
+            if (!LoadData(viewModel.SelectedFile.FileName))
+            {
+                return;
+            }
 
             bool flowControl = SaveToRegistry(viewModel.SelectedFile.FileName);
             if (!flowControl)
@@ -176,6 +253,10 @@ namespace Accounting.ViewModels
 
         private static bool SaveToRegistry(string fileName)
         {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return false;
+            }
             using (var key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"SOFTWARE\FoxHint\Accounting"))
             {
                 if (key == null) return false;
@@ -186,35 +267,7 @@ namespace Accounting.ViewModels
             return true;
         }
 
-        private void Save(bool saveToExisting = false)
-        {
-            SaveToRegistry(SelectedFile);
-            if (saveToExisting)
-            {
-                if (File.Exists(SelectedFile))
-                {
-                    File.Delete(SelectedFile);
-                }
-
-                var fileStream = new FileStream(SelectedFile, FileMode.CreateNew);
-                var serializer = new System.Xml.Serialization.XmlSerializer(typeof(RootEntity));
-                var rootEntity = new RootEntity()
-                {
-                    Columns = Columns.Select(c => new ColumnEntity()
-                    {
-                        Tax = c.Tax,
-                        Items = c.Items.Where(item => item.PriceWithoutTax != null).Select(i => new ItemEntity()
-                        {
-                            PriceWithoutTax = i.PriceWithoutTax!.Value
-                        }).ToList()
-                    }).ToList()
-                };
-                serializer.Serialize(fileStream, rootEntity);
-                return;
-            }
-
-            SaveAs();
-        }
+      
 
         private void SaveAs()
         {
@@ -222,7 +275,8 @@ namespace Accounting.ViewModels
             var okCommand = new UICommand()
             {
                 Caption = "Uložiť",
-                Command = new DelegateCommand(() => SaveData(viewModel)),
+                Command = new DelegateCommand(() => SaveData(viewModel), () => viewModel.CanSaveFile()),
+                IsDefault = true,
             };
             var cancelCommand = new UICommand()
             {
@@ -234,7 +288,7 @@ namespace Accounting.ViewModels
             var service = GetSaveFileService();
             if(service == null)
             {
-                GetMessageBoxService().ShowMessage("Niečo sa pokazilo, zavolaj Adamovy. \n Nenašla sa SaveFileService.", "Niečo sa pokazilo", MessageButton.OK, MessageIcon.Error);
+                GetMessageBoxService().ShowMessage("Niečo sa pokazilo, zavolaj Adamovi. \n Nenašla sa SaveFileService.", "Niečo sa pokazilo", MessageButton.OK, MessageIcon.Error);
             }
             service?.ShowDialog(new List<UICommand>() { okCommand, cancelCommand }, "Uložiť súbor", viewModel);
         }

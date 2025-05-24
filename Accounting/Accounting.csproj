@@ -11,17 +11,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Icons\addFile.png" />
     <None Remove="Icons\columns.png" />
     <None Remove="Icons\excel.png" />
     <None Remove="Icons\folder.png" />
     <None Remove="Icons\open.png" />
     <None Remove="Icons\plus.png" />
+    <None Remove="Icons\remove.ico" />
     <None Remove="Icons\remove.png" />
+    <None Remove="Icons\remove2.png" />
     <None Remove="Icons\save.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Icons\tax.ico" />
+    <None Remove="Icons\tax.ico" />
+    <None Remove="Icons\word.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +38,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Icons\addFile.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Icons\columns.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
@@ -52,10 +56,22 @@
     <Resource Include="Icons\plus.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Icons\remove.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Icons\remove.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Icons\remove2.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Icons\save.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\tax.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icons\word.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

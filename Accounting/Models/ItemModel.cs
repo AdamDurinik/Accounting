@@ -76,7 +76,7 @@ namespace Accounting.Models
                 if (SetProperty(() => PriceWithTax, RoundUp(value)) && !_isUpdating)
                 {
                     _isUpdating = true;
-                    Tax = RoundUp((value * TaxValue) / (1 + (TaxValue/100.0)));
+                    Tax = RoundUp((value * TaxValue / 100.0) / (1 + (TaxValue/100.0)));
                     PriceWithoutTax = RoundUp((value ?? 0) - (Tax ?? 0));
                     _isUpdating = false;
                 }
@@ -85,7 +85,7 @@ namespace Accounting.Models
 
         public void UpdateWithTax(int taxPercent)
         {
-            TaxValue = taxPercent / 100.0;
+            TaxValue = taxPercent;
             RecalculateFromPrice();
         }
 
@@ -94,7 +94,7 @@ namespace Accounting.Models
             if (PriceWithoutTax.HasValue)
             {
                 _isUpdating = true;
-                Tax = RoundUp(PriceWithoutTax * TaxValue);
+                Tax = RoundUp(PriceWithoutTax * TaxValue / 100.0);
                 PriceWithTax = RoundUp((PriceWithoutTax ?? 0) + (Tax ?? 0));
                 _isUpdating = false;
             }

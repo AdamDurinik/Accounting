@@ -15,18 +15,21 @@ namespace Accounting.ViewModels
             {
                 System.IO.Directory.CreateDirectory(accountingPath);
             }
-
+            
             var files = System.IO.Directory.GetFiles(accountingPath);
+            var fileModels = new List<FileModel>();
             foreach (var file in files)
             {
                 var fileInfo = new System.IO.FileInfo(file);
-                FileList.Add(new FileModel
+                fileModels.Add(new FileModel
                 {
-                    FileName = fileInfo.Name,
+                    FileName = System.IO.Path.GetFileNameWithoutExtension(fileInfo.Name),
                     CreatedDate = fileInfo.CreationTime,
                     LastModifiedDate = fileInfo.LastWriteTime
                 });
             }
+
+            fileModels.OrderByDescending(f => f.CreatedDate).ToList().ForEach(FileList.Add);
         }
 
         public ObservableCollection<FileModel> FileList { get; set; } = new ObservableCollection<FileModel>();
@@ -36,6 +39,6 @@ namespace Accounting.ViewModels
             get => GetProperty(() => SelectedFile);
             set => SetProperty(() => SelectedFile, value);
         }
-
+        public UICommand OkCommand { get; internal set; }
     }
 }

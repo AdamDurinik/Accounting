@@ -12,7 +12,6 @@
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" xmlns:dmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewmodels:MainViewModel}">
-
     <dxmvvm:Interaction.Behaviors>
         <dx:DialogService x:Name="SelectFileService"  DialogWindowStartupLocation="CenterOwner">
             <dx:DialogService.ViewTemplate>
@@ -43,12 +42,12 @@
         </dx:DialogService>
         <dx:DXMessageBoxService/>
         <dmvvm:SaveFileDialogService 
-            x:Name="SaveFileDialogService"
-            DefaultExt="xlsx"
-            Filter="Excel files (*.xlsx)|*.xlsx|All files (*.*)|*.*"
-            OverwritePrompt="True"/>
+         x:Name="SaveFileDialogService"
+         DefaultExt="xlsx"
+         Filter="Excel files (*.xlsx)|*.xlsx|All files (*.*)|*.*"
+         OverwritePrompt="True"/>
     </dxmvvm:Interaction.Behaviors>
-    <Grid>
+    <Grid Margin="5,0,5,5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -60,14 +59,14 @@
                BorderThickness="1"
                CornerRadius="4"
                Padding="6"
-               Margin="5,0,5,8"
+               Margin="10,0,10,4"
                Background="White">
                 <StackPanel>
                     <dxb:BarManager>
                         <dxb:BarManager.Bars>
 
                             <dxb:Bar IsMainMenu="True" BarItemDisplayMode="ContentAndGlyph">
-                                <dxb:BarButtonItem Content="Nový" Glyph="/Icons/plus.png"
+                                <dxb:BarButtonItem Content="Nový" Glyph="/Icons/addFile.png"
                                       Padding="5" Margin="5"
                                       Command="{Binding CreateNewFileCommand}"/>
                                 <dxb:BarButtonItem Content="Otvoriť súbor" Glyph="/Icons/open.png"
@@ -122,7 +121,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="LightGray"
+                        <Border BorderBrush="LightGray" 
                                 BorderThickness="1"
                                 CornerRadius="6"
                                 Padding="8"
@@ -149,9 +148,9 @@
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
-                              From="1" To="0" Duration="0:0:0.2"/>
+                                                From="1" To="0" Duration="0:0:0.2"/>
                                             <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
-                              From="1" To="0" Duration="0:0:0.2"/>
+                                                From="1" To="0" Duration="0:0:0.2"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </EventTrigger>
@@ -167,9 +166,9 @@
                                 <!-- Tax input -->
                                 <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,8">
                                     <TextBlock Text="DPH:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                                    <dxe:TextEdit Width="30"  CornerRadius="6"
+                                    <dxe:TextEdit Width="45"  CornerRadius="6"
                                                   Text="{Binding Tax, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                  MaskType="Regex" Mask="\d*">
+                                                  MaskType="Numeric" Mask="D">
                                     </dxe:TextEdit>
                                     <TextBlock Text="%" VerticalAlignment="Center" Margin="5,0,5,0"/>
 
@@ -180,24 +179,32 @@
                                     </Button>
                                 </StackPanel>
 
-                                <dxg:GridControl Grid.Row="1" Width="250" ItemsSource="{Binding Items}" BorderThickness="0" >
+                                <dxg:GridControl Grid.Row="1" Width="250" ItemsSource="{Binding Items}" BorderThickness="0" PreviewKeyDown="OnPreviewKeyDown">
+                                    <dxg:GridControl.TotalSummary>
+                                        <dxg:GridSummaryItem FieldName="PriceWithoutTax" SummaryType="Sum" DisplayFormat=" {0:N2} €" ShowInColumn="PriceWithoutTax"/>
+                                        <dxg:GridSummaryItem FieldName="Tax"            SummaryType="Sum" DisplayFormat=" {0:N2} €" ShowInColumn="Tax"/>
+                                        <dxg:GridSummaryItem FieldName="PriceWithTax"   SummaryType="Sum" DisplayFormat=" {0:N2} €" ShowInColumn="PriceWithTax"/>
+                                    </dxg:GridControl.TotalSummary>
                                     <dxg:GridControl.View>
-                                        <dxg:TableView AutoWidth="True" ShowGroupPanel="False" 
-                                                       NewItemRowPosition="Bottom" AllowEditing="True"
-                                                       BorderThickness="0" EnableImmediatePosting="True" AddingNewRow="OnAddingNewRow"/>
-                                    </dxg:GridControl.View>
+                                        <dxg:TableView AutoWidth="True" ShowGroupPanel="False" ShowFilterPanelMode="Never" AllowColumnFiltering="False" AllowSorting="False"
+                                           AllowGrouping="False" AllowColumnMoving="False" TotalSummaryPosition="Bottom" NewItemRowPosition="Bottom"
+                                           EnableImmediatePosting="True" AddingNewRow="OnAddingNewRow" BorderThickness="0" >
 
-                                    <dxg:GridColumn FieldName="PriceWithoutTax" Header="Cena"/>
-                                    <dxg:GridColumn FieldName="Tax"              Header="DPH"/>
-                                    <dxg:GridColumn FieldName="PriceWithTax"    Header="Celkovo"/>
-                                    
+                                        </dxg:TableView>
+                                    </dxg:GridControl.View>
+                                    <dxg:GridColumn FieldName="PriceWithoutTax" Header="Cena" >
+                                        <dxg:GridColumn.EditSettings>
+                                            <dxe:TextEditSettings MaskType="Numeric"  DisplayFormat=" {0:N2}" />
+                                        </dxg:GridColumn.EditSettings>
+                                    </dxg:GridColumn>
+                                    <dxg:GridColumn FieldName="Tax"              Header="DPH" />
+                                    <dxg:GridColumn FieldName="PriceWithTax"     Header="Celkovo" />
                                     <dxg:GridColumn Width="30">
                                         <dxg:GridColumn.CellTemplate>
                                             <DataTemplate>
-                                                <dx:SimpleButton Command="{Binding DataContext.DeleteRowCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"  
-                                                                 CommandParameter="{Binding RowData.Row}"  BorderThickness="0" BorderBrush="Transparent"
-                                                                 Padding="3"
-                                                                 Glyph="/Icons/remove.png" />
+                                                <dx:SimpleButton Command="{Binding DataContext.DeleteRowCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                     CommandParameter="{Binding RowData.Row}" BorderThickness="0"
+                                                     BorderBrush="Transparent" Glyph="/Icons/remove2.png" Padding="3" />    
                                             </DataTemplate>
                                         </dxg:GridColumn.CellTemplate>
                                     </dxg:GridColumn>

@@ -5,6 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Accounting"
         xmlns:views="clr-namespace:Accounting.Views"
-        mc:Ignorable="d" Height="450" Width="800">
+        mc:Ignorable="d" Height="450" Width="927" MinHeight="450" MinWidth="927" Closing="OnWindowClosing">
     <views:MainView x:Name="MainView"/>
 </Window>
