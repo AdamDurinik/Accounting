@@ -35,6 +35,12 @@ namespace Accounting.ViewModels
         {
             var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             var accountingPath = System.IO.Path.Combine(appData, "Accounting");
+
+            if(!Directory.Exists(accountingPath))
+            {
+                Directory.CreateDirectory(accountingPath);
+            }
+
             var filePath = System.IO.Path.Combine(accountingPath, FileName);
             var fileStream = File.Create(filePath + ".xaml");
 
