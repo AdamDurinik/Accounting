@@ -19,6 +19,43 @@
             <ui:MapItem Source="{x:Static enums:QuantityType.Boxes}" Target="box"/>
         </dxmvvm:ObjectToObjectConverter>
         <BooleanToVisibilityConverter  x:Key="BooleanToVisibilityConverter"/>
+
+        <DataTemplate x:Key="PriceTagPrintTemplate">
+            <Border BorderThickness="4,4,4,4" BorderBrush="LightGray" CornerRadius="4" VerticalAlignment="Top" Width="325" Margin="0,0,0,5">
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="323">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="{Binding Name}" FontSize="36" FontWeight="Bold" TextAlignment="Left" Margin="10,0,0,0" 
+                               Height="95" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" VerticalAlignment="Top"/>
+
+                    <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0" Margin="0,0,0,25">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
+                            <TextBlock Text="{Binding Quantity}" FontSize="16"/>
+                            <TextBlock Text=" "/>
+                            <TextBlock Text="{Binding QuantityType, Converter={StaticResource QuantityTypeToStringConverter}}" FontSize="16"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
+                            <TextBlock Text="{Binding PricePerUnit}" FontSize="16"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Margin="0,0,10,0" VerticalAlignment="Bottom">
+                        <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} €'}" FontSize="40" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"/>
+                        <TextBlock Text="{Binding SalePrice, StringFormat='{}{0:N2} €'}" FontSize="40" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
+                                   Margin="0,0,0,40" Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <Line  X1="0" Y1="65" X2="110" Y2="35" Stroke="Red" StrokeThickness="4" Margin="0,20,0,0" 
+                               Visibility="{Binding IsSale,  Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </Grid>
+                </Grid>
+            </Border>
+        </DataTemplate>
     </UserControl.Resources>
     <Grid >
         <Grid.RowDefinitions>
@@ -36,7 +73,7 @@
                                 <dxb:BarButtonItem Content="Uložiť" Glyph="/Images/save.png" Padding="5" Margin="5"
                                     Command="{Binding SaveFileCommand}"/>
                                 <dxb:BarButtonItem Content="Vytlačiť" Glyph="/Images/printer.png" Padding="5" Margin="5"
-                                    Command="{Binding ExportToExcelCommand}"/>
+                                    Command="{Binding PrintCommand}" />
                             </dxb:Bar>
                         </dxb:BarManager.Bars>
                     </dxb:BarManager>
@@ -100,7 +137,7 @@
             </dxg:GridControl>
 
             <Border Grid.Column="1" BorderThickness="1" BorderBrush="LightGray" CornerRadius="4" DataContext="{Binding SelectedPriceTag}"  Margin="5,0,10,0"
-                    VerticalAlignment="Top" Grid.Row="1">
+                    VerticalAlignment="Top" Grid.Row="1" x:Name="PreviewContainer">
                 <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Width="325"   >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>

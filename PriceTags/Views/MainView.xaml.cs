@@ -1,7 +1,4 @@
-﻿using DevExpress.Xpf.Grid;
-using PriceTags.Models;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
+﻿using PriceTags.Models;
 using UserControl = System.Windows.Controls.UserControl;
 namespace PriceTags.Views
 {
