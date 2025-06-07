@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Exporters\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevExpress.Data" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Mvvm" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Wpf" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Wpf.Core" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Wpf.Grid" Version="24.1.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DevExpress.Mvvm.v24.1">
+      <HintPath>..\..\..\..\Devexpress\Components\Offline Packages\devexpress.mvvm\24.1.7\lib\net6.0-windows\DevExpress.Mvvm.v24.1.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

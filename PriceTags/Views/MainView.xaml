@@ -1,0 +1,107 @@
+﻿<UserControl x:Class="PriceTags.Views.MainView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PriceTags.Views" 
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" xmlns:ui="clr-namespace:DevExpress.Mvvm.UI;assembly=DevExpress.Xpf.Core.v24.1" xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm" xmlns:enums="clr-namespace:PriceTags.Enums"
+             mc:Ignorable="d" >
+    <UserControl.Resources>
+        <dxmvvm:ObjectToObjectConverter x:Key="QuantityTypeToStringConverter">
+            <ui:MapItem Source="{x:Static enums:QuantityType.WeightInGrams}" Target="g"/>
+            <ui:MapItem Source="{x:Static enums:QuantityType.WeightInKilograms}" Target="kg"/>
+            <ui:MapItem Source="{x:Static enums:QuantityType.VolumeInMilliliters}" Target="mil"/>
+            <ui:MapItem Source="{x:Static enums:QuantityType.VolumeInLiters}" Target="l"/>
+            <ui:MapItem Source="{x:Static enums:QuantityType.Count}" Target="kus"/>
+            <ui:MapItem Source="{x:Static enums:QuantityType.Packets}" Target="bal"/>
+            <ui:MapItem Source="{x:Static enums:QuantityType.Boxes}" Target="box"/>
+        </dxmvvm:ObjectToObjectConverter>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="0">
+            <Button Content="Open File" Command="{Binding OpenFileCommand}" Margin="0,0,10,0"/>
+            <Button Content="Save File" Command="{Binding SaveFileCommand}"/>
+        </StackPanel>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <dxg:GridControl Grid.Column="0" ItemsSource="{Binding PriceTags}" SelectedItem="{Binding SelectedPriceTag, Mode=TwoWay}"
+                AutoGenerateColumns="None" Height="500" SelectionMode="MultipleRow">
+                <dxg:GridControl.View>
+                    <dxg:TableView AllowPerPixelScrolling="True" AutoWidth="True" ShowGroupPanel="False" ShowCheckBoxSelectorColumn="True"
+                                   ShowFilterPanelMode="ShowAlways" NavigationStyle="Cell" AllowEditing="True" AllowColumnMoving="True"
+                                   CheckBoxSelectorColumnWidth="35" />
+                </dxg:GridControl.View>
+                
+                <dxg:GridColumn FieldName="Name" Header="Názov"/>
+                <dxg:GridColumn FieldName="Price" Header="Cena">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:TextEditSettings DisplayFormat="N2 €" />
+                    </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+                <dxg:GridColumn FieldName="Quantity" Header="Množstvo"/>
+
+                <dxg:GridColumn FieldName="QuantityType" Header="Jednotka">
+                    <dxg:GridColumn.CellTemplate>
+                        <DataTemplate>
+                            <dxe:ComboBoxEdit SelectedItem="{Binding QuantityType, Mode=TwoWay}" IsTextEditable="False" DisplayMember="Name" BorderBrush="Transparent" BorderThickness="0"
+                                ValueMember="Value">
+                                <dxmvvm:Interaction.Behaviors>
+                                    <dxmvvm:EnumItemsSourceBehavior EnumType="{x:Type enums:QuantityType}" NameConverter="{StaticResource QuantityTypeToStringConverter}"/>
+                                </dxmvvm:Interaction.Behaviors>
+                            </dxe:ComboBoxEdit>
+                        </DataTemplate>
+                    </dxg:GridColumn.CellTemplate>
+                </dxg:GridColumn>
+
+                <dxg:GridColumn FieldName="IsSale" Header="Akcia?" Width="42"  MinWidth="42" MaxWidth="42"/>
+                <dxg:GridColumn FieldName="SalePrice" Header="Akciová cena"/>
+            </dxg:GridControl>
+
+            <Border Grid.Column="1" BorderThickness="1" BorderBrush="LightGray" CornerRadius="4" DataContext="{Binding SelectedPriceTag}" Width="325" Height="190" Margin="5,0,10,0"
+                    VerticalAlignment="Top">
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="285" Height="190" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Text="{Binding Name}" FontSize="36" FontWeight="Bold" TextAlignment="Left" Margin="10,0,0,0" 
+                               Height="95" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0" Margin="0,0,0,25">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
+                            <TextBlock Text="{Binding Quantity}" FontSize="16"/>
+                            <TextBlock Text=" "/>
+                            <TextBlock Text="{Binding QuantityType, Converter={StaticResource QuantityTypeToStringConverter}}" FontSize="16"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
+                            <TextBlock Text="{Binding PricePerUnit}" FontSize="16"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,10,0">
+                        <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} €'}" FontSize="40" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Top"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+    </Grid>
+</UserControl>
