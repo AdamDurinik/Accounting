@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\printer.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Exporters\" />
   </ItemGroup>
 
@@ -24,6 +28,18 @@
     <Reference Include="DevExpress.Mvvm.v24.1">
       <HintPath>..\..\..\..\Devexpress\Components\Offline Packages\devexpress.mvvm\24.1.7\lib\net6.0-windows\DevExpress.Mvvm.v24.1.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\open.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\printer.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\save.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

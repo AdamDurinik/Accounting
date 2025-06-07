@@ -9,6 +9,7 @@ namespace PriceTags.ViewModels
     {
         public MainViewModel()
         {
+            SelectedTags = new();
             PriceTags.Add(new PriceTagModel { Name = "Jablko", Price = 10.99,  Quantity=60, QuantityType= QuantityType.WeightInGrams});
             PriceTags.Add(new PriceTagModel { Name = "Vajcka", Price = 5.45,  Quantity=12, QuantityType= QuantityType.Count});
             PriceTags.Add(new PriceTagModel { Name = "Muka", Price = 1.0,  Quantity=1, QuantityType= QuantityType.WeightInKilograms});
@@ -21,6 +22,12 @@ namespace PriceTags.ViewModels
         { 
             get => GetProperty(() => SelectedPriceTag);
             set => SetProperty(() => SelectedPriceTag, value);
+        }
+
+        public List<PriceTagModel> SelectedTags
+        {
+            get => GetProperty(() => SelectedTags);
+            set => SetProperty(() => SelectedTags, value);
         }
     }
 }

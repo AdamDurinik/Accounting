@@ -41,6 +41,11 @@ namespace PriceTags.Models
             }
         }
 
+        public DateTime LastChange {
+            get => GetProperty(() => LastChange);
+            set => SetProperty(() => LastChange, value);
+        }
+
         public string PricePerUnit => $"{PricePerUnitSize:n2} € / {GetUnitSize()}";
 
         public double PricePerUnitSize
