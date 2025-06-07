@@ -58,16 +58,27 @@ namespace PriceTags.Models
             }
         }
      
+        public bool IsSale => SalePrice > 0.0;
+        public bool HasDeposit => DepositAmount > 0.0;
+        
         public double SalePrice
         {
             get => GetProperty(() => SalePrice);
-            set => SetProperty(() => SalePrice, value);
+            set
+            {
+                SetProperty(() => SalePrice, value);
+                RaisePropertyChanged(nameof(IsSale));
+            }
         }
 
-        public bool IsSale
+        public double DepositAmount
         {
-            get => GetProperty(() => IsSale);
-            set => SetProperty(() => IsSale, value);
+            get => GetProperty(() => DepositAmount);
+            set
+            {
+                SetProperty(() => DepositAmount, value);
+                RaisePropertyChanged(nameof(HasDeposit));
+            }
         }
 
         private double GetUnitSizeValue() => QuantityType switch
