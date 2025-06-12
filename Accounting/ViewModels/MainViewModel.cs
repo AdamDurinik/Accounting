@@ -267,8 +267,6 @@ namespace Accounting.ViewModels
             return true;
         }
 
-      
-
         private void SaveAs()
         {
             var viewModel = new SaveDialogViewModel(Columns.ToList());

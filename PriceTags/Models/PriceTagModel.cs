@@ -8,7 +8,17 @@ namespace PriceTags.Models
         public string Name
         {
             get => GetProperty(() => Name);
-            set => SetProperty(() => Name, value);
+            set
+            {
+                SetProperty(() => Name, value);
+                NameCapital = Name?.ToUpper();
+            }
+        }
+
+        public string NameCapital
+        {
+            get => GetProperty(() => NameCapital);
+            set => SetProperty(() => NameCapital, value);
         }
 
         public double Price
@@ -46,7 +56,7 @@ namespace PriceTags.Models
             set => SetProperty(() => LastChange, value);
         }
 
-        public string PricePerUnit => $"{PricePerUnitSize:n2} € / {GetUnitSize()}";
+        public string PricePerUnit => $"{GetUnitSize()} = {PricePerUnitSize:n2} € ";
 
         public double PricePerUnitSize
         {
@@ -54,11 +64,12 @@ namespace PriceTags.Models
             {
                 if (Quantity <= 0) return 0.0;
                 double unitSize = GetUnitSizeValue();
-                return Price * unitSize / Quantity;
+                return (SalePrice > 0.0 ? SalePrice : Price) * unitSize / Quantity;
             }
         }
      
         public bool IsSale => SalePrice > 0.0;
+        public bool IsNotSale => SalePrice <= 0.0;
         public bool HasDeposit => DepositAmount > 0.0;
         
         public double SalePrice
@@ -67,7 +78,7 @@ namespace PriceTags.Models
             set
             {
                 SetProperty(() => SalePrice, value);
-                RaisePropertyChanged(nameof(IsSale));
+                RaisePropertiesChanged();
             }
         }
 

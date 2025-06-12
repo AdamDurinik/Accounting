@@ -5,23 +5,46 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PriceTags.Views" 
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
-             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" xmlns:ui="clr-namespace:DevExpress.Mvvm.UI;assembly=DevExpress.Xpf.Core.v24.1" xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm" xmlns:enums="clr-namespace:PriceTags.Enums" xmlns:viewmodels="clr-namespace:PriceTags.ViewModels" xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" 
+             xmlns:ui="clr-namespace:DevExpress.Mvvm.UI;assembly=DevExpress.Xpf.Core.v24.1" 
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm" 
+             xmlns:enums="clr-namespace:PriceTags.Enums" 
+             xmlns:viewmodels="clr-namespace:PriceTags.ViewModels" 
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:utils="clr-namespace:PriceTags.Utility" 
+             xmlns:dx="clr-namespace:DevExpress.Xpf.Core;assembly=DevExpress.Xpf.Core.v24.1"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewmodels:MainViewModel}">
+    <dxmvvm:Interaction.Behaviors>
+        <dx:DialogService DialogWindowStartupLocation="CenterOwner">
+            <dx:DialogService.ViewTemplate>
+                <DataTemplate>
+                    <local:HintView/>
+                </DataTemplate>
+            </dx:DialogService.ViewTemplate>
+            <dx:DialogService.DialogStyle>
+                <Style TargetType="Window">
+                    <Setter Property="Height" Value="600"/>
+                    <Setter Property="Width" Value="400"/>
+                    <Setter Property="ResizeMode" Value="NoResize"/>
+                </Style>
+            </dx:DialogService.DialogStyle>
+        </dx:DialogService>
+    </dxmvvm:Interaction.Behaviors>
     <UserControl.Resources>
         <dxmvvm:ObjectToObjectConverter x:Key="QuantityTypeToStringConverter">
             <ui:MapItem Source="{x:Static enums:QuantityType.WeightInGrams}" Target="g"/>
             <ui:MapItem Source="{x:Static enums:QuantityType.WeightInKilograms}" Target="kg"/>
-            <ui:MapItem Source="{x:Static enums:QuantityType.VolumeInMilliliters}" Target="mil"/>
+            <ui:MapItem Source="{x:Static enums:QuantityType.VolumeInMilliliters}" Target="ml"/>
             <ui:MapItem Source="{x:Static enums:QuantityType.VolumeInLiters}" Target="l"/>
-            <ui:MapItem Source="{x:Static enums:QuantityType.Count}" Target="kus"/>
+            <ui:MapItem Source="{x:Static enums:QuantityType.Count}" Target="ks"/>
             <ui:MapItem Source="{x:Static enums:QuantityType.Packets}" Target="bal"/>
             <ui:MapItem Source="{x:Static enums:QuantityType.Boxes}" Target="box"/>
         </dxmvvm:ObjectToObjectConverter>
         <BooleanToVisibilityConverter  x:Key="BooleanToVisibilityConverter"/>
 
         <DataTemplate x:Key="PriceTagPrintTemplate">
-            <Border BorderThickness="4,4,4,4" BorderBrush="LightGray" CornerRadius="4" VerticalAlignment="Top" Width="325" Margin="0,0,0,5">
+            <Border BorderThickness="2" BorderBrush="LightGray" CornerRadius="4" VerticalAlignment="Top" Width="325" >
                 <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="323" Height="165">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -32,7 +55,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="{Binding Name}" FontSize="36" FontWeight="Bold" TextAlignment="Left" Margin="10,0,0,0" 
+                    <TextBlock Text="{Binding Name}" FontSize="36" FontWeight="Bold" TextAlignment="Left" Margin="10,0,0,0" MaxWidth="315" MaxHeight="95"
                                Height="95" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" VerticalAlignment="Top"/>
 
                     <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0" Margin="0,0,0,10">
@@ -50,11 +73,22 @@
                     </StackPanel>
 
                     <Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Margin="0,0,10,0" VerticalAlignment="Bottom">
-                        <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} €'}" FontSize="40" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"/>
-                        <TextBlock Text="{Binding SalePrice, StringFormat='{}{0:N2} €'}" FontSize="40" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
-                                   Margin="0,0,0,40" Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                        <Line  X1="0" Y1="65" X2="110" Y2="35" Stroke="Red" StrokeThickness="4" Margin="0,20,0,0" 
-                               Visibility="{Binding IsSale,  Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} €'}" FontSize="40" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
+                            Visibility="{Binding IsNotSale, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                   TextWrapping="Wrap" utils:AutoFontScaler.IsEnabled="True"/>
+
+                            <TextBlock Text="{Binding SalePrice, StringFormat='{}{0:N2} €'}" FontSize="50" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
+                                Margin="0,0,0,0" Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} €'}" FontSize="24" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
+                                 Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,0,50" Foreground="Gray"/>
+                            <TextBlock Text="AKCIA" Foreground="Red" FontSize="40" FontWeight="Bold" Margin="-140,0,50,25" 
+                                Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                                <TextBlock.LayoutTransform>
+                                    <RotateTransform Angle="-10" />
+                                </TextBlock.LayoutTransform>
+                            </TextBlock>
+                        <Line  X1="96" Y1="5" X2="165" Y2="20" Stroke="#A5FF0000" StrokeThickness="3" Margin="0,20,0,40" 
+                            Visibility="{Binding IsSale,  Converter={StaticResource BooleanToVisibilityConverter}}"/>       
                     </Grid>
                 </Grid>
             </Border>
@@ -65,8 +99,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
-            <Border BorderBrush="LightGray" BorderThickness="1" CornerRadius="4" Padding="6"
+        
+        <Border BorderBrush="LightGray" BorderThickness="1" CornerRadius="4" Padding="6"
                    Margin="10,0,10,4" Background="White" Grid.Row="0">         
                 <StackPanel>
                     <dxb:BarManager>
@@ -77,6 +111,8 @@
                                     Command="{Binding SaveFileCommand}"/>
                                 <dxb:BarButtonItem Content="Vytlačiť" Glyph="/Images/printer.png" Padding="5" Margin="5"
                                     Command="{Binding PrintCommand}" />
+                                <dxb:BarButtonItem Content="Nápoveda názvu" Glyph="/Images/bulb.png" Padding="5" Margin="5"
+                                    Command="{Binding HintCommand}" />
                             </dxb:Bar>
                         </dxb:BarManager.Bars>
                     </dxb:BarManager>
@@ -98,19 +134,25 @@
 
             <dxg:GridControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding PriceTags}" CurrentItem="{Binding SelectedPriceTag, Mode=TwoWay}"
                              SelectedItems="{Binding SelectedTags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"
-                AutoGenerateColumns="None" SelectionMode="MultipleRow">
+                AutoGenerateColumns="None" SelectionMode="MultipleRow" PreviewKeyDown="OnPreviewKeyDown" >
                 <dxg:GridControl.View>
                     <dxg:TableView AllowPerPixelScrolling="True" AutoWidth="True" ShowGroupPanel="False" ShowCheckBoxSelectorColumn="True"
                                    ShowFilterPanelMode="ShowAlways" NavigationStyle="Cell" AllowEditing="True" AllowColumnMoving="True"
-                                   CheckBoxSelectorColumnWidth="35" NewItemRowPosition="Bottom"
-                                           EnableImmediatePosting="True" AddingNewRow="OnAddingNewRow" />
+                                   CheckBoxSelectorColumnWidth="35" NewItemRowPosition="Bottom" EditorShowMode="MouseUpFocused" 
+                                           EnableImmediatePosting="True" AddingNewRow="OnAddingNewRow" ShowingEditor="TableView_ShowingEditor" 
+                                   HiddenEditor="TableView_HidingEditor"/>
                 </dxg:GridControl.View>
 
-                <dxg:GridColumn FieldName="Name" Header="Názov" >
+                <dxg:GridColumn FieldName="Name" Header="Názov">
                     <dxg:GridColumn.EditSettings>
-                        <dxe:TextEditSettings MaxLength="25"/>
+                        <dxe:ComboBoxEditSettings 
+                            ItemsSource="{Binding DataContext.Names, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                            IsTextEditable="True" 
+                            ImmediatePopup="True" 
+                            AutoComplete="True" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
+
                 <dxg:GridColumn FieldName="Price" Header="Cena" Width="55" HorizontalHeaderContentAlignment="Right">
                     <dxg:GridColumn.EditSettings>
                         <dxe:TextEditSettings DisplayFormat=" {0:N2} €" />
@@ -133,31 +175,32 @@
 
                 <dxg:GridColumn FieldName="SalePrice" Header="Akciová cena" Width="80" HorizontalHeaderContentAlignment="Right">
                     <dxg:GridColumn.EditSettings>
-                    <dxe:TextEditSettings DisplayFormat=" {0:N2} €" />
+                        <dxe:TextEditSettings DisplayFormat=" {0:N2} €" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
 
                 <dxg:GridColumn FieldName="DepositAmount" Header="Záloha" Width="55" HorizontalHeaderContentAlignment="Right">
                     <dxg:GridColumn.EditSettings>
-                    <dxe:TextEditSettings DisplayFormat=" {0:N2} €" />
+                        <dxe:TextEditSettings DisplayFormat=" {0:N2} €" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
             </dxg:GridControl>
 
-            <Border Grid.Column="1" BorderThickness="1" BorderBrush="LightGray" CornerRadius="4" DataContext="{Binding SelectedPriceTag}"  Margin="5,0,10,0"
+            <Border Grid.Column="1" BorderThickness="1" BorderBrush="LightGray" CornerRadius="4" DataContext="{Binding SelectedPriceTag}"  Margin="10,0,10,0"
                     VerticalAlignment="Top" Grid.Row="1" x:Name="PreviewContainer">
-                <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Width="325"  Height="165" >
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Width="325" MaxHeight="165"  Height="165" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/> 
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    
-                    <TextBlock Text="{Binding Name}" FontSize="36" FontWeight="Bold" TextAlignment="Left" Margin="10,0,0,0" 
-                               Height="95" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" VerticalAlignment="Top"/>
+
+                    <TextBlock Text="{Binding NameCapital, NotifyOnTargetUpdated=True}" FontSize="36" FontWeight="Bold" TextAlignment="Left" Margin="10,0,0,0" 
+                               Height="95" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Top"
+                               TextWrapping="Wrap" utils:AutoFontScaler.IsEnabled="True" />
                     
                     <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0" Margin="0,0,0,10">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
@@ -174,10 +217,21 @@
                     </StackPanel>
 
                     <Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Margin="0,0,10,0" VerticalAlignment="Bottom">
-                        <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} €'}" FontSize="40" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"/>
-                        <TextBlock Text="{Binding SalePrice, StringFormat='{}{0:N2} €'}" FontSize="40" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
-                                   Margin="0,0,0,40" Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                        <Line  X1="0" Y1="65" X2="110" Y2="35" Stroke="Red" StrokeThickness="4" Margin="0,20,0,0" 
+                        <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} €'}" FontSize="40" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
+                                   Visibility="{Binding IsNotSale, Converter={StaticResource BooleanToVisibilityConverter}}" MaxWidth="315" MaxHeight="95"/>
+                        
+                        
+                        <TextBlock Text="{Binding SalePrice, StringFormat='{}{0:N2} €'}" FontSize="50" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
+                                   Margin="0,0,0,0" Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} €'}" FontSize="24" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
+                                    Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,0,50" Foreground="Gray"/>
+                        <TextBlock Text="AKCIA" Foreground="Red" FontSize="40" FontWeight="Bold" Margin="-140,0,50,25" 
+                                   Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                            <TextBlock.LayoutTransform>
+                                <RotateTransform Angle="-10" />
+                            </TextBlock.LayoutTransform>
+                        </TextBlock>
+                        <Line  X1="96" Y1="5" X2="165" Y2="20" Stroke="#A5FF0000" StrokeThickness="3" Margin="0,20,0,40" 
                                Visibility="{Binding IsSale,  Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     </Grid>
                 </Grid>

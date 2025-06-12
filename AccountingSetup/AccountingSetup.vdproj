@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_80C3E87683D146CCA2C7787C52325535"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_9952EDBE38944C47A973FBB745EE4BC2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -22,6 +28,12 @@
         "Entry"
         {
         "MsmKey" = "8:_9C5FB8D8266944618B4E4C7576FBF319"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C63E5BD42ECC45D1B9ABAC6D75592F68"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -50,6 +62,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
         "Release"
@@ -119,6 +139,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_80C3E87683D146CCA2C7787C52325535"
+            {
+            "SourcePath" = "8:..\\PriceTags\\Images\\business.ico"
+            "TargetName" = "8:business.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_98CB58C7125D48DBB445011640DB8344"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9952EDBE38944C47A973FBB745EE4BC2"
             {
             "SourcePath" = "8:C:\\Users\\adamd\\Downloads\\money-bag.ico"
@@ -196,7 +236,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:AccountingSetup"
         "ProductCode" = "8:{1455B3B1-9DFB-4BCB-8265-0916D81C7DEF}"
-        "PackageCode" = "8:{8926FA63-6959-4A8D-9742-3B3C4A959F66}"
+        "PackageCode" = "8:{2D85DF1A-5E4C-4027-A69E-4599A2B61328}"
         "UpgradeCode" = "8:{33551F1E-E7FF-4A7A-B968-563933BCC260}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -342,6 +382,34 @@
             "Folder" = "8:_3393E68789F54045B2B39D3B5E0F494C"
             "WorkingFolder" = "8:_98CB58C7125D48DBB445011640DB8344"
             "Icon" = "8:_9952EDBE38944C47A973FBB745EE4BC2"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_B17386397ECA4880861C0B80E25825DC"
+            {
+            "Name" = "8:Cenovky"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_C63E5BD42ECC45D1B9ABAC6D75592F68"
+            "Folder" = "8:_A13DBF8A7E66401A8C775656073C7339"
+            "WorkingFolder" = "8:_98CB58C7125D48DBB445011640DB8344"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_B627768BB7904F48BF8D4D0FD01DFB06"
+            {
+            "Name" = "8:Cenovky"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_C63E5BD42ECC45D1B9ABAC6D75592F68"
+            "Folder" = "8:_3393E68789F54045B2B39D3B5E0F494C"
+            "WorkingFolder" = "8:_98CB58C7125D48DBB445011640DB8344"
+            "Icon" = "8:"
             "Feature" = "8:"
             }
         }
@@ -766,6 +834,34 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:PublishItems"
             "OutputProjectGuid" = "8:{8AA5FD12-A80A-4D38-8857-E9C38142A3B5}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C63E5BD42ECC45D1B9ABAC6D75592F68"
+            {
+            "SourcePath" = "8:..\\PriceTags\\obj\\Release\\net9.0-windows\\apphost.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_98CB58C7125D48DBB445011640DB8344"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:PublishItems"
+            "OutputProjectGuid" = "8:{00CFFF6B-DF10-4789-A447-3EF8FA08E57B}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {

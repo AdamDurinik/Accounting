@@ -40,11 +40,11 @@ namespace Accounting.Models
             get => GetProperty(() => PriceWithoutTax);
             set
             {
-                if (SetProperty(() => PriceWithoutTax, RoundUp(value)) && !_isUpdating)
+                if (SetProperty(() => PriceWithoutTax, value) && !_isUpdating)
                 {
                     _isUpdating = true;
-                    Tax = RoundUp(value * (TaxValue/100.0));
-                    PriceWithTax = RoundUp(value + (Tax ?? 0));
+                    Tax = value * (TaxValue/100.0);
+                    PriceWithTax = value + (Tax ?? 0);
                     _isUpdating = false;
                 }
             }
@@ -61,7 +61,7 @@ namespace Accounting.Models
                     {
                         _isUpdating = true;
                         PriceWithoutTax = RoundUp(value.Value / (TaxValue/100.0));
-                        PriceWithTax = RoundUp((PriceWithoutTax ?? 0) + value.Value);
+                        PriceWithTax = RoundUp((PriceWithoutTax ?? 0) + value.Value); 
                         _isUpdating = false;
                     }
                 }
@@ -107,7 +107,7 @@ namespace Accounting.Models
                 return null;
             }
 
-            return Math.Ceiling(value.Value * 100) / 100.0;
+            return Math.Floor(value.Value * 100) / 100.0;
         }
     }
 }

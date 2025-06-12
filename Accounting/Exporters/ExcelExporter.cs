@@ -1,6 +1,5 @@
 ﻿using Accounting.Models;
 using OfficeOpenXml;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
@@ -10,7 +9,7 @@ namespace Accounting.Exporters
     {
         public void Export(string filePath, List<ColumnModel> columns)
         {
-            ExcelPackage.License.SetNonCommercialOrganization("Moja Firma");
+            ExcelPackage.License.SetNonCommercialOrganization("FoxHint");
 
             var sheetName = Path.GetFileNameWithoutExtension(filePath);
 
@@ -25,7 +24,7 @@ namespace Accounting.Exporters
                 foreach (var column in columns)
                 {
                     ws.Cells[1, startCol].Value = "Cena bez DPH";
-                    ws.Cells[1, startCol + 1].Value = "DPH";
+                    ws.Cells[1, startCol + 1].Value = $"{column.Tax} + DPH ";
                     ws.Cells[1, startCol + 2].Value = "Celková cena";
                     ws.Cells[1, startCol, 1, startCol + 2].Style.Font.Bold = true;
                     ws.Cells[1, startCol, 1, startCol + 2].Style.Font.Italic = true;

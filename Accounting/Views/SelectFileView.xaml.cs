@@ -1,19 +1,14 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Accounting.Views
 {
-    /// <summary>
-    /// Interaction logic for SelectFileView.xaml
-    /// </summary>
     public partial class SelectFileView : System.Windows.Controls.UserControl
     {
         public SelectFileView()
         {
             InitializeComponent();
         }
-
 
         private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {

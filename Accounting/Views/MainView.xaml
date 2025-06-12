@@ -181,7 +181,7 @@
 
                                 <dxg:GridControl Grid.Row="1" Width="250" ItemsSource="{Binding Items}" BorderThickness="0" PreviewKeyDown="OnPreviewKeyDown">
                                     <dxg:GridControl.TotalSummary>
-                                        <dxg:GridSummaryItem FieldName="PriceWithoutTax" SummaryType="Sum" DisplayFormat=" {0:N2} €" ShowInColumn="PriceWithoutTax"/>
+                                        <dxg:GridSummaryItem FieldName="PriceWithoutTax" SummaryType="Sum" DisplayFormat=" {0:N3} €" ShowInColumn="PriceWithoutTax"/>
                                         <dxg:GridSummaryItem FieldName="Tax"            SummaryType="Sum" DisplayFormat=" {0:N2} €" ShowInColumn="Tax"/>
                                         <dxg:GridSummaryItem FieldName="PriceWithTax"   SummaryType="Sum" DisplayFormat=" {0:N2} €" ShowInColumn="PriceWithTax"/>
                                     </dxg:GridControl.TotalSummary>
@@ -192,11 +192,7 @@
 
                                         </dxg:TableView>
                                     </dxg:GridControl.View>
-                                    <dxg:GridColumn FieldName="PriceWithoutTax" Header="Cena" >
-                                        <dxg:GridColumn.EditSettings>
-                                            <dxe:TextEditSettings MaskType="Numeric"  DisplayFormat=" {0:N2}" />
-                                        </dxg:GridColumn.EditSettings>
-                                    </dxg:GridColumn>
+                                    <dxg:GridColumn FieldName="PriceWithoutTax" Header="Cena" />
                                     <dxg:GridColumn FieldName="Tax"              Header="DPH" />
                                     <dxg:GridColumn FieldName="PriceWithTax"     Header="Celkovo" />
                                     <dxg:GridColumn Width="30">
