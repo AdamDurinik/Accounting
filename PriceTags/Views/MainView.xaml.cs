@@ -4,7 +4,6 @@ using DevExpress.XtraGrid.Views.Grid;
 using PriceTags.Models;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using System.Windows.Threading;
 using UserControl = System.Windows.Controls.UserControl;
 namespace PriceTags.Views
 {
@@ -72,7 +71,7 @@ namespace PriceTags.Views
             {
                 var row = e.Row as PriceTagModel;
                 var viewModel = DataContext as ViewModels.MainViewModel;
-                viewModel.SaveNameToFile(_currentlyEditing, row?.Name);
+                viewModel?.SaveNameToFile(_currentlyEditing?.Trim(), row?.Name);
             }
         }
 

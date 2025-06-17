@@ -15,6 +15,7 @@
     <None Remove="Images\business.ico" />
     <None Remove="Images\business.png" />
     <None Remove="Images\printer.png" />
+    <None Remove="Images\remove.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,6 +54,12 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\printer.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\remove.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\remove2.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\save.png">

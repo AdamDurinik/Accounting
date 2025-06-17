@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PriceTags.Views"
-             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" 
+             xmlns:dx="clr-namespace:DevExpress.Xpf.Core;assembly=DevExpress.Xpf.Core.v24.1"
              mc:Ignorable="d">
     <Grid>
         <dxg:GridControl ItemsSource="{Binding Names}" AutoGenerateColumns="None" >
@@ -15,6 +16,15 @@
                 </dxg:GridControl.View>
             <dxg:GridControl.Columns>
                 <dxg:GridColumn FieldName="Name" Header="Názov" AllowEditing="True" />
+                <dxg:GridColumn Width="12">
+                    <dxg:GridColumn.CellTemplate>
+                        <DataTemplate>
+                            <dx:SimpleButton Command="{Binding DataContext.DeleteRowCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                     CommandParameter="{Binding RowData.Row}" BorderThickness="0" Width="23" 
+                                                     BorderBrush="Transparent" Glyph="/Images/remove2.png" Padding="3" />
+                        </DataTemplate>
+                    </dxg:GridColumn.CellTemplate>
+                </dxg:GridColumn>
             </dxg:GridControl.Columns>
         </dxg:GridControl>
     </Grid>

@@ -3,6 +3,7 @@ using PriceTags.Models;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
+using System.Windows.Input;
 
 namespace PriceTags.ViewModels
 {
@@ -11,9 +12,21 @@ namespace PriceTags.ViewModels
         public HintViewModel()
         {
             LoadDataFromFile();
+
         }
 
         public ObservableCollection<NameModel> Names { get; set; } = new ObservableCollection<NameModel>();
+        public ICommand DeleteRowCommand => new DelegateCommand<NameModel>(DeleteRow);
+
+        private void DeleteRow(NameModel model)
+        {
+            if (model == null)
+            {
+                return;
+            }
+            Names.Remove(model);
+        }
+
 
         private void LoadDataFromFile()
         {
@@ -91,12 +104,10 @@ namespace PriceTags.ViewModels
             }
         }
 
-        internal static void AppendNameToFile(string? currentlyEditing, string? name)
+        internal static List<string> AppendNameToFile(string? currentlyEditing, string? name)
         {
-            if (string.IsNullOrWhiteSpace(name) || currentlyEditing == name)
-            {
-                return;
-            }
+            currentlyEditing = currentlyEditing?.Trim();
+            name = name?.Trim();
             string tempPath = Path.GetTempPath();
             string folderPath = Path.Combine(tempPath, "PriceTags");
             string filePath = Path.Combine(folderPath, "NamesForPriceTags.txt");
@@ -109,14 +120,28 @@ namespace PriceTags.ViewModels
                 File.Create(filePath).Dispose();
             }
             var lines = File.ReadAllLines(filePath).ToList();
-            if (currentlyEditing != null)
+            if(string.IsNullOrWhiteSpace(name))
             {
-                lines.Remove(currentlyEditing);
+                return lines;
             }
-            lines.Add(name.Trim());
+            if(currentlyEditing?.Trim() != name) { 
+                if(!string.IsNullOrEmpty(currentlyEditing) && !string.IsNullOrEmpty(name) && lines.Contains(name))
+                {
+                    lines.Remove(name);
+                }
+                if (!lines.Contains(currentlyEditing) && !string.IsNullOrEmpty(currentlyEditing))
+                {
+                    lines.Add(currentlyEditing.Trim());
+                } 
+                else if (!lines.Contains(name))
+                {
+                    lines.Add(name);
+                }
+                
+            }
             
             File.WriteAllLines(filePath, lines);
-
+            return lines;
         }
     }
 }

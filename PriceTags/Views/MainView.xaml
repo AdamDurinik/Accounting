@@ -55,8 +55,9 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="{Binding Name}" FontSize="36" FontWeight="Bold" TextAlignment="Left" Margin="10,0,0,0" MaxWidth="315" MaxHeight="95"
-                               Height="95" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <TextBlock Text="{Binding NameCapital}" FontSize="36" FontWeight="Bold" TextAlignment="Left" Margin="10,0,0,0" MaxWidth="315" MaxHeight="95"
+                               Height="95" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" VerticalAlignment="Top"
+                               utils:AutoFontScaler.IsEnabled="True"/>
 
                     <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0" Margin="0,0,0,10">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
@@ -75,7 +76,7 @@
                     <Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Margin="0,0,10,0" VerticalAlignment="Bottom">
                         <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} €'}" FontSize="40" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
                             Visibility="{Binding IsNotSale, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                   TextWrapping="Wrap" utils:AutoFontScaler.IsEnabled="True"/>
+                                   TextWrapping="Wrap" />
 
                             <TextBlock Text="{Binding SalePrice, StringFormat='{}{0:N2} €'}" FontSize="50" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
                                 Margin="0,0,0,0" Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}"/>
@@ -136,14 +137,14 @@
                              SelectedItems="{Binding SelectedTags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"
                 AutoGenerateColumns="None" SelectionMode="MultipleRow" PreviewKeyDown="OnPreviewKeyDown" >
                 <dxg:GridControl.View>
-                    <dxg:TableView AllowPerPixelScrolling="True" AutoWidth="True" ShowGroupPanel="False" ShowCheckBoxSelectorColumn="True"
+                    <dxg:TableView AllowPerPixelScrolling="True" AutoWidth="False" ShowGroupPanel="False" ShowCheckBoxSelectorColumn="True"
                                    ShowFilterPanelMode="ShowAlways" NavigationStyle="Cell" AllowEditing="True" AllowColumnMoving="True"
                                    CheckBoxSelectorColumnWidth="35" NewItemRowPosition="Bottom" EditorShowMode="MouseUpFocused" 
                                            EnableImmediatePosting="True" AddingNewRow="OnAddingNewRow" ShowingEditor="TableView_ShowingEditor" 
-                                   HiddenEditor="TableView_HidingEditor"/>
+                                   HiddenEditor="TableView_HidingEditor"  />
                 </dxg:GridControl.View>
 
-                <dxg:GridColumn FieldName="Name" Header="Názov">
+                <dxg:GridColumn FieldName="Name" Header="Názov" Width="*">
                     <dxg:GridColumn.EditSettings>
                         <dxe:ComboBoxEditSettings 
                             ItemsSource="{Binding DataContext.Names, RelativeSource={RelativeSource AncestorType=UserControl}}" 
@@ -153,14 +154,14 @@
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
 
-                <dxg:GridColumn FieldName="Price" Header="Cena" Width="55" HorizontalHeaderContentAlignment="Right">
+                <dxg:GridColumn FieldName="Price" Header="Cena" Width="55" MaxWidth="55"  HorizontalHeaderContentAlignment="Right">
                     <dxg:GridColumn.EditSettings>
                         <dxe:TextEditSettings DisplayFormat=" {0:N2} €" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
-                <dxg:GridColumn FieldName="Quantity" Header="Množstvo" Width="55" HorizontalHeaderContentAlignment="Right"/>
+                <dxg:GridColumn FieldName="Quantity" Header="Množstvo" Width="55" MaxWidth="55" HorizontalHeaderContentAlignment="Right"/>
 
-                <dxg:GridColumn FieldName="QuantityType" Header="Jednotka" Width="60" >
+                <dxg:GridColumn FieldName="QuantityType" Header="Jednotka" Width="60" MaxWidth="60">
                     <dxg:GridColumn.CellTemplate>
                         <DataTemplate>
                             <dxe:ComboBoxEdit EditValue="{Binding Row.QuantityType, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" IsTextEditable="False" 
@@ -173,16 +174,26 @@
                     </dxg:GridColumn.CellTemplate>
                 </dxg:GridColumn>
 
-                <dxg:GridColumn FieldName="SalePrice" Header="Akciová cena" Width="80" HorizontalHeaderContentAlignment="Right">
+                <dxg:GridColumn FieldName="SalePrice" Header="Akciová cena" Width="80" MaxWidth="80" HorizontalHeaderContentAlignment="Right">
                     <dxg:GridColumn.EditSettings>
                         <dxe:TextEditSettings DisplayFormat=" {0:N2} €" />
                     </dxg:GridColumn.EditSettings>
                 </dxg:GridColumn>
 
-                <dxg:GridColumn FieldName="DepositAmount" Header="Záloha" Width="55" HorizontalHeaderContentAlignment="Right">
+                <dxg:GridColumn FieldName="DepositAmount" Header="Záloha" Width="55" MaxWidth="55" HorizontalHeaderContentAlignment="Right">
                     <dxg:GridColumn.EditSettings>
                         <dxe:TextEditSettings DisplayFormat=" {0:N2} €" />
                     </dxg:GridColumn.EditSettings>
+                </dxg:GridColumn>
+
+                <dxg:GridColumn Width="25" MinWidth="25" MaxWidth="25">
+                    <dxg:GridColumn.CellTemplate>
+                        <DataTemplate>
+                            <dx:SimpleButton Command="{Binding DataContext.DeleteRowCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                      CommandParameter="{Binding RowData.Row}" BorderThickness="0" Width="23" 
+                                      BorderBrush="Transparent" Glyph="/Images/remove2.png" Padding="3" />
+                        </DataTemplate>
+                    </dxg:GridColumn.CellTemplate>
                 </dxg:GridColumn>
             </dxg:GridControl>
 

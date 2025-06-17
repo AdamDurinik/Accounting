@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Markup;
 
 namespace PriceTags.ViewModels
@@ -31,6 +32,7 @@ namespace PriceTags.ViewModels
 
         public DelegateCommand PrintCommand { get; }
         public DelegateCommand HintCommand { get; }
+        public ICommand DeleteRowCommand => new DelegateCommand<PriceTagModel>(RemoveItem);
 
         public ObservableCollection<PriceTagModel> PriceTags { get; set; } = new ObservableCollection<PriceTagModel>();
         public ObservableCollection<string> Names 
@@ -53,16 +55,9 @@ namespace PriceTags.ViewModels
 
         internal void SaveNameToFile(string? currentlyEditing, string? name)
         {
-            HintViewModel.AppendNameToFile(currentlyEditing, name);
-            if(currentlyEditing != null && Names.Contains(currentlyEditing))
-            {
-                Names.Remove(currentlyEditing);
-            }
-
-            if (name != null && name != currentlyEditing)
-            {
-                Names.Add(name);
-            }
+            var lines = HintViewModel.AppendNameToFile(currentlyEditing, name);
+            Names.Clear();
+            lines.Select(l => new NameModel(l)).ForEach(n => Names.Add(n.Name));
         }
 
         private IDialogService GetDialogService() => GetService<IDialogService>();
@@ -111,7 +106,6 @@ namespace PriceTags.ViewModels
 
         private void ShowHintWindow()
         {
-
             var viewModel = new HintViewModel();
 
             var okCommand = new UICommand()
@@ -135,6 +129,14 @@ namespace PriceTags.ViewModels
             catch (Exception ex)
             {
                 ex.ToString();
+            }
+        }
+
+        private void RemoveItem(PriceTagModel model)
+        {
+            if (model != null && PriceTags.Contains(model))
+            {
+                PriceTags.Remove(model);
             }
         }
     }

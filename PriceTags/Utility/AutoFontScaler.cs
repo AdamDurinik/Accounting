@@ -50,32 +50,21 @@ namespace PriceTags.Utility
 
         private static void AdjustFontSize(TextBlock tb)
         {
-            if (string.IsNullOrWhiteSpace(tb.Text)) return;
+            if (string.IsNullOrWhiteSpace(tb.Text))
+            {
+                return;
+            }
+
             const double minFontSize = 12;
             const double maxFontSize = 36;
-            double newSize = GetAdjustedFontSize(
-                tb.Text,
-                tb.FontFamily,
-                tb.FontStyle,
-                tb.FontWeight,
-                315,
-                95,
-                maxFontSize,
-                minFontSize,
-                true);
+            double newSize = GetAdjustedFontSize(tb.Text, tb.FontFamily, tb.FontStyle, tb.FontWeight,
+                315, 95, maxFontSize, minFontSize, true);
             tb.FontSize = newSize;
         }
 
-        private static double GetAdjustedFontSize(
-            string text,
-            System.Windows.Media.FontFamily fontFamily,
-            System.Windows.FontStyle fontStyle,
-            FontWeight fontWeight,
-            double containerWidth,
-            double containerHeight,
-            double maxFontSize,
-            double minFontSize,
-            bool smallestOnFail)
+        private static double GetAdjustedFontSize(string text, System.Windows.Media.FontFamily fontFamily,
+            System.Windows.FontStyle fontStyle, FontWeight fontWeight, double containerWidth,
+            double containerHeight, double maxFontSize, double minFontSize, bool smallestOnFail)
         {
             for (double size = maxFontSize; size >= minFontSize; size--)
             {
