@@ -10,5 +10,11 @@ namespace PriceTags
             InitializeComponent();
             MainView.DataContext = viewModel;
         }
+
+        private void OnWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var viewModel = (MainViewModel)MainView.DataContext;
+            viewModel.SaveItems();
+        }
     }
 }

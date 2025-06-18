@@ -30,6 +30,7 @@
                 </Style>
             </dx:DialogService.DialogStyle>
         </dx:DialogService>
+        <dx:DXMessageBoxService/>
     </dxmvvm:Interaction.Behaviors>
     <UserControl.Resources>
         <dxmvvm:ObjectToObjectConverter x:Key="QuantityTypeToStringConverter">
@@ -82,7 +83,7 @@
                                 Margin="0,0,0,0" Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                             <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} €'}" FontSize="24" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
                                  Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,0,50" Foreground="Gray"/>
-                            <TextBlock Text="AKCIA" Foreground="Red" FontSize="40" FontWeight="Bold" Margin="-140,0,50,25" 
+                            <TextBlock Text="AKCIA" Foreground="Red" FontSize="40" FontWeight="Bold"  Margin="-100,0,25,25" 
                                 Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}" >
                                 <TextBlock.LayoutTransform>
                                     <RotateTransform Angle="-10" />
@@ -109,7 +110,7 @@
 
                             <dxb:Bar IsMainMenu="True" BarItemDisplayMode="ContentAndGlyph">
                                 <dxb:BarButtonItem Content="Uložiť" Glyph="/Images/save.png" Padding="5" Margin="5"
-                                    Command="{Binding SaveFileCommand}"/>
+                                    Command="{Binding SaveCommand}"/>
                                 <dxb:BarButtonItem Content="Vytlačiť" Glyph="/Images/printer.png" Padding="5" Margin="5"
                                     Command="{Binding PrintCommand}" />
                                 <dxb:BarButtonItem Content="Nápoveda názvu" Glyph="/Images/bulb.png" Padding="5" Margin="5"
@@ -236,7 +237,7 @@
                                    Margin="0,0,0,0" Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                         <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} €'}" FontSize="24" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
                                     Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,0,50" Foreground="Gray"/>
-                        <TextBlock Text="AKCIA" Foreground="Red" FontSize="40" FontWeight="Bold" Margin="-140,0,50,25" 
+                        <TextBlock Text="AKCIA" Foreground="Red" FontSize="40" FontWeight="Bold" Margin="-100,0,25,25" 
                                    Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}" >
                             <TextBlock.LayoutTransform>
                                 <RotateTransform Angle="-10" />

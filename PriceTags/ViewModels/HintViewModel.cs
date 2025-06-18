@@ -106,42 +106,52 @@ namespace PriceTags.ViewModels
 
         internal static List<string> AppendNameToFile(string? currentlyEditing, string? name)
         {
-            currentlyEditing = currentlyEditing?.Trim();
-            name = name?.Trim();
-            string tempPath = Path.GetTempPath();
-            string folderPath = Path.Combine(tempPath, "PriceTags");
-            string filePath = Path.Combine(folderPath, "NamesForPriceTags.txt");
-            if (!Directory.Exists(folderPath))
+            try
             {
-                Directory.CreateDirectory(folderPath);
-            }
-            if (!File.Exists(filePath))
-            {
-                File.Create(filePath).Dispose();
-            }
-            var lines = File.ReadAllLines(filePath).ToList();
-            if(string.IsNullOrWhiteSpace(name))
-            {
+                currentlyEditing = currentlyEditing?.Trim();
+                name = name?.Trim();
+                string tempPath = Path.GetTempPath();
+                string folderPath = Path.Combine(tempPath, "PriceTags");
+                string filePath = Path.Combine(folderPath, "NamesForPriceTags.txt");
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+                if (!File.Exists(filePath))
+                {
+                    File.Create(filePath).Dispose();
+                }
+                var lines = File.ReadAllLines(filePath).ToList();
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    return lines;
+                }
+                if (currentlyEditing?.Trim() != name)
+                {
+                    if (!string.IsNullOrEmpty(currentlyEditing) && !string.IsNullOrEmpty(name) && lines.Contains(name))
+                    {
+                        lines.Remove(name);
+                    }
+                    if (!lines.Contains(currentlyEditing) && !string.IsNullOrEmpty(currentlyEditing))
+                    {
+                        lines.Add(currentlyEditing.Trim());
+                    }
+                    else if (!lines.Contains(name))
+                    {
+                        lines.Add(name);
+                    }
+
+                }
+
+                File.WriteAllLines(filePath, lines);
                 return lines;
             }
-            if(currentlyEditing?.Trim() != name) { 
-                if(!string.IsNullOrEmpty(currentlyEditing) && !string.IsNullOrEmpty(name) && lines.Contains(name))
-                {
-                    lines.Remove(name);
-                }
-                if (!lines.Contains(currentlyEditing) && !string.IsNullOrEmpty(currentlyEditing))
-                {
-                    lines.Add(currentlyEditing.Trim());
-                } 
-                else if (!lines.Contains(name))
-                {
-                    lines.Add(name);
-                }
-                
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error appending name to file: {ex.Message}");
+                return new List<string>();
             }
-            
-            File.WriteAllLines(filePath, lines);
-            return lines;
+            return null;
         }
     }
 }

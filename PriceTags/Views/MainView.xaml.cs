@@ -33,11 +33,14 @@ namespace PriceTags.Views
             if (e.Key == Key.Enter && visibleIndex == (grid.VisibleRowCount - 1))
             {
                 view.AddNewRow();
+                e.Handled = true;
+                return;
             }
             else if (e.Key == Key.Enter && visibleIndex != (grid.VisibleRowCount - 1))
             {
                 grid.CurrentItem = ((ObservableCollection<PriceTagModel>)grid.ItemsSource).ElementAtOrDefault(visibleIndex + 1);
                 view.ShowEditor();
+                e.Handled = true;
             }
 
         }
