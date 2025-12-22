@@ -58,7 +58,7 @@ namespace PriceTags.Utility
             const double minFontSize = 12;
             const double maxFontSize = 36;
             double newSize = GetAdjustedFontSize(tb.Text, tb.FontFamily, tb.FontStyle, tb.FontWeight,
-                315, 95, maxFontSize, minFontSize, true);
+                245, 70, maxFontSize, minFontSize, true);
             tb.FontSize = newSize;
         }
 

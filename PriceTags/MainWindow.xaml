@@ -5,6 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PriceTags" xmlns:views="clr-namespace:PriceTags.Views" xmlns:dxmvvm="clr-namespace:DevExpress.Mvvm.UI;assembly=DevExpress.Xpf.Core.v24.1" xmlns:ui="http://schemas.devexpress.com/winfx/2008/xaml/mvvm" xmlns:enums="clr-namespace:PriceTags.Enums"
         mc:Ignorable="d"
-        Title="MainWindow">
+        Title="Cenovky">
     <views:MainView x:Name="MainView"/>
 </Window>

@@ -50,6 +50,8 @@ namespace Accounting.Models
             }
         }
 
+
+
         public double? Tax
         {
             get => GetProperty(() => Tax);
@@ -61,19 +63,20 @@ namespace Accounting.Models
                     {
                         _isUpdating = true;
                         PriceWithoutTax = RoundUp(value.Value / (TaxValue/100.0));
-                        PriceWithTax = RoundUp((PriceWithoutTax ?? 0) + value.Value); 
+                        PriceWithTax = RoundUpTotal((PriceWithoutTax ?? 0) + value.Value); 
                         _isUpdating = false;
                     }
                 }
             }
         }
 
+        //Do not calculate the 
         public double? PriceWithTax
         {
             get => GetProperty(() => PriceWithTax);
             set
             {
-                if (SetProperty(() => PriceWithTax, RoundUp(value)) && !_isUpdating)
+                if (SetProperty(() => PriceWithTax, RoundUpTotal(value)) && !_isUpdating)
                 {
                     _isUpdating = true;
                     Tax = RoundUp((value * TaxValue / 100.0) / (1 + (TaxValue/100.0)));
@@ -107,7 +110,31 @@ namespace Accounting.Models
                 return null;
             }
 
-            return Math.Floor(value.Value * 100) / 100.0;
+            return Math.Ceiling(value.Value * 100) / 100.0;
+        }
+
+        private double? RoundUpTotal(double? value)
+        {
+            if (!value.HasValue)
+            {
+                return null;
+            }
+
+            var cents = (int)Math.Round(value.Value * 100, MidpointRounding.AwayFromZero);
+            var mod = cents % 5;
+
+            if (mod == 0)
+            {
+                return cents / 100.0;
+            }
+            else if (mod <= 2)
+            {
+                return (cents - mod) / 100.0;
+            }
+            else
+            {
+                return (cents + (5 - mod)) / 100.0;
+            }
         }
     }
 }

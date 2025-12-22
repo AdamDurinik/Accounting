@@ -14,6 +14,8 @@
     <None Remove="Images\bulb.png" />
     <None Remove="Images\business.ico" />
     <None Remove="Images\business.png" />
+    <None Remove="Images\LogoFull.png" />
+    <None Remove="Images\LogoOnly.png" />
     <None Remove="Images\printer.png" />
     <None Remove="Images\remove.png" />
   </ItemGroup>
@@ -48,6 +50,12 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\business.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\LogoFull.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\LogoOnly.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\open.png">

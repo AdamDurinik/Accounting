@@ -5,6 +5,18 @@ namespace PriceTags.Models
 {
     public class PriceTagModel : BindableBase
     {
+        public int Id
+        {
+            get => GetProperty(() => Id);
+            set
+            {
+                SetProperty(() => Id, value);
+                RaisePropertyChanged(nameof(PageNumber));
+            }
+        }
+
+        public int PageNumber => (int)((Id - 1) / 21) + 1;
+
         public string Name
         {
             get => GetProperty(() => Name);
@@ -14,7 +26,11 @@ namespace PriceTags.Models
                 NameCapital = Name?.ToUpper();
             }
         }
-
+        public bool ShowImage 
+        {
+            get => GetProperty(() => ShowImage);
+            set => SetProperty(() => ShowImage, value);
+        }
         public string NameCapital
         {
             get => GetProperty(() => NameCapital);
@@ -30,6 +46,10 @@ namespace PriceTags.Models
                 RaisePropertiesChanged();
             }
         }
+
+        public int FullEuroPrice => (int)Math.Floor(Price);
+
+        public int CentsPrice => (int)Math.Round((Price - FullEuroPrice) * 100);
 
         public double Quantity
         {
@@ -56,7 +76,7 @@ namespace PriceTags.Models
             set => SetProperty(() => LastChange, value);
         }
 
-        public string PricePerUnit => $"{GetUnitSize()} = {PricePerUnitSize:n2} € ";
+        public string PricePerUnit => $"{GetUnitSize()}={PricePerUnitSize:n2}€ ";
 
         public double PricePerUnitSize
         {
@@ -82,6 +102,10 @@ namespace PriceTags.Models
             }
         }
 
+        public int FullEuroSalePrice => (int)Math.Floor(SalePrice);
+
+        public int CentsSalePrice => (int)Math.Round((SalePrice - FullEuroSalePrice) * 100);
+
         public double DepositAmount
         {
             get => GetProperty(() => DepositAmount);
@@ -106,13 +130,13 @@ namespace PriceTags.Models
 
         private string GetUnitSize() => QuantityType switch
         {
-            QuantityType.WeightInGrams => "100 g",
-            QuantityType.WeightInKilograms => "1 kg",
-            QuantityType.VolumeInMilliliters => "100 mil",
-            QuantityType.VolumeInLiters => "1 l",
-            QuantityType.Count => "1 kus",
-            QuantityType.Packets => "1 balik",
-            QuantityType.Boxes => "1 box",
+            QuantityType.WeightInGrams => "100g",
+            QuantityType.WeightInKilograms => "1kg",
+            QuantityType.VolumeInMilliliters => "100mil",
+            QuantityType.VolumeInLiters => "1l",
+            QuantityType.Count => "1kus",
+            QuantityType.Packets => "1balik",
+            QuantityType.Boxes => "1box",
             _ => ""
         };
 

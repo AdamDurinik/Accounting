@@ -15,20 +15,52 @@ namespace PriceTags.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
+        private const int MaxItemsPerPage = 21;
         public MainViewModel()
         {
-            PrintCommand = new DelegateCommand(PrintPriceTag);
-            HintCommand = new DelegateCommand(ShowHintWindow);
             SelectedTags = new();
+            PrintCommand = new DelegateCommand(PrintPriceTag, () => SelectedTags.Count() > 0);
+            HintCommand = new DelegateCommand(ShowHintWindow);
+            DeleteSelectedCommand = new DelegateCommand(DeleteSelected, () => SelectedTags.Count() > 0);
             Names = new ObservableCollection<string>(HintViewModel.GetNamesFromFile());
             LoadItems();
         }
 
         public DelegateCommand PrintCommand { get; }
         public DelegateCommand HintCommand { get; }
+        public DelegateCommand DeleteSelectedCommand { get; }
 
         public ICommand DeleteRowCommand => new DelegateCommand<PriceTagModel>(RemoveItem);
         public ICommand SaveCommand => new DelegateCommand(SaveItems);
+
+        public bool ShowImage
+        {
+            get => GetProperty(() => ShowImage);
+            set
+            {
+                SetProperty(() => ShowImage, value);
+                PriceTags.ForEach(p => p.ShowImage = value);
+            }
+        }
+
+        public string PageCountAndTagCount
+        {
+            get => GetProperty(() => PageCountAndTagCount);
+            set => SetProperty(() => PageCountAndTagCount, value);
+        }
+
+        public string GetNewPageCountTagCount()
+        {
+            if (!SelectedTags.Any())
+            {
+                return string.Empty;
+            }
+
+            var numberOfPages = (SelectedTags.Count() / MaxItemsPerPage) + (SelectedTags.Count() % MaxItemsPerPage == 0 ? 0 : 1);
+
+
+            return $"Počet stránok {numberOfPages} / cenovky {SelectedTags.Count()} / {numberOfPages * MaxItemsPerPage}";
+        }
 
         public ObservableCollection<PriceTagModel> PriceTags { get; set; } = new ObservableCollection<PriceTagModel>();
         public ObservableCollection<string> Names
@@ -46,7 +78,17 @@ namespace PriceTags.ViewModels
         public List<PriceTagModel> SelectedTags
         {
             get => GetProperty(() => SelectedTags);
-            set => SetProperty(() => SelectedTags, value);
+            set
+            {
+                try
+                {
+                    SetProperty(() => SelectedTags, value);
+                }
+                catch (Exception ex)
+                {
+                    GetMessageBoxService()?.ShowMessage("Niečo sa stalo pri nastavovaní vybraných položiek. Urob screenshot a pošli Adamkovi.\n\n" + ex.Message, "Chyba", MessageButton.OK, MessageIcon.Error);
+                }
+            }
         }
 
         public void SaveItems()
@@ -108,6 +150,15 @@ namespace PriceTags.ViewModels
             }
         }
 
+        private void DeleteSelected()
+        {
+            foreach (var tag in SelectedTags.ToList())
+            {
+                RemoveItem(tag);
+            }
+            SelectedTags.Clear();
+        }
+
         private IMessageBoxService GetMessageBoxService() => GetService<IMessageBoxService>();
         private IDialogService GetDialogService() => GetService<IDialogService>();
 
@@ -115,6 +166,7 @@ namespace PriceTags.ViewModels
         {
             try
             {
+                SaveItems();
                 var dlg = new System.Windows.Controls.PrintDialog
                 {
                     PrintTicket = { PageMediaSize = new PageMediaSize(PageMediaSizeName.ISOA4) }
@@ -126,13 +178,13 @@ namespace PriceTags.ViewModels
                 var mainView = (FrameworkElement)System.Windows.Application.Current.MainWindow.Content;
                 var template = (DataTemplate)mainView.Resources["PriceTagPrintTemplate"];
 
-                const double itemWidth = 325;
-                const double itemHeight = 200;
-                const double margin = 20;
+                const double itemWidth = 250;
+                const double itemHeight = 145;
+                const double margin = 2;
 
                 int itemsPerRow = (int)((printableW - margin * 2) / itemWidth);
                 int rowsPerPage = (int)((printableH - margin * 2) / itemHeight);
-                int itemsPerPage = itemsPerRow * rowsPerPage+2;
+                int itemsPerPage = itemsPerRow * rowsPerPage;
 
                 var document = new FixedDocument();
                 document.DocumentPaginator.PageSize = new System.Windows.Size(printableW, printableH);
@@ -185,7 +237,7 @@ namespace PriceTags.ViewModels
             }
             catch (Exception ex)
             {
-                GetMessageBoxService()?.ShowMessage("Niečo sa stalo pri tlači cenoviek. Urob screenshot a pošli Adamkovi.\n\n" + ex.Message, "Chyba", MessageButton.OK, MessageIcon.Error);
+                GetMessageBoxService()?.ShowMessage("Niečo sa stalo pri tlači cenoviek. \n Asi nieje nič vybrané, ak áno; urob screenshot a pošli Adamkovi.\n\n" + ex.Message, "Chyba", MessageButton.OK, MessageIcon.Error);
             }
         }
 

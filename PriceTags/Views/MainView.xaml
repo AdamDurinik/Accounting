@@ -45,8 +45,24 @@
         <BooleanToVisibilityConverter  x:Key="BooleanToVisibilityConverter"/>
 
         <DataTemplate x:Key="PriceTagPrintTemplate">
-            <Border BorderThickness="2" BorderBrush="LightGray" CornerRadius="4" VerticalAlignment="Top" Width="325" >
-                <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Width="323" Height="165">
+            <Border Grid.Column="1" BorderThickness="1" BorderBrush="LightGray" CornerRadius="4" DataContext="{Binding SelectedPriceTag}"  Margin="0,0,0,0"
+         VerticalAlignment="Top" Grid.Row="1" x:Name="PreviewContainer">
+                <!--<Border.Style>
+         <Style TargetType="Border">
+             <Setter Property="Background" Value="Transparent"/>
+             <Style.Triggers>
+                 <DataTrigger Binding="{Binding ShowImage}" Value="True">
+                     <Setter Property="Background">
+                         <Setter.Value>
+                             <ImageBrush ImageSource="/Images/LogoOnly.png" Stretch="Uniform" Opacity="0.1" />
+                         </Setter.Value>
+                     </Setter>
+                 </DataTrigger>
+             </Style.Triggers>
+         </Style>
+     </Border.Style>-->
+
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Width="250" MaxHeight="145"  Height="145" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
@@ -56,41 +72,47 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="{Binding NameCapital}" FontSize="36" FontWeight="Bold" TextAlignment="Left" Margin="10,0,0,0" MaxWidth="315" MaxHeight="95"
-                               Height="95" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" VerticalAlignment="Top"
-                               utils:AutoFontScaler.IsEnabled="True"/>
+                    <TextBlock Text="{Binding NameCapital, NotifyOnTargetUpdated=True}" FontSize="36"  TextAlignment="Left" Margin="10,5,0,0" 
+                    Height="80" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Top"
+                    TextWrapping="Wrap" utils:AutoFontScaler.IsEnabled="True"  FontFamily="standard-block" />
 
                     <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0" Margin="0,0,0,10">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
-                            <TextBlock Text="{Binding Quantity}" FontSize="16"/>
-                            <TextBlock Text=" "/>
-                            <TextBlock Text="{Binding QuantityType, Converter={StaticResource QuantityTypeToStringConverter}}" FontSize="16"/>
+                            <TextBlock Text="{Binding Quantity}" FontSize="14" FontWeight="Bold" />
+                            <TextBlock Text=""/>
+                            <TextBlock Text="{Binding QuantityType, Converter={StaticResource QuantityTypeToStringConverter}}" FontSize="14" FontWeight="Bold" />
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
-                            <TextBlock Text="{Binding PricePerUnit}" FontSize="16"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0" Width="150" >
+                            <TextBlock Text="{Binding PricePerUnit}" FontSize="14" FontWeight="Bold" />
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0" Visibility="{Binding HasDeposit, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Text="{Binding DepositAmount,  StringFormat='{}Záloha {0:N2} €'}" FontSize="16"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0" 
+                         Visibility="{Binding HasDeposit, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="{Binding DepositAmount,  StringFormat='{}Záloha {0:N2} €'}" FontSize="14" FontWeight="Bold" />
                         </StackPanel>
                     </StackPanel>
 
-                    <Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Margin="0,0,10,0" VerticalAlignment="Bottom">
-                        <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} €'}" FontSize="40" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
-                            Visibility="{Binding IsNotSale, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                   TextWrapping="Wrap" />
+                    <Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Margin="0,0,10,0" VerticalAlignment="Bottom" Background="Transparent" Width="100" HorizontalAlignment="Right">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Background="Transparent"
+                         Visibility="{Binding IsNotSale, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                            <TextBlock Text="{Binding FullEuroPrice}" FontSize="50" FontWeight="Bold" VerticalAlignment="Bottom" Margin="0,0,0,0"/>
+                            <TextBlock Text="{Binding CentsPrice, StringFormat='.{0:00} €'}" FontSize="25" FontWeight="Bold" VerticalAlignment="Bottom" Margin="0,0,0,5"/>
+                        </StackPanel>
 
-                            <TextBlock Text="{Binding SalePrice, StringFormat='{}{0:N2} €'}" FontSize="50" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
-                                Margin="0,0,0,0" Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                            <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} €'}" FontSize="24" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
-                                 Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,0,50" Foreground="Gray"/>
-                            <TextBlock Text="AKCIA" Foreground="Red" FontSize="40" FontWeight="Bold"  Margin="-100,0,25,25" 
-                                Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}" >
-                                <TextBlock.LayoutTransform>
-                                    <RotateTransform Angle="-10" />
-                                </TextBlock.LayoutTransform>
-                            </TextBlock>
-                        <Line  X1="96" Y1="5" X2="165" Y2="20" Stroke="#A5FF0000" StrokeThickness="3" Margin="0,20,0,40" 
-                            Visibility="{Binding IsSale,  Converter={StaticResource BooleanToVisibilityConverter}}"/>       
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent"
+                         Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                            <TextBlock Text="{Binding FullEuroSalePrice}" FontSize="50" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,0"/>
+                            <TextBlock Text="{Binding CentsSalePrice, StringFormat='.{0:00} €'}" FontSize="25" FontWeight="Bold" VerticalAlignment="Bottom" Margin="0,0,0,5"/>
+                        </StackPanel>
+                        <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} €'}" FontSize="24" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"  Background="Transparent"
+                         Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,0,40" Foreground="Gray"/>
+                        <TextBlock Text="AKCIA" Foreground="Red" FontSize="30" FontWeight="Bold" Margin="-80,0,25,25" Background="Transparent"
+                        Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                            <TextBlock.LayoutTransform>
+                                <RotateTransform Angle="-10" />
+                            </TextBlock.LayoutTransform>
+                        </TextBlock>
+                        <Line  X1="35" Y1="5" X2="105" Y2="20" Stroke="#A5FF0000" StrokeThickness="3" Margin="0,20,0,45" 
+                    Visibility="{Binding IsSale,  Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     </Grid>
                 </Grid>
             </Border>
@@ -115,9 +137,15 @@
                                     Command="{Binding PrintCommand}" />
                                 <dxb:BarButtonItem Content="Nápoveda názvu" Glyph="/Images/bulb.png" Padding="5" Margin="5"
                                     Command="{Binding HintCommand}" />
-                            </dxb:Bar>
+                                <dxb:BarButtonItem Content="Zmazať vybrané" Glyph="/Images/remove2.png" Padding="5" Margin="5"
+                                    Command="{Binding DeleteSelectedCommand}" />
+                            <dxb:BarButtonItem Content="{Binding PageCountAndTagCount}" Padding="5" Margin="5"/>
+
+                            <!--<dxb:BarCheckItem Content="Zobraziť logo" Glyph="/Images/LogoOnly.png" Padding="5" Margin="5"
+                                    IsChecked="{Binding ShowImage, Mode=TwoWay}" />-->
+                        </dxb:Bar>
                         </dxb:BarManager.Bars>
-                    </dxb:BarManager>
+                 </dxb:BarManager>
                 </StackPanel>
             </Border>
         
@@ -136,14 +164,17 @@
 
             <dxg:GridControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding PriceTags}" CurrentItem="{Binding SelectedPriceTag, Mode=TwoWay}"
                              SelectedItems="{Binding SelectedTags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"
-                AutoGenerateColumns="None" SelectionMode="MultipleRow" PreviewKeyDown="OnPreviewKeyDown" >
+                              x:Name="PriceTagGrid" Loaded="OnLoaded" SelectionChanged="OnSelectionChanged"
+                AutoGenerateColumns="None" SelectionMode="MultipleRow" PreviewKeyDown="OnPreviewKeyDown" CurrentColumnChanged="OnCurrentColumnChanged">
                 <dxg:GridControl.View>
                     <dxg:TableView AllowPerPixelScrolling="True" AutoWidth="False" ShowGroupPanel="False" ShowCheckBoxSelectorColumn="True"
                                    ShowFilterPanelMode="ShowAlways" NavigationStyle="Cell" AllowEditing="True" AllowColumnMoving="True"
-                                   CheckBoxSelectorColumnWidth="35" NewItemRowPosition="Bottom" EditorShowMode="MouseUpFocused" 
+                                   CheckBoxSelectorColumnWidth="35" NewItemRowPosition="Bottom" EditorShowMode="Default" 
                                            EnableImmediatePosting="True" AddingNewRow="OnAddingNewRow" ShowingEditor="TableView_ShowingEditor" 
-                                   HiddenEditor="TableView_HidingEditor"  />
+                                   HiddenEditor="TableView_HidingEditor" AllowCellMerge="True" />
                 </dxg:GridControl.View>
+
+                <dxg:GridColumn FieldName="PageNumber" Header="Stránka" AllowCellMerge="True" Width="48"/>
 
                 <dxg:GridColumn FieldName="Name" Header="Názov" Width="*">
                     <dxg:GridColumn.EditSettings>
@@ -200,7 +231,22 @@
 
             <Border Grid.Column="1" BorderThickness="1" BorderBrush="LightGray" CornerRadius="4" DataContext="{Binding SelectedPriceTag}"  Margin="10,0,10,0"
                     VerticalAlignment="Top" Grid.Row="1" x:Name="PreviewContainer">
-                <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Width="325" MaxHeight="165"  Height="165" >
+                <!--<Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ShowImage}" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="/Images/LogoOnly.png" Stretch="Uniform" Opacity="0.1" />
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>-->
+
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Width="250" MaxHeight="145"  Height="145" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
@@ -210,40 +256,46 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="{Binding NameCapital, NotifyOnTargetUpdated=True}" FontSize="36" FontWeight="Bold" TextAlignment="Left" Margin="10,0,0,0" 
-                               Height="95" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Top"
-                               TextWrapping="Wrap" utils:AutoFontScaler.IsEnabled="True" />
+                    <TextBlock Text="{Binding NameCapital, NotifyOnTargetUpdated=True}" FontSize="36"  TextAlignment="Left" Margin="10,5,0,0" 
+                               Height="80" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Top"
+                               TextWrapping="Wrap" utils:AutoFontScaler.IsEnabled="True"  FontFamily="standard-block" />
                     
                     <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0" Margin="0,0,0,10">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
-                            <TextBlock Text="{Binding Quantity}" FontSize="16"/>
-                            <TextBlock Text=" "/>
-                            <TextBlock Text="{Binding QuantityType, Converter={StaticResource QuantityTypeToStringConverter}}" FontSize="16"/>
+                            <TextBlock Text="{Binding Quantity}" FontSize="14" FontWeight="Bold" />
+                            <TextBlock Text=""/>
+                            <TextBlock Text="{Binding QuantityType, Converter={StaticResource QuantityTypeToStringConverter}}" FontSize="14" FontWeight="Bold" />
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
-                            <TextBlock Text="{Binding PricePerUnit}" FontSize="16"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0" Width="150" >
+                            <TextBlock Text="{Binding PricePerUnit}" FontSize="14" FontWeight="Bold" />
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0" Visibility="{Binding HasDeposit, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <TextBlock Text="{Binding DepositAmount,  StringFormat='{}Záloha {0:N2} €'}" FontSize="16"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0" 
+                                    Visibility="{Binding HasDeposit, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="{Binding DepositAmount,  StringFormat='{}Záloha {0:N2} €'}" FontSize="14" FontWeight="Bold" />
                         </StackPanel>
                     </StackPanel>
 
-                    <Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Margin="0,0,10,0" VerticalAlignment="Bottom">
-                        <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} €'}" FontSize="40" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
-                                   Visibility="{Binding IsNotSale, Converter={StaticResource BooleanToVisibilityConverter}}" MaxWidth="315" MaxHeight="95"/>
-                        
-                        
-                        <TextBlock Text="{Binding SalePrice, StringFormat='{}{0:N2} €'}" FontSize="50" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
-                                   Margin="0,0,0,0" Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                        <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} €'}" FontSize="24" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"
-                                    Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,0,50" Foreground="Gray"/>
-                        <TextBlock Text="AKCIA" Foreground="Red" FontSize="40" FontWeight="Bold" Margin="-100,0,25,25" 
+                    <Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Margin="0,0,10,0" VerticalAlignment="Bottom" Background="Transparent" Width="100" HorizontalAlignment="Right">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom"  Background="Transparent"
+                                    Visibility="{Binding IsNotSale, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                            <TextBlock Text="{Binding FullEuroPrice}" FontSize="50" FontWeight="Bold" VerticalAlignment="Bottom" Margin="0,0,0,0"/>
+                            <TextBlock Text="{Binding CentsPrice, StringFormat='.{0:00} €'}" FontSize="25" FontWeight="Bold" VerticalAlignment="Bottom" Margin="0,0,0,5"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent"
+                                    Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                            <TextBlock Text="{Binding FullEuroSalePrice}" FontSize="50" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,0,0"/>
+                            <TextBlock Text="{Binding CentsSalePrice, StringFormat='.{0:00} €'}" FontSize="25" FontWeight="Bold" VerticalAlignment="Bottom" Margin="0,0,0,5"/>
+                        </StackPanel>
+                        <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} €'}" FontSize="24" FontWeight="Bold" TextAlignment="Right" VerticalAlignment="Bottom"  Background="Transparent"
+                                    Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,0,40" Foreground="Gray"/>
+                        <TextBlock Text="AKCIA" Foreground="Red" FontSize="30" FontWeight="Bold" Margin="-80,0,25,25" Background="Transparent"
                                    Visibility="{Binding IsSale, Converter={StaticResource BooleanToVisibilityConverter}}" >
                             <TextBlock.LayoutTransform>
                                 <RotateTransform Angle="-10" />
                             </TextBlock.LayoutTransform>
                         </TextBlock>
-                        <Line  X1="96" Y1="5" X2="165" Y2="20" Stroke="#A5FF0000" StrokeThickness="3" Margin="0,20,0,40" 
+                        <Line  X1="35" Y1="5" X2="105" Y2="20" Stroke="#A5FF0000" StrokeThickness="3" Margin="0,20,0,45" 
                                Visibility="{Binding IsSale,  Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     </Grid>
                 </Grid>
