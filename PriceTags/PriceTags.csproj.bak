@@ -29,16 +29,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DevExpress.Data" Version="25.1.6" />
-    <PackageReference Include="DevExpress.Mvvm" Version="25.1.6" />
-    <PackageReference Include="DevExpress.Wpf" Version="25.1.6" />
-    <PackageReference Include="DevExpress.Wpf.Core" Version="25.1.6" />
-    <PackageReference Include="DevExpress.Wpf.Grid" Version="25.1.6" />
+    <PackageReference Include="DevExpress.Data" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Mvvm" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Wpf" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Wpf.Core" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Wpf.Grid" Version="24.1.7" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DevExpress.Mvvm.v25.1">
-      
+    <Reference Include="DevExpress.Mvvm.v24.1">
+      <HintPath>..\..\..\..\Devexpress\Components\Offline Packages\devexpress.mvvm\24.1.7\lib\net6.0-windows\DevExpress.Mvvm.v24.1.dll</HintPath>
     </Reference>
   </ItemGroup>
 

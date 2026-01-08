@@ -10,20 +10,36 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
+using System.Windows.Threading;
 
 namespace PriceTags.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
+
         private const int MaxItemsPerPage = 21;
+        private DispatcherTimer? _autoSaveTimer;
+
         public MainViewModel()
         {
             SelectedTags = new();
-            PrintCommand = new DelegateCommand(PrintPriceTag, () => SelectedTags.Count() > 0);
+            PrintCommand = new DelegateCommand(PrintPriceTag, () => SelectedTags.Any());
             HintCommand = new DelegateCommand(ShowHintWindow);
-            DeleteSelectedCommand = new DelegateCommand(DeleteSelected, () => SelectedTags.Count() > 0);
+            DeleteSelectedCommand = new DelegateCommand(DeleteSelected, () => SelectedTags.Any());
             Names = new ObservableCollection<string>(HintViewModel.GetNamesFromFile());
             LoadItems();
+
+            try
+            {
+                if (HasSavedFile())
+                {
+                    StartAutoSaveTimer();
+                }
+            }
+            catch
+            {
+                // Ignore errors starting the timer
+            }
         }
 
         public DelegateCommand PrintCommand { get; }
@@ -62,7 +78,7 @@ namespace PriceTags.ViewModels
             return $"Počet stránok {numberOfPages} / cenovky {SelectedTags.Count()} / {numberOfPages * MaxItemsPerPage}";
         }
 
-        public ObservableCollection<PriceTagModel> PriceTags { get; set; } = new ObservableCollection<PriceTagModel>();
+        public ObservableCollection<PriceTagModel> PriceTags { get; set; } = new();
         public ObservableCollection<string> Names
         {
             get => GetProperty(() => Names);
@@ -94,7 +110,7 @@ namespace PriceTags.ViewModels
         public void SaveItems()
         {
             var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var accountingPath = System.IO.Path.Combine(appData, "Accounting");
+            var accountingPath = Path.Combine(appData, "Accounting");
 
             if (!Directory.Exists(accountingPath))
             {
@@ -104,31 +120,27 @@ namespace PriceTags.ViewModels
             var filePath = Path.Combine(accountingPath, fileName);
             var fullFilePath = filePath + ".xaml";
 
-            using (var writer = new StreamWriter(fullFilePath, false))
+            using var writer = new StreamWriter(fullFilePath, false);
+            foreach (var tag in PriceTags)
             {
-                foreach (var tag in PriceTags)
+                try
                 {
-                    try
-                    {
-                        string csvLine = "";
-                        csvLine += tag.Name?.Replace("\"", "\"\"");
-                        csvLine += ",";
-                        csvLine += tag.Price.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                        csvLine += ",";
-                        csvLine += tag.Quantity.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                        csvLine += ",";
-                        csvLine += tag.QuantityType.ToString();
-                        csvLine += ",";
-                        csvLine += tag.SalePrice.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                        csvLine += ",";
-                        csvLine += tag.DepositAmount.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                        // Add additional fields if needed, separated by commas
-                        writer.WriteLine(csvLine);
-                    }
-                    catch (Exception ex)
-                    {
-                        GetMessageBoxService()?.ShowMessage("Niečo sa stalo pri ukladaní položky. Urob screenshot a pošli Adamkovi.\n\n" + ex.Message, "Chyba", MessageButton.OK, MessageIcon.Error);
-                    }
+                    var csvLine = "";
+                    csvLine += tag.Name?.Replace("\"", "\"\"");
+                    csvLine += ",";
+                    csvLine += tag.Price.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    csvLine += ",";
+                    csvLine += tag.Quantity.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    csvLine += ",";
+                    csvLine += tag.QuantityType.ToString();
+                    csvLine += ",";
+                    csvLine += tag.DepositAmount.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    // Add additional fields if needed, separated by commas
+                    writer.WriteLine(csvLine);
+                }
+                catch (Exception ex)
+                {
+                    GetMessageBoxService()?.ShowMessage("Niečo sa stalo pri ukladaní položky. Urob screenshot a pošli Adamkovi.\n\n" + ex.Message, "Chyba", MessageButton.OK, MessageIcon.Error);
                 }
             }
         }
@@ -173,18 +185,27 @@ namespace PriceTags.ViewModels
                 };
                 if (dlg.ShowDialog() != true) return;
 
-                double printableW = dlg.PrintableAreaWidth;
-                double printableH = dlg.PrintableAreaHeight;
+                var printableW = dlg.PrintableAreaWidth;
+                var printableH = dlg.PrintableAreaHeight;
+
+                const double pageMargin = 10;
+                var availableW = Math.Max(0, printableW - pageMargin * 2);
+                var availableH = Math.Max(0, printableH - pageMargin * 2);
+
                 var mainView = (FrameworkElement)System.Windows.Application.Current.MainWindow.Content;
                 var template = (DataTemplate)mainView.Resources["PriceTagPrintTemplate"];
 
                 const double itemWidth = 250;
                 const double itemHeight = 145;
-                const double margin = 2;
 
-                int itemsPerRow = (int)((printableW - margin * 2) / itemWidth);
-                int rowsPerPage = (int)((printableH - margin * 2) / itemHeight);
-                int itemsPerPage = itemsPerRow * rowsPerPage;
+                var itemsPerRow = (int)(availableW / itemWidth);
+                var rowsPerPage = (int)(availableH / itemHeight);
+
+                // Ensure at least one item per row / one row per page to avoid division by zero.
+                itemsPerRow = Math.Max(1, itemsPerRow);
+                rowsPerPage = Math.Max(1, rowsPerPage);
+
+                var itemsPerPage = itemsPerRow * rowsPerPage;
 
                 var document = new FixedDocument();
                 document.DocumentPaginator.PageSize = new System.Windows.Size(printableW, printableH);
@@ -192,7 +213,7 @@ namespace PriceTags.ViewModels
                 var items = SelectedTags.Where(s => !string.IsNullOrEmpty(s.Name)).ToList();
 
 
-                for (int i = 0; i < items.Count(); i += itemsPerPage)
+                for (var i = 0; i < items.Count(); i += itemsPerPage)
                 {
                     var panel = new WrapPanel
                     {
@@ -200,7 +221,7 @@ namespace PriceTags.ViewModels
                         HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
                         VerticalAlignment = VerticalAlignment.Top,
                         ItemWidth = itemWidth,
-                        Margin = new Thickness(margin)
+                        Margin = new Thickness(pageMargin) // inset content from all printable edges
                     };
 
                     foreach (var tag in items.Skip(i).Take(itemsPerPage))
@@ -303,31 +324,27 @@ namespace PriceTags.ViewModels
                 foreach (var line in lines)
                 {
                     var fields = new List<string>();
-                    bool inQuotes = false;
+                    var inQuotes = false;
                     var field = new System.Text.StringBuilder();
-                    for (int i = 0; i < line.Length; i++)
+                    for (var i = 0; i < line.Length; i++)
                     {
-                        char c = line[i];
-                        if (c == '\"')
+                        var c = line[i];
+                        switch (c)
                         {
-                            if (inQuotes && i + 1 < line.Length && line[i + 1] == '\"')
-                            {
+                            case '\"' when inQuotes && i + 1 < line.Length && line[i + 1] == '\"':
                                 field.Append('\"');
                                 i++;
-                            }
-                            else
-                            {
+                                break;
+                            case '\"':
                                 inQuotes = !inQuotes;
-                            }
-                        }
-                        else if (c == ',' && !inQuotes)
-                        {
-                            fields.Add(field.ToString());
-                            field.Clear();
-                        }
-                        else
-                        {
-                            field.Append(c);
+                                break;
+                            case ',' when !inQuotes:
+                                fields.Add(field.ToString());
+                                field.Clear();
+                                break;
+                            default:
+                                field.Append(c);
+                                break;
                         }
                     }
                     fields.Add(field.ToString());
@@ -343,8 +360,7 @@ namespace PriceTags.ViewModels
                             Price = double.TryParse(fields[1], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var price) ? price : 0,
                             Quantity = double.TryParse(fields[2], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var qty) ? qty : 0,
                             QuantityType = Enum.TryParse<QuantityType>(fields[3], out var qt) ? qt : QuantityType.Count,
-                            SalePrice = double.TryParse(fields[4], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var sp) ? sp : 0,
-                            DepositAmount = double.TryParse(fields[5], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var da) ? da : 0
+                            DepositAmount = double.TryParse(fields[4], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var da) ? da : 0
                         };
                         PriceTags.Add(model);
                     }
@@ -359,6 +375,46 @@ namespace PriceTags.ViewModels
                 GetMessageBoxService()?.ShowMessage("Niečo sa stalo pri načítavaní položiek. Urob screenshot a pošli Adamkovi.\n\n" + ex.Message, "Chyba", MessageButton.OK, MessageIcon.Error);
             }
         }
+
+        private void StartAutoSaveTimer()
+        {
+            if (_autoSaveTimer != null)
+                return;
+
+            _autoSaveTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(10)
+            };
+            _autoSaveTimer.Tick += AutoSaveTimer_Tick;
+            _autoSaveTimer.Start();
+        }
+
+        private void AutoSaveTimer_Tick(object? sender, EventArgs e)
+        {
+            try
+            {
+                if (HasSavedFile())
+                {
+                    SaveItems();
+                }
+            }
+            catch
+            {
+                // Silently ignore autosave errors to avoid disturbing the user
+            }
+        }
+
+        private bool HasSavedFile()
+        {
+            var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var accountingPath = Path.Combine(appData, "Accounting");
+            var fileName = "PriceTags";
+            var filePath = Path.Combine(accountingPath, fileName);
+            var fullFilePath = filePath + ".xaml";
+            return File.Exists(fullFilePath);
+        }
+
+
     }
 }
 

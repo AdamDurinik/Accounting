@@ -76,7 +76,7 @@ namespace PriceTags.Models
             set => SetProperty(() => LastChange, value);
         }
 
-        public string PricePerUnit => $"{GetUnitSize()}={PricePerUnitSize:n2}€ ";
+        public string PricePerUnit => $"Jenot. cena = {PricePerUnitSize:n2}€/{GetUnitSize()}";
 
         public double PricePerUnitSize
         {
@@ -84,27 +84,12 @@ namespace PriceTags.Models
             {
                 if (Quantity <= 0) return 0.0;
                 double unitSize = GetUnitSizeValue();
-                return (SalePrice > 0.0 ? SalePrice : Price) * unitSize / Quantity;
+                return  Price * unitSize / Quantity;
             }
         }
      
-        public bool IsSale => SalePrice > 0.0;
-        public bool IsNotSale => SalePrice <= 0.0;
         public bool HasDeposit => DepositAmount > 0.0;
         
-        public double SalePrice
-        {
-            get => GetProperty(() => SalePrice);
-            set
-            {
-                SetProperty(() => SalePrice, value);
-                RaisePropertiesChanged();
-            }
-        }
-
-        public int FullEuroSalePrice => (int)Math.Floor(SalePrice);
-
-        public int CentsSalePrice => (int)Math.Round((SalePrice - FullEuroSalePrice) * 100);
 
         public double DepositAmount
         {
