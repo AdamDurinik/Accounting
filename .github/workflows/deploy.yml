@@ -24,7 +24,8 @@ jobs:
           msbuild PriceTags\PriceTags.csproj /target:publish `
           /p:Configuration=Release `
           /p:PublishProfile="Properties\PublishProfiles\ClickOnceProfile.pubxml" `
-          /p:PublishDir="bin\app_publish\"
+          /p:PublishDir="bin\app_publish\" `
+          /p:PublishOnBuild=false"
 
       - name: Deploy to IIS
         shell: powershell
