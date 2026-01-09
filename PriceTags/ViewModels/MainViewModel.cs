@@ -12,6 +12,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Threading;
+using Velopack;
 
 namespace PriceTags.ViewModels
 {
@@ -457,25 +458,24 @@ namespace PriceTags.ViewModels
             }
         }
 
-        private void UpdateApplication()
+        private async Task UpdateApplication()
         {
             try
             {
-                string deployUrl = "https://pricetags.foxhint.com/updates/PriceTags.application";
+                var mgr = new UpdateManager("https://pricetags.foxhint.com/updates/");
 
-                var psi = new ProcessStartInfo
+                var newVersion = await mgr.CheckForUpdatesAsync();
+                if (newVersion == null)
                 {
-                    FileName = deployUrl,
-                    UseShellExecute = true 
-                };
+                    return;
+                } 
 
-                Process.Start(psi); 
-
-                System.Windows.Application.Current.Shutdown();
+                await mgr.DownloadUpdatesAsync(newVersion);
+                mgr.ApplyUpdatesAndRestart(newVersion);
             }
             catch (Exception ex)
             {
-                GetMessageBoxService()?.ShowMessage("Niečo sa stalo pri stahovaní novej verzie. Urob screenshot a pošli Adamkovi.\n\n" + ex.Message, "Chyba", MessageButton.OK, MessageIcon.Error);
+                GetMessageBoxService()?.ShowMessage("Chyba pri aktualizácii: " + ex.Message, "Chyba", MessageButton.OK, MessageIcon.Error);
             }
         }
     }
