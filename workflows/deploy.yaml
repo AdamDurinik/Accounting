@@ -1,0 +1,40 @@
+name: Auto-Deploy PriceTags
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted  # Runs on your server
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build & Publish ClickOnce
+        run: |
+          msbuild /target:publish `
+          /p:Configuration=Release `
+          /p:PublishProfile="Properties\PublishProfiles\ClickOnceProfile.pubxml" `
+          /p:PublishDir="bin\app_publish\"
+
+      - name: Deploy to IIS
+        shell: powershell
+        run: |
+          $source = "bin\app_publish\."
+          $destination = "C:\inetpub\wwwroot\pricetags\updates\"
+          
+          # Create folder if missing
+          if (!(Test-Path $destination)) { New-Item -ItemType Directory -Path $destination }
+          
+          # Copy files
+          xcopy $source $destination /E /Y /I
+          
+          # Rename Setup.exe to PriceTags.exe
+          if (Test-Path "$destination\setup.exe") {
+            Move-Item -Path "$destination\setup.exe" -Destination "$destination\PriceTags.exe" -Force
+          }
