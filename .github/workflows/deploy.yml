@@ -12,34 +12,27 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4 
 
-      # 1. Build - Must include Runtime Identifier (-r) for Velopack
+      # 1. Build - RID must be provided for Velopack to pack correctly
       - name: Build and Publish
         run: dotnet publish PriceTags\PriceTags.csproj -c Release -r win-x64 --self-contained -o ./out
 
-      # 2. Setup Velopack Tool (Fixed PowerShell Syntax)
+      # 2. Setup Velopack Tool (PowerShell compatible try/catch)
       - name: Setup Velopack
         shell: powershell
         run: |
-          try {
-            dotnet tool install -g vpk
-          } catch {
-            dotnet tool update -g vpk
-          }
+          try { dotnet tool install -g vpk } catch { dotnet tool update -g vpk }
 
-      # 3. Create the update package
+      # 3. Create the update package (Explicit Path & Correct Flag)
       - name: Pack with Velopack
         shell: powershell
         run: |
-          # 1. Force the tool path into the session
           $vpkPath = "$env:USERPROFILE\.dotnet\tools\vpk.exe"
-          
-          # 2. Run it directly using the call operator (&)
-          & $vpkPath pack -u PriceTags `
-            -v 1.1.${{ github.run_number }} `
-            -p ./out `
-            -e PriceTags.exe `
-            -o ./releases `
-            -a x64
+          & $vpkPath pack --id "PriceTags" `
+            --version "1.1.${{ github.run_number }}" `
+            --packDir "./out" `
+            --mainExe "PriceTags.exe" `
+            --outputDir "./releases" `
+            --packarch "win-x64"
 
       # 4. Deploy to IIS
       - name: Deploy to IIS
@@ -48,12 +41,10 @@ jobs:
           $source = "./releases/*"
           $destination = "C:\inetpub\wwwroot\pricetags\updates"
 
-          # Wipe destination if exists
           if (Test-Path $destination) { 
               Remove-Item "$destination\*" -Recurse -Force 
           } else { 
               New-Item -ItemType Directory -Path $destination -Force 
           }
 
-          # Copy clean releases
           Copy-Item -Path $source -Destination $destination -Recurse -Force
