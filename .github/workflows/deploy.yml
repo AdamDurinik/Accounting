@@ -26,18 +26,20 @@ jobs:
             dotnet tool update -g vpk
           }
 
-      # 3. Create the update package (Fixed PATH and Command)
+      # 3. Create the update package
       - name: Pack with Velopack
         shell: powershell
         run: |
-          # Ensure the runner sees the new tool path
-          $env:PATH += ";$env:USERPROFILE\.dotnet\tools"
+          # 1. Force the tool path into the session
+          $vpkPath = "$env:USERPROFILE\.dotnet\tools\vpk.exe"
           
-          dotnet vpk pack -u PriceTags `
-          -v 1.1.${{ github.run_number }} `
-          -p ./out `
-          -e PriceTags.exe `
-          -o ./releases
+          # 2. Run it directly using the call operator (&)
+          & $vpkPath pack -u PriceTags `
+            -v 1.1.${{ github.run_number }} `
+            -p ./out `
+            -e PriceTags.exe `
+            -o ./releases `
+            -a x64
 
       # 4. Deploy to IIS
       - name: Deploy to IIS
