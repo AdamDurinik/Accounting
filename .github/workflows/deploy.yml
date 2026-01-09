@@ -12,11 +12,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4 
 
-      # 1. Standard build - no more ClickOnce mess
+      # 1. Build - Must include Runtime Identifier (-r) for Velopack
       - name: Build and Publish
-        run: dotnet publish PriceTags\PriceTags.csproj -c Release -o ./out
+        run: dotnet publish PriceTags\PriceTags.csproj -c Release -r win-x64 --self-contained -o ./out
 
-      # 2. Install/Update Velopack tool
+      # 2. Setup Velopack Tool (Fixed PowerShell Syntax)
       - name: Setup Velopack
         shell: powershell
         run: |
@@ -26,10 +26,14 @@ jobs:
             dotnet tool update -g vpk
           }
 
-      # 3. Create the update package
+      # 3. Create the update package (Fixed PATH and Command)
       - name: Pack with Velopack
+        shell: powershell
         run: |
-          vpk pack -u PriceTags `
+          # Ensure the runner sees the new tool path
+          $env:PATH += ";$env:USERPROFILE\.dotnet\tools"
+          
+          dotnet vpk pack -u PriceTags `
           -v 1.1.${{ github.run_number }} `
           -p ./out `
           -e PriceTags.exe `
@@ -42,8 +46,12 @@ jobs:
           $source = "./releases/*"
           $destination = "C:\inetpub\wwwroot\pricetags\updates"
 
-          if (Test-Path $destination) { Remove-Item "$destination\*" -Recurse -Force }
-          else { New-Item -ItemType Directory -Path $destination -Force }
+          # Wipe destination if exists
+          if (Test-Path $destination) { 
+              Remove-Item "$destination\*" -Recurse -Force 
+          } else { 
+              New-Item -ItemType Directory -Path $destination -Force 
+          }
 
-          # Just copy everything in 'releases' - it's clean (no junk DLLs)
+          # Copy clean releases
           Copy-Item -Path $source -Destination $destination -Recurse -Force
