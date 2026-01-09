@@ -15,37 +15,30 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      - name: Restore Packages
-        # This creates the project.assets.json files you were missing
-        run: msbuild PriceTags\PriceTags.csproj /t:restore /p:Configuration=Release
-
       - name: Build & Publish ClickOnce
         run: |
-          # Use -restore to fix the 'assets file not found' error in one go
-          # Use the FULL path to the .csproj
-          # Use the FULL path to the .pubxml
-          msbuild PriceTags\PriceTags.csproj -restore `
-          /target:publish `
-          /p:Configuration=Release `
-          /p:PublishProfile="${{ github.workspace }}\PriceTags\Properties\PublishProfiles\ClickOnceProfile.pubxml" `
-          /p:PublishDir="bin\app_publish\" `
-          /p:PublishUrl="bin\app_publish\"
+          # We send the ClickOnce files to bin/app_publish
+          # We hide the '200 files' in obj/temp_build
+          msbuild PriceTags\PriceTags.csproj -t:publish -restore `
+          -p:Configuration=Release `
+          -p:PublishProfile="Properties\PublishProfiles\ClickOnceProfile.pubxml" `
+          -p:PublishUrl="bin\app_publish\\" `
+          -p:PublishDir="bin\trash\\"
+
       - name: Deploy to IIS
         shell: powershell
         run: |
-          # Path adjusted to the PriceTags project folder
-          $source = "PriceTags\bin\app_publish\."
-          $destination = "C:\inetpub\wwwroot\pricetags\updates\"
+          $source = "PriceTags\bin\app_publish\*"
+          $destination = "C:\inetpub\wwwroot\pricetags\updates"
           
-          # Create folder if missing
-          if (!(Test-Path $destination)) { 
-            New-Item -ItemType Directory -Path $destination -Force 
-          }
+          # 1. Clear everything to be 100% sure we start clean
+          if (Test-Path $destination) { Get-ChildItem -Path $destination | Remove-Item -Recurse -Force }
+          else { New-Item -ItemType Directory -Path $destination -Force }
           
-          # Copy files from the project build folder to the IIS folder
-          xcopy $source $destination /E /Y /I
+          # 2. Copy the actual ClickOnce installer files
+          Copy-Item -Path $source -Destination $destination -Recurse -Force
           
-          # Rename Setup.exe to PriceTags.exe
+          # 3. Rename setup.exe
           if (Test-Path "$destination\setup.exe") {
             Move-Item -Path "$destination\setup.exe" -Destination "$destination\PriceTags.exe" -Force
           }
