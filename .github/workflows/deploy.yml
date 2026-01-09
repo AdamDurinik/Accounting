@@ -21,11 +21,15 @@ jobs:
 
       - name: Build & Publish ClickOnce
         run: |
+          # 1. Restore packages first
+          dotnet restore PriceTags\PriceTags.csproj
+
+          # 2. Build and Publish
+          # We are targeting the project, so the profile path starts from 'Properties\...'
           msbuild PriceTags\PriceTags.csproj /target:publish `
           /p:Configuration=Release `
           /p:PublishProfile="Properties\PublishProfiles\ClickOnceProfile.pubxml" `
-          /p:PublishDir="bin\app_publish\" `
-          /p:PublishOnBuild=false
+          /p:PublishDir="bin\app_publish\"
           
       - name: Deploy to IIS
         shell: powershell
