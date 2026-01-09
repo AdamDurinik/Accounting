@@ -18,7 +18,13 @@ jobs:
 
       # 2. Install/Update Velopack tool
       - name: Setup Velopack
-        run: dotnet tool install -g vpk || dotnet tool update -g vpk
+        shell: powershell
+        run: |
+          try {
+            dotnet tool install -g vpk
+          } catch {
+            dotnet tool update -g vpk
+          }
 
       # 3. Create the update package
       - name: Pack with Velopack
