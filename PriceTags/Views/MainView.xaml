@@ -255,6 +255,6 @@
             </Border>
         </Grid>
         <Label Grid.Row="1" Grid.Column="0" Content="Verze: " Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
-        <Label Grid.Row="1" Grid.Column="0" Margin="50,0,0,0" Content="{Binding CurrentVersion}" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+        <Label Grid.Row="1" Grid.Column="0" Margin="50,0,0,0" Content="{Binding CurrentVersion}" HorizontalAlignment="Left" VerticalAlignment="Bottom"  FontWeight="Bold"/>
     </Grid>
 </UserControl>
