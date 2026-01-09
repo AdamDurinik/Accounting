@@ -115,7 +115,7 @@
                     <dxb:BarManager>
                         <dxb:BarManager.Bars>
 
-                            <dxb:Bar IsMainMenu="True" BarItemDisplayMode="ContentAndGlyph">
+                            <dxb:Bar IsMainMenu="True" BarItemDisplayMode="ContentAndGlyph"> 
                                 <dxb:BarButtonItem Content="Uložiť" Glyph="/Images/save.png" Padding="5" Margin="5"
                                     Command="{Binding SaveCommand}" />
                                 <dxb:BarButtonItem Content="Vytlačiť" Glyph="/Images/printer.png" Padding="5" Margin="5"
