@@ -469,7 +469,7 @@ namespace PriceTags.ViewModels
                     UseShellExecute = true 
                 };
 
-                Process.Start(psi);
+                Process.Start(psi); 
 
                 System.Windows.Application.Current.Shutdown();
             }
