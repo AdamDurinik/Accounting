@@ -22,7 +22,7 @@ jobs:
             /t:Publish `
             /restore `
             /p:Configuration=Release `
-            /p:PublishProfile=ClickOnceProfile
+            /p:PublishProfile=ClickOnceProfile `
             /p:ApplicationVersion="1.1.${{ github.run_number }}" `
 
       - name: Deploy to IIS
