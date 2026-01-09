@@ -15,30 +15,31 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      - name: Build ClickOnce
-        run: |
-          msbuild PriceTags\PriceTags.csproj -t:publish -restore `
-          -p:Configuration=Release `
-          -p:PublishProfile="Properties\PublishProfiles\ClickOnceProfile.pubxml" `
-          -p:PublishUrl="bin\app_publish\\" `
-          -p:PublishDir="obj\trash\\"
-
-      - name: Copy Only the 3 Essentials
+      - name: Build & Publish ClickOnce
         shell: powershell
         run: |
-          $publishFolder = "PriceTags\bin\app_publish\app.publish"
+          msbuild PriceTags\PriceTags.csproj `
+            /t:Publish `
+            /restore `
+            /p:Configuration=Release `
+            /p:PublishProfile=ClickOnceProfile
+
+      - name: Deploy to IIS
+        shell: powershell
+        run: |
+          $publish = "PriceTags\bin\Release\net9.0-windows\app.publish"
           $destination = "C:\inetpub\wwwroot\pricetags\updates"
 
-          # 1. Clean destination
-          if (Test-Path $destination) { Remove-Item "$destination\*" -Recurse -Force }
-          else { New-Item -ItemType Directory -Path $destination -Force }
+          # clean destination
+          if (Test-Path $destination) {
+            Remove-Item $destination -Recurse -Force
+          }
+          New-Item -ItemType Directory -Path $destination | Out-Null
 
-          # 2. Copy the 3 required items directly
-          # ITEM 1: The versioned data folder
-          Copy-Item -Path "$publishFolder\Application Files" -Destination $destination -Recurse -Force
-          
-          # ITEM 2: The deployment manifest
-          Copy-Item -Path "$publishFolder\PriceTags.application" -Destination $destination -Force
-          
-          # ITEM 3: The setup bootstrapper (renamed)
-          Copy-Item -Path "$publishFolder\setup.exe" -Destination "$destination\PriceTags.exe" -Force
+          # copy ONLY final ClickOnce files
+          Copy-Item "$publish\Application Files" $destination -Recurse -Force
+          Copy-Item "$publish\*.application" $destination -Force
+          Copy-Item "$publish\setup.exe" $destination -Force
+
+          # rename installer
+          Rename-Item "$destination\setup.exe" "PriceTags.exe"
