@@ -3,6 +3,7 @@ using DevExpress.Mvvm.Native;
 using PriceTags.Enums;
 using PriceTags.Models;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Printing;
 using System.Windows;
@@ -26,6 +27,7 @@ namespace PriceTags.ViewModels
             PrintCommand = new DelegateCommand(PrintPriceTag, () => SelectedTags.Any());
             HintCommand = new DelegateCommand(ShowHintWindow);
             DeleteSelectedCommand = new DelegateCommand(DeleteSelected, () => SelectedTags.Any());
+            UpdateApplicationCommand = new DelegateCommand(() => UpdateApplication());
             Names = new ObservableCollection<string>(HintViewModel.GetNamesFromFile());
             LoadItems();
 
@@ -42,9 +44,24 @@ namespace PriceTags.ViewModels
             }
         }
 
+        public bool IsUpdateAvailable
+        {
+            get => GetProperty(() => IsUpdateAvailable);
+            set => SetProperty(() => IsUpdateAvailable, value);
+        }
+        public string CurrentVersion
+        {
+            get
+            {
+                var version = Environment.GetEnvironmentVariable("ClickOnce_CurrentVersion");
+                return version ?? "1.0.0.0"; 
+            }
+        }
+
         public DelegateCommand PrintCommand { get; }
         public DelegateCommand HintCommand { get; }
         public DelegateCommand DeleteSelectedCommand { get; }
+        public DelegateCommand UpdateApplicationCommand { get; }
 
         public ICommand DeleteRowCommand => new DelegateCommand<PriceTagModel>(RemoveItem);
         public ICommand SaveCommand => new DelegateCommand(SaveItems);
@@ -396,6 +413,7 @@ namespace PriceTags.ViewModels
                 if (HasSavedFile())
                 {
                     SaveItems();
+                    Task.Run(CheckForUpdatesAsync);
                 }
             }
             catch
@@ -414,7 +432,52 @@ namespace PriceTags.ViewModels
             return File.Exists(fullFilePath);
         }
 
+        private async Task CheckForUpdatesAsync()
+        {
+            try
+            {
+                using var client = new System.Net.Http.HttpClient();
+                string manifestXml = await client.GetStringAsync("https://pricetags.foxhint.com/updates/PriceTags.application");
 
+                var match = System.Text.RegularExpressions.Regex.Match(manifestXml, @"version=""(\d+\.\d+\.\d+\.\d+)""");
+
+                if (match.Success)
+                {
+                    string serverVersion = match.Groups[1].Value;
+
+                    if (serverVersion != CurrentVersion)
+                    {
+                        IsUpdateAvailable = true;
+                    }
+                }
+            }
+            catch
+            {
+                IsUpdateAvailable = false;
+            }
+        }
+
+        private void UpdateApplication()
+        {
+            try
+            {
+                string deployUrl = "https://pricetags.foxhint.com/updates/PriceTags.application";
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = deployUrl,
+                    UseShellExecute = true 
+                };
+
+                Process.Start(psi);
+
+                System.Windows.Application.Current.Shutdown();
+            }
+            catch (Exception ex)
+            {
+                GetMessageBoxService()?.ShowMessage("Niečo sa stalo pri stahovaní novej verzie. Urob screenshot a pošli Adamkovi.\n\n" + ex.Message, "Chyba", MessageButton.OK, MessageIcon.Error);
+            }
+        }
     }
 }
 

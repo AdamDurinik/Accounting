@@ -18,6 +18,7 @@
     <None Remove="Images\LogoOnly.png" />
     <None Remove="Images\printer.png" />
     <None Remove="Images\remove.png" />
+    <None Remove="Images\updated.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -73,6 +74,7 @@
     <Resource Include="Images\save.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Images\updated.png" />
   </ItemGroup>
 
 </Project>
