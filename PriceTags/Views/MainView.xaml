@@ -126,7 +126,7 @@
                                     Command="{Binding DeleteSelectedCommand}" />
                                 <dxb:BarButtonItem Content="{Binding PageCountAndTagCount}" Padding="5" Margin="5"/>
                                 <dxb:BarButtonItem Content="Nová verzia" Glyph="/Images/updated.png"  Padding="5" Margin="5" 
-                                                   IsVisible="{Binding IsUpdateAvailable}" 
+                                                   IsVisible="{Binding IsUpdateAvailable, UpdateSourceTrigger=PropertyChanged}" 
                                                    Command="{Binding UpdateApplicationCommand}"/>
 
                             <!--<dxb:BarCheckItem Content="Zobraziť logo" Glyph="/Images/LogoOnly.png" Padding="5" Margin="5"
@@ -254,7 +254,7 @@
                 </Grid>
             </Border>
         </Grid>
-        <Label Grid.Row="1" Grid.Column="0" Content="Verze: " HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+        <Label Grid.Row="1" Grid.Column="0" Content="Verze: " Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
         <Label Grid.Row="1" Grid.Column="0" Margin="50,0,0,0" Content="{Binding CurrentVersion}" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
     </Grid>
 </UserControl>
