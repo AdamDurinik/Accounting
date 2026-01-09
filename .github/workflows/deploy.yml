@@ -23,7 +23,7 @@ jobs:
             /restore `
             /p:Configuration=Release `
             /p:PublishProfile=ClickOnceProfile `
-            /p:ApplicationVersion="1.1.${{ github.run_number }}" `
+            /p:ApplicationVersion="1.1.1.${{ github.run_number }}" `
 
       - name: Deploy to IIS
         shell: powershell
