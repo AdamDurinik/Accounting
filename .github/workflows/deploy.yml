@@ -21,15 +21,16 @@ jobs:
 
       - name: Build & Publish ClickOnce
         run: |
-          # 1. Restore packages first
-          dotnet restore PriceTags\PriceTags.csproj
+          # 1. Restore the solution
+          dotnet restore Accounting.sln
 
-          # 2. Build and Publish
-          # We are targeting the project, so the profile path starts from 'Properties\...'
+          # 2. Force MSBuild to use the local runner path, NOT the one in your screenshot
           msbuild PriceTags\PriceTags.csproj /target:publish `
           /p:Configuration=Release `
-          /p:PublishProfile="Properties\PublishProfiles\ClickOnceProfile.pubxml" `
-          /p:PublishDir="bin\app_publish\"
+          /p:PublishProfile="PriceTags\Properties\PublishProfiles\ClickOnceProfile.pubxml" `
+          /p:PublishDir="bin\app_publish\" `
+          /p:PublishUrl="bin\app_publish\" `
+          /p:InstallUrl="https://pricetags.foxhint.com/updates/"
           
       - name: Deploy to IIS
         shell: powershell
