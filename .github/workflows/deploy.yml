@@ -27,7 +27,7 @@ jobs:
       - name: Deploy to IIS
         shell: powershell
         run: |
-          $publish = "PriceTags\Publish"
+          $publish = "PriceTags\bin\Release\net9.0-windows\app.publish\"
           $destination = "C:\inetpub\wwwroot\pricetags\updates"
 
           # clean destination
