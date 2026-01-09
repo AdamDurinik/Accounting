@@ -17,28 +17,38 @@ jobs:
 
       - name: Build & Publish ClickOnce
         run: |
-          # We send the ClickOnce files to bin/app_publish
-          # We hide the '200 files' in obj/temp_build
+          # 1. We send the ACTUAL ClickOnce installer files to a specific unique folder
+          # 2. We send the 200 junk files (OutDir) to a temporary folder we will ignore
+          # IMPORTANT: Use double backslashes for paths in MSBuild arguments
           msbuild PriceTags\PriceTags.csproj -t:publish -restore `
           -p:Configuration=Release `
           -p:PublishProfile="Properties\PublishProfiles\ClickOnceProfile.pubxml" `
-          -p:PublishUrl="bin\app_publish\\" `
-          -p:PublishDir="bin\trash\\"
+          -p:PublishDir="bin\CLICKONCE_OUTPUT\\" `
+          -p:OutDir="obj\BUILD_JUNK\\"
 
       - name: Deploy to IIS
         shell: powershell
         run: |
-          $source = "PriceTags\bin\app_publish\*"
+          # MSBuild often creates 'app.publish' inside the PublishDir. 
+          # We look for the folder that contains 'setup.exe'
+          $basePath = "${{ github.workspace }}\PriceTags\bin\CLICKONCE_OUTPUT"
+          
+          # Check if MSBuild put it in a subfolder called app.publish (common .NET 9 behavior)
+          if (Test-Path "$basePath\app.publish") { $source = "$basePath\app.publish\*" }
+          else { $source = "$basePath\*" }
+          
           $destination = "C:\inetpub\wwwroot\pricetags\updates"
           
-          # 1. Clear everything to be 100% sure we start clean
-          if (Test-Path $destination) { Get-ChildItem -Path $destination | Remove-Item -Recurse -Force }
+          Write-Host "Deploying from $source to $destination"
+
+          # 1. Nuke the destination to ensure zero leftover DLLs
+          if (Test-Path $destination) { Remove-Item "$destination\*" -Recurse -Force }
           else { New-Item -ItemType Directory -Path $destination -Force }
           
-          # 2. Copy the actual ClickOnce installer files
+          # 2. Copy only the installer files
           Copy-Item -Path $source -Destination $destination -Recurse -Force
           
-          # 3. Rename setup.exe
+          # 3. Rename setup.exe so the users have a nice filename
           if (Test-Path "$destination\setup.exe") {
             Move-Item -Path "$destination\setup.exe" -Destination "$destination\PriceTags.exe" -Force
           }
