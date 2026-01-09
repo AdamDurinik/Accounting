@@ -32,7 +32,7 @@ jobs:
             --packVersion "1.1.${{ github.run_number }}" `
             --packDir "./out" `
             --mainExe "PriceTags.exe" `
-            --u "./releases" `
+            -o "./releases" `
             --runtime "win-x64"
 
       # 4. Deploy to IIS
