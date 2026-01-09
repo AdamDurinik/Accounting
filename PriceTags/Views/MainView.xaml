@@ -126,7 +126,7 @@
                                     Command="{Binding DeleteSelectedCommand}" />
                             <dxb:BarButtonItem Content="{Binding PageCountAndTagCount}" Padding="5" Margin="5"
                                     />
-
+ 
                             <!--<dxb:BarCheckItem Content="Zobraziť logo" Glyph="/Images/LogoOnly.png" Padding="5" Margin="5"
                                     IsChecked="{Binding ShowImage, Mode=TwoWay}" />-->
                         </dxb:Bar>
