@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 
 
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
@@ -22,12 +22,13 @@ jobs:
             /t:Publish `
             /restore `
             /p:Configuration=Release `
-            /p:PublishProfile=ClickOnceProfile
+            /p:PublishProfile=ClickOnceProfile `
+            /p:ApplicationVersion="1.1.1.${{ github.run_number }}" `
 
       - name: Deploy to IIS
         shell: powershell
         run: |
-          $publish = "PriceTags\Publish"
+          $publish = "PriceTags\bin\Release\net9.0-windows\app.publish\"
           $destination = "C:\inetpub\wwwroot\pricetags\updates"
 
           # clean destination
