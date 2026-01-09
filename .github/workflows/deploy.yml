@@ -1,4 +1,4 @@
-name: Auto-Deploy PriceTags
+name: Auto-Deploy PriceTags (Velopack)
 
 on:
   push:
@@ -12,35 +12,32 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4 
 
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v2
+      # 1. Standard build - no more ClickOnce mess
+      - name: Build and Publish
+        run: dotnet publish PriceTags\PriceTags.csproj -c Release -o ./out
 
-      - name: Build & Publish ClickOnce
-        shell: powershell
+      # 2. Install/Update Velopack tool
+      - name: Setup Velopack
+        run: dotnet tool install -g vpk || dotnet tool update -g vpk
+
+      # 3. Create the update package
+      - name: Pack with Velopack
         run: |
-          msbuild PriceTags\PriceTags.csproj `
-            /t:Publish `
-            /restore `
-            /p:Configuration=Release `
-            /p:PublishProfile=ClickOnceProfile `
-            /p:ApplicationVersion="1.1.1.${{ github.run_number }}" `
+          vpk pack -u PriceTags `
+          -v 1.1.${{ github.run_number }} `
+          -p ./out `
+          -e PriceTags.exe `
+          -o ./releases
 
+      # 4. Deploy to IIS
       - name: Deploy to IIS
         shell: powershell
         run: |
-          $publish = "PriceTags\bin\Release\net9.0-windows\app.publish\"
+          $source = "./releases/*"
           $destination = "C:\inetpub\wwwroot\pricetags\updates"
 
-          # clean destination
-          if (Test-Path $destination) {
-            Remove-Item $destination -Recurse -Force
-          }
-          New-Item -ItemType Directory -Path $destination | Out-Null
+          if (Test-Path $destination) { Remove-Item "$destination\*" -Recurse -Force }
+          else { New-Item -ItemType Directory -Path $destination -Force }
 
-          # copy ONLY final ClickOnce files
-          Copy-Item "$publish\Application Files" $destination -Recurse -Force
-          Copy-Item "$publish\*.application" $destination -Force
-          Copy-Item "$publish\setup.exe" $destination -Force
-
-          # rename installer
-          Rename-Item "$destination\setup.exe" "PriceTags.exe"
+          # Just copy everything in 'releases' - it's clean (no junk DLLs)
+          Copy-Item -Path $source -Destination $destination -Recurse -Force
