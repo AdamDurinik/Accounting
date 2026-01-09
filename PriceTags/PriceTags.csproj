@@ -35,6 +35,7 @@
     <PackageReference Include="DevExpress.Wpf" Version="25.1.6" />
     <PackageReference Include="DevExpress.Wpf.Core" Version="25.1.6" />
     <PackageReference Include="DevExpress.Wpf.Grid" Version="25.1.6" />
+    <PackageReference Include="Velopack" Version="0.0.1298" />
   </ItemGroup>
 
   <ItemGroup>
