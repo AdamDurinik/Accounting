@@ -124,6 +124,12 @@ namespace PriceTags.ViewModels
             }
         }
 
+        public string UpdateText
+        {
+            get => GetProperty(() => UpdateText);
+            set => SetProperty(() => UpdateText, value);
+        }
+
         public void SaveItems()
         {
             var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -395,24 +401,32 @@ namespace PriceTags.ViewModels
 
         private void StartAutoSaveTimer()
         {
-            if (_autoSaveTimer != null)
-                return;
+            if (_autoSaveTimer != null) return;
 
             _autoSaveTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromSeconds(10)
+                Interval = TimeSpan.FromSeconds(5)
             };
             _autoSaveTimer.Tick += AutoSaveTimer_Tick;
             _autoSaveTimer.Start();
+      
         }
 
         public async Task CheckForUpdates()
         {
-            var updateUrl = "https://pricetags.foxhint.com/updates/";
-            var mgr = new UpdateManager(new SimpleWebSource(updateUrl));
-            var newVersion = await mgr.CheckForUpdatesAsync();
+            try
+            {
+                var updateUrl = "https://pricetags.foxhint.com/updates/";
+                var mgr = new UpdateManager(new SimpleWebSource(updateUrl));
+                var newVersion = await mgr.CheckForUpdatesAsync();
 
-            IsUpdateAvailable = newVersion != null;
+                IsUpdateAvailable = newVersion != null;
+                UpdateText = IsUpdateAvailable ? $"Nová verzia {newVersion.TargetFullRelease.Version} je dostupná na stiahnutie." : "Aplikácia je aktuálna.";
+            }
+            catch(Exception ex)
+            {
+                UpdateText = ex.Message;
+            }
         }
 
         private void AutoSaveTimer_Tick(object? sender, EventArgs e)

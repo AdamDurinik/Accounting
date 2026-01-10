@@ -47,21 +47,6 @@
         <DataTemplate x:Key="PriceTagPrintTemplate">
             <Border Grid.Column="1" BorderThickness="1" BorderBrush="LightGray" CornerRadius="4" DataContext="{Binding SelectedPriceTag}" Margin="0,0,0,0"
          VerticalAlignment="Top" Grid.Row="1" x:Name="PreviewContainer" Height="125">
-                <!--<Border.Style>
-         <Style TargetType="Border">
-             <Setter Property="Background" Value="Transparent"/>
-             <Style.Triggers>
-                 <DataTrigger Binding="{Binding ShowImage}" Value="True">
-                     <Setter Property="Background">
-                         <Setter.Value>
-                             <ImageBrush ImageSource="/Images/LogoOnly.png" Stretch="Uniform" Opacity="0.1" />
-                         </Setter.Value>
-                     </Setter>
-                 </DataTrigger>
-             </Style.Triggers>
-         </Style>
-     </Border.Style>-->
-
                 <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Width="250" MaxHeight="105" Height="105">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -142,6 +127,7 @@
         <Grid Grid.Row="1" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
@@ -256,6 +242,8 @@
                     </Grid>
                 </Grid>
             </Border>
+
+            <Label Content="{Bidning UpdateText}"/>
         </Grid>
     </Grid>
 </UserControl>
