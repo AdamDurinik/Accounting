@@ -8,6 +8,7 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Images\business.ico</ApplicationIcon>
     <PlatformTarget>x86</PlatformTarget>
+    <PackageIcon>Pricetags.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +17,7 @@
     <None Remove="Images\business.png" />
     <None Remove="Images\LogoFull.png" />
     <None Remove="Images\LogoOnly.png" />
+    <None Remove="Images\Pricetags.png" />
     <None Remove="Images\printer.png" />
     <None Remove="Images\remove.png" />
     <None Remove="Images\updated.png" />
@@ -27,6 +29,13 @@
 
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Publish\Pricetags.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

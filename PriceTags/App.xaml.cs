@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
 using System.Windows.Threading;
+using Velopack;
 using MessageBox = System.Windows.MessageBox;
 
 namespace PriceTags
@@ -10,7 +11,7 @@ namespace PriceTags
         public void OnStartup(object sender, StartupEventArgs e)
         {
             RegisterGlobalExceptionHandlers();
-
+            VelopackApp.Build().Run();
             try
             {
                 var viewModel = new ViewModels.MainViewModel();

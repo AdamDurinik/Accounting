@@ -151,7 +151,7 @@
             <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Padding="0" Height="10" />
 
             <dxg:GridControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding PriceTags}" CurrentItem="{Binding SelectedPriceTag, Mode=TwoWay}"
-                             SelectedItems="{Binding SelectedTags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,25"
+                             SelectedItems="{Binding SelectedTags, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"
                               x:Name="PriceTagGrid" Loaded="OnLoaded" SelectionChanged="OnSelectionChanged"
                 AutoGenerateColumns="None" SelectionMode="MultipleRow" PreviewKeyDown="OnPreviewKeyDown" CurrentColumnChanged="OnCurrentColumnChanged">
                 <dxg:GridControl.View>
@@ -254,7 +254,5 @@
                 </Grid>
             </Border>
         </Grid>
-        <Label Grid.Row="1" Grid.Column="0" Content="Verze: " Margin="5,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
-        <Label Grid.Row="1" Grid.Column="0" Margin="50,0,0,0" Content="{Binding CurrentVersion}" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
     </Grid>
 </UserControl>

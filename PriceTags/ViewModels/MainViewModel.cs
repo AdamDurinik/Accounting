@@ -12,6 +12,8 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Threading;
+using Velopack;
+using Velopack.Sources;
 
 namespace PriceTags.ViewModels
 {
@@ -49,13 +51,11 @@ namespace PriceTags.ViewModels
             get => GetProperty(() => IsUpdateAvailable);
             set => SetProperty(() => IsUpdateAvailable, value);
         }
+
         public string CurrentVersion
         {
-            get
-            {
-                var version = Environment.GetEnvironmentVariable("ClickOnce_CurrentVersion");
-                return version ?? "1.0.0.0"; 
-            }
+            get => GetProperty(() => CurrentVersion);
+            set => SetProperty(() => CurrentVersion, value);
         }
 
         public DelegateCommand PrintCommand { get; }
@@ -406,6 +406,15 @@ namespace PriceTags.ViewModels
             _autoSaveTimer.Start();
         }
 
+        public async Task CheckForUpdates()
+        {
+            var updateUrl = "https://pricetags.foxhint.com/updates/";
+            var mgr = new UpdateManager(new SimpleWebSource(updateUrl));
+            var newVersion = await mgr.CheckForUpdatesAsync();
+
+            IsUpdateAvailable = newVersion != null;
+        }
+
         private void AutoSaveTimer_Tick(object? sender, EventArgs e)
         {
             try
@@ -413,7 +422,7 @@ namespace PriceTags.ViewModels
                 if (HasSavedFile())
                 {
                     SaveItems();
-                    Task.Run(CheckForUpdatesAsync);
+                    Task.Run(CheckForUpdates);
                 }
             }
             catch
@@ -432,46 +441,21 @@ namespace PriceTags.ViewModels
             return File.Exists(fullFilePath);
         }
 
-        private async Task CheckForUpdatesAsync()
+        private async Task UpdateApplication()
         {
             try
             {
-                using var client = new System.Net.Http.HttpClient();
-                string manifestXml = await client.GetStringAsync("https://pricetags.foxhint.com/updates/PriceTags.application");
+                var updateUrl = "https://pricetags.foxhint.com/updates/";
+                var mgr = new UpdateManager(new SimpleWebSource(updateUrl));
 
-                var match = System.Text.RegularExpressions.Regex.Match(manifestXml, @"version=""(\d+\.\d+\.\d+\.\d+)""");
-
-                if (match.Success)
+                var newVersion = await mgr.CheckForUpdatesAsync();
+                if (newVersion == null)
                 {
-                    string serverVersion = match.Groups[1].Value;
-
-                    if (serverVersion != CurrentVersion)
-                    {
-                        IsUpdateAvailable = true;
-                    }
+                    return;
                 }
-            }
-            catch
-            {
-                IsUpdateAvailable = false;
-            }
-        }
 
-        private void UpdateApplication()
-        {
-            try
-            {
-                string deployUrl = "https://pricetags.foxhint.com/updates/PriceTags.application";
-
-                var psi = new ProcessStartInfo
-                {
-                    FileName = deployUrl,
-                    UseShellExecute = true 
-                };
-
-                Process.Start(psi); 
-
-                System.Windows.Application.Current.Shutdown();
+                await mgr.DownloadUpdatesAsync(newVersion);
+                mgr.ApplyUpdatesAndRestart(newVersion);
             }
             catch (Exception ex)
             {
