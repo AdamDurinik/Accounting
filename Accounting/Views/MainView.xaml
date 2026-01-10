@@ -7,8 +7,8 @@
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" 
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars" 
              xmlns:viewmodels="clr-namespace:Accounting.ViewModels"
-             xmlns:dxmvvm="clr-namespace:DevExpress.Mvvm.UI.Interactivity;assembly=DevExpress.Xpf.Core.v25.1" 
-             xmlns:dx="clr-namespace:DevExpress.Xpf.Core;assembly=DevExpress.Xpf.Core.v25.1"
+             xmlns:dxmvvm="clr-namespace:DevExpress.Mvvm.UI.Interactivity;assembly=DevExpress.Xpf.Core.v24.1" 
+             xmlns:dx="clr-namespace:DevExpress.Xpf.Core;assembly=DevExpress.Xpf.Core.v24.1"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" xmlns:dmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewmodels:MainViewModel}">

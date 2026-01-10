@@ -7,13 +7,13 @@
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" 
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars" 
              xmlns:viewmodels="clr-namespace:Accounting.ViewModels"
-             xmlns:dxmvvm="clr-namespace:DevExpress.Mvvm.UI.Interactivity;assembly=DevExpress.Xpf.Core.v24.1" 
-             xmlns:dx="clr-namespace:DevExpress.Xpf.Core;assembly=DevExpress.Xpf.Core.v24.1"
+             xmlns:dxmvvm="clr-namespace:DevExpress.Mvvm.UI.Interactivity;assembly=DevExpress.Xpf.Core.v25.1" 
+             xmlns:dx="clr-namespace:DevExpress.Xpf.Core;assembly=DevExpress.Xpf.Core.v25.1"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" xmlns:dmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance viewmodels:MainViewModel}">
     <dxmvvm:Interaction.Behaviors>
-        <dx:DialogService x:Name="SelectFileService"  DialogWindowStartupLocation="CenterOwner">
+        <dx:DialogService x:Name="SelectFileService" DialogWindowStartupLocation="CenterOwner">
             <dx:DialogService.ViewTemplate>
                 <DataTemplate>
                     <local:SelectFileView />
@@ -21,9 +21,9 @@
             </dx:DialogService.ViewTemplate>
             <dx:DialogService.DialogStyle>
                 <Style TargetType="Window">
-                    <Setter Property="Height" Value="600"/>
-                    <Setter Property="Width" Value="400"/>
-                    <Setter Property="ResizeMode" Value="NoResize"/>
+                    <Setter Property="Height" Value="600" />
+                    <Setter Property="Width" Value="400" />
+                    <Setter Property="ResizeMode" Value="NoResize" />
                 </Style>
             </dx:DialogService.DialogStyle>
         </dx:DialogService>
@@ -35,25 +35,24 @@
             </dx:DialogService.ViewTemplate>
             <dx:DialogService.DialogStyle>
                 <Style TargetType="Window">
-                    <Setter Property="ResizeMode" Value="NoResize"/>
-                    <Setter Property="SizeToContent" Value="WidthAndHeight"/>
+                    <Setter Property="ResizeMode" Value="NoResize" />
+                    <Setter Property="SizeToContent" Value="WidthAndHeight" />
                 </Style>
             </dx:DialogService.DialogStyle>
         </dx:DialogService>
-        <dx:DXMessageBoxService/>
-        <dmvvm:SaveFileDialogService 
-         x:Name="SaveFileDialogService"
+        <dx:DXMessageBoxService />
+        <dmvvm:SaveFileDialogService x:Name="SaveFileDialogService"
          DefaultExt="xlsx"
          Filter="Excel files (*.xlsx)|*.xlsx|All files (*.*)|*.*"
-         OverwritePrompt="True"/>
+         OverwritePrompt="True" />
     </dxmvvm:Interaction.Behaviors>
     <Grid Margin="5,0,5,5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row ="0">
+        <StackPanel Grid.Row="0">
             <!-- Main toolbar card -->
             <Border BorderBrush="LightGray"
                BorderThickness="1"
@@ -68,19 +67,19 @@
                             <dxb:Bar IsMainMenu="True" BarItemDisplayMode="ContentAndGlyph">
                                 <dxb:BarButtonItem Content="Nový" Glyph="/Icons/addFile.png"
                                       Padding="5" Margin="5"
-                                      Command="{Binding CreateNewFileCommand}"/>
+                                      Command="{Binding CreateNewFileCommand}" />
                                 <dxb:BarButtonItem Content="Otvoriť súbor" Glyph="/Icons/open.png"
                                       Padding="5" Margin="5"
-                                      Command="{Binding OpenFileCommand}"/>
+                                      Command="{Binding OpenFileCommand}" />
                                 <dxb:BarButtonItem Content="Uložiť" Glyph="/Icons/save.png"
                                       Padding="5" Margin="5"
-                                      Command="{Binding SaveFileCommand}"/>
+                                      Command="{Binding SaveFileCommand}" />
                                 <dxb:BarButtonItem Content="Uložiť ako" Glyph="/Icons/save.png"
                                       Padding="5" Margin="5"
-                                      Command="{Binding SaveAsFileCommand}"/>
+                                      Command="{Binding SaveAsFileCommand}" />
                                 <dxb:BarButtonItem Content="Exportovať do Excelu" Glyph="/Icons/excel.png"
                                       Padding="5" Margin="5"
-                                      Command="{Binding ExportToExcelCommand}"/>
+                                      Command="{Binding ExportToExcelCommand}" />
                             </dxb:Bar>
                         </dxb:BarManager.Bars>
                     </dxb:BarManager>
@@ -100,7 +99,7 @@
                             <dxb:Bar IsMainMenu="True" BarItemDisplayMode="ContentAndGlyph">
                                 <dxb:BarButtonItem Content="Pridať tabulku" Glyph="/Icons/plus.png"
                            Padding="5" Margin="5"
-                           Command="{Binding AddTableCommand}" />
+                                      Command="{Binding AddTableCommand}" />
                             </dxb:Bar>
                         </dxb:BarManager.Bars>
                     </dxb:BarManager>
@@ -131,16 +130,16 @@
                                 RenderTransformOrigin="0.5,0.5">
                             <!-- Pop-out animation -->
                             <Border.RenderTransform>
-                                <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                <ScaleTransform ScaleX="1" ScaleY="1" />
                             </Border.RenderTransform>
                             <Border.Triggers>
                                 <EventTrigger RoutedEvent="Loaded">
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
-                                                             From="0" To="1" Duration="0:0:0.2"/>
+                                                             From="0" To="1" Duration="0:0:0.2" />
                                             <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
-                                                             From="0" To="1" Duration="0:0:0.2"/>
+                                                             From="0" To="1" Duration="0:0:0.2" />
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </EventTrigger>
@@ -148,53 +147,53 @@
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
-                                                From="1" To="0" Duration="0:0:0.2"/>
+                                                             From="1" To="0" Duration="0:0:0.2" />
                                             <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
-                                                From="1" To="0" Duration="0:0:0.2"/>
+                                                             From="1" To="0" Duration="0:0:0.2" />
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </EventTrigger>
                             </Border.Triggers>
 
                             <!-- Layout grid: auto height for tax row, star height for grid -->
-                            <Grid >
+                            <Grid>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
 
                                 <!-- Tax input -->
                                 <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,8">
-                                    <TextBlock Text="DPH:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                                    <dxe:TextEdit Width="45"  CornerRadius="6"
+                                    <TextBlock Text="DPH:" VerticalAlignment="Center" Margin="0,0,5,0" />
+                                    <dxe:TextEdit Width="45" CornerRadius="6"
                                                   Text="{Binding Tax, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   MaskType="Numeric" Mask="D">
                                     </dxe:TextEdit>
-                                    <TextBlock Text="%" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                    <TextBlock Text="%" VerticalAlignment="Center" Margin="5,0,5,0" />
 
                                     <Button Command="{Binding DataContext.DeleteColumnCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                             CommandParameter="{Binding}" HorizontalAlignment="Right" Margin="147,0,0,0"                                                                                 
-                                            BorderThickness="0" BorderBrush="Transparent" Padding="3" >
+                                            BorderThickness="0" BorderBrush="Transparent" Padding="3">
                                         <Image Source="/Icons/remove.png" Width="16" Height="16" />
                                     </Button>
                                 </StackPanel>
 
                                 <dxg:GridControl Grid.Row="1" Width="250" ItemsSource="{Binding Items}" BorderThickness="0" PreviewKeyDown="OnPreviewKeyDown">
                                     <dxg:GridControl.TotalSummary>
-                                        <dxg:GridSummaryItem FieldName="PriceWithoutTax" SummaryType="Sum" DisplayFormat=" {0:N3} €" ShowInColumn="PriceWithoutTax"/>
-                                        <dxg:GridSummaryItem FieldName="Tax"            SummaryType="Sum" DisplayFormat=" {0:N2} €" ShowInColumn="Tax"/>
-                                        <dxg:GridSummaryItem FieldName="PriceWithTax"   SummaryType="Sum" DisplayFormat=" {0:N2} €" ShowInColumn="PriceWithTax"/>
+                                        <dxg:GridSummaryItem FieldName="PriceWithoutTax" SummaryType="Sum" DisplayFormat=" {0:N3} €" ShowInColumn="PriceWithoutTax" />
+                                        <dxg:GridSummaryItem FieldName="Tax" SummaryType="Sum" DisplayFormat=" {0:N2} €" ShowInColumn="Tax" />
+                                        <dxg:GridSummaryItem FieldName="PriceWithTax" SummaryType="Sum" DisplayFormat=" {0:N2} €" ShowInColumn="PriceWithTax" />
                                     </dxg:GridControl.TotalSummary>
                                     <dxg:GridControl.View>
                                         <dxg:TableView AutoWidth="True" ShowGroupPanel="False" ShowFilterPanelMode="Never" AllowColumnFiltering="False" AllowSorting="False"
                                            AllowGrouping="False" AllowColumnMoving="False" TotalSummaryPosition="Bottom" NewItemRowPosition="Bottom"
-                                           EnableImmediatePosting="True" AddingNewRow="OnAddingNewRow" BorderThickness="0" >
+                                           EnableImmediatePosting="True" AddingNewRow="OnAddingNewRow" BorderThickness="0">
 
                                         </dxg:TableView>
                                     </dxg:GridControl.View>
                                     <dxg:GridColumn FieldName="PriceWithoutTax" Header="Cena" />
-                                    <dxg:GridColumn FieldName="Tax"              Header="DPH" />
-                                    <dxg:GridColumn FieldName="PriceWithTax"     Header="Celkovo" />
+                                    <dxg:GridColumn FieldName="Tax" Header="DPH" />
+                                    <dxg:GridColumn FieldName="PriceWithTax" Header="Celkovo" />
                                     <dxg:GridColumn Width="30">
                                         <dxg:GridColumn.CellTemplate>
                                             <DataTemplate>

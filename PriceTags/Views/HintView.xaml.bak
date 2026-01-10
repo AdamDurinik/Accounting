@@ -5,14 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PriceTags.Views"
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" 
-             xmlns:dx="clr-namespace:DevExpress.Xpf.Core;assembly=DevExpress.Xpf.Core.v24.1"
+             xmlns:dx="clr-namespace:DevExpress.Xpf.Core;assembly=DevExpress.Xpf.Core.v25.1"
              mc:Ignorable="d">
     <Grid>
-        <dxg:GridControl ItemsSource="{Binding Names}" AutoGenerateColumns="None" >
+        <dxg:GridControl ItemsSource="{Binding Names}" AutoGenerateColumns="None">
                 <dxg:GridControl.View>
                     <dxg:TableView AllowPerPixelScrolling="True" AutoWidth="True" ShowGroupPanel="False" ShowCheckBoxSelectorColumn="True"
                     ShowFilterPanelMode="ShowAlways" NavigationStyle="Cell" AllowEditing="True" AllowColumnMoving="True"
-                    CheckBoxSelectorColumnWidth="35" NewItemRowPosition="Bottom" EnableImmediatePosting="True" IsTotalSummaryMenuEnabled="False" ShowGroupedColumns="True"  />
+                    CheckBoxSelectorColumnWidth="35" NewItemRowPosition="Bottom" EnableImmediatePosting="True" IsTotalSummaryMenuEnabled="False" ShowGroupedColumns="True" />
                 </dxg:GridControl.View>
             <dxg:GridControl.Columns>
                 <dxg:GridColumn FieldName="Name" Header="Názov" AllowEditing="True" />

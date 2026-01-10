@@ -5,11 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Accounting.Views"
              xmlns:viewmodels="clr-namespace:Accounting.ViewModels" 
-             xmlns:dxmvvm="clr-namespace:DevExpress.Mvvm.UI.Interactivity;assembly=DevExpress.Xpf.Core.v24.1" 
-             xmlns:ui="clr-namespace:DevExpress.Mvvm.UI;assembly=DevExpress.Xpf.Core.v24.1"
+             xmlns:dxmvvm="clr-namespace:DevExpress.Mvvm.UI.Interactivity;assembly=DevExpress.Xpf.Core.v25.1" 
+             xmlns:ui="clr-namespace:DevExpress.Mvvm.UI;assembly=DevExpress.Xpf.Core.v25.1"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewmodels:SelectFileViewModel}">
-    <ScrollViewer VerticalScrollBarVisibility="Auto" >
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
         <ListBox ItemsSource="{Binding FileList}"
                  SelectedItem="{Binding SelectedFile, Mode=TwoWay}"
                  BorderThickness="0"
@@ -21,8 +21,8 @@
                             <Image Source="/Icons/word.png" Width="32" Height="32" Margin="0,0,10,0" />
                             <StackPanel>
                                 <TextBlock Text="{Binding FileName}" FontWeight="Bold" />
-                                <TextBlock Text="{Binding CreatedDate, StringFormat='Vytvorený: {0:dd.MM.yyyy HH:mm}'}" FontSize="12" Foreground="Gray"/>
-                                <TextBlock Text="{Binding LastModifiedDate, StringFormat='Zmenený: {0:dd.MM.yyyy HH:mm}'}" FontSize="12" Foreground="Gray"/>
+                                <TextBlock Text="{Binding CreatedDate, StringFormat='Vytvorený: {0:dd.MM.yyyy HH:mm}'}" FontSize="12" Foreground="Gray" />
+                                <TextBlock Text="{Binding LastModifiedDate, StringFormat='Zmenený: {0:dd.MM.yyyy HH:mm}'}" FontSize="12" Foreground="Gray" />
                             </StackPanel>
                         </DockPanel>
                     </Border>

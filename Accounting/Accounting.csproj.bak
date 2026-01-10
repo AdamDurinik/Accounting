@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <Platforms>AnyCPU;x64;x86</Platforms>
+    <Platforms>x64</Platforms>
     <ApplicationIcon>Icons\tax.ico</ApplicationIcon>
   </PropertyGroup>
 
@@ -30,10 +30,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DevExpress.Data" Version="24.1.7" />
-    <PackageReference Include="DevExpress.Wpf" Version="24.1.7" />
-    <PackageReference Include="DevExpress.Wpf.Core" Version="24.1.7" />
-    <PackageReference Include="DevExpress.Wpf.Grid" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Data" Version="25.1.6" />
+    <PackageReference Include="DevExpress.Wpf" Version="25.1.6" />
+    <PackageReference Include="DevExpress.Wpf.Core" Version="25.1.6" />
+    <PackageReference Include="DevExpress.Wpf.Grid" Version="25.1.6" />
     <PackageReference Include="EPPlus" Version="8.0.5" />
   </ItemGroup>
 

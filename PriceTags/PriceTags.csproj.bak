@@ -7,7 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Images\business.ico</ApplicationIcon>
-    <PlatformTarget>x86</PlatformTarget>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +18,7 @@
     <None Remove="Images\LogoOnly.png" />
     <None Remove="Images\printer.png" />
     <None Remove="Images\remove.png" />
+    <None Remove="Images\updated.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,20 +26,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Exporters\" />
+    <Folder Include="Properties\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DevExpress.Data" Version="24.1.7" />
-    <PackageReference Include="DevExpress.Mvvm" Version="24.1.7" />
-    <PackageReference Include="DevExpress.Wpf" Version="24.1.7" />
-    <PackageReference Include="DevExpress.Wpf.Core" Version="24.1.7" />
-    <PackageReference Include="DevExpress.Wpf.Grid" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Data" Version="25.1.6" />
+    <PackageReference Include="DevExpress.Mvvm" Version="25.1.6" />
+    <PackageReference Include="DevExpress.Wpf" Version="25.1.6" />
+    <PackageReference Include="DevExpress.Wpf.Core" Version="25.1.6" />
+    <PackageReference Include="DevExpress.Wpf.Grid" Version="25.1.6" />
+    <PackageReference Include="Velopack" Version="0.0.1298" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DevExpress.Mvvm.v24.1">
-      <HintPath>..\..\..\..\Devexpress\Components\Offline Packages\devexpress.mvvm\24.1.7\lib\net6.0-windows\DevExpress.Mvvm.v24.1.dll</HintPath>
+    <Reference Include="DevExpress.Mvvm.v25.1">
+      
     </Reference>
   </ItemGroup>
 
@@ -73,6 +75,7 @@
     <Resource Include="Images\save.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Images\updated.png" />
   </ItemGroup>
 
 </Project>

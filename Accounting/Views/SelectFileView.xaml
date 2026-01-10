@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Accounting.Views"
              xmlns:viewmodels="clr-namespace:Accounting.ViewModels" 
-             xmlns:dxmvvm="clr-namespace:DevExpress.Mvvm.UI.Interactivity;assembly=DevExpress.Xpf.Core.v25.1" 
-             xmlns:ui="clr-namespace:DevExpress.Mvvm.UI;assembly=DevExpress.Xpf.Core.v25.1"
+             xmlns:dxmvvm="clr-namespace:DevExpress.Mvvm.UI.Interactivity;assembly=DevExpress.Xpf.Core.v24.1" 
+             xmlns:ui="clr-namespace:DevExpress.Mvvm.UI;assembly=DevExpress.Xpf.Core.v24.1"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewmodels:SelectFileViewModel}">
     <ScrollViewer VerticalScrollBarVisibility="Auto">

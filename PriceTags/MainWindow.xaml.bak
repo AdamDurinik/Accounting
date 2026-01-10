@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PriceTags" xmlns:views="clr-namespace:PriceTags.Views" xmlns:dxmvvm="clr-namespace:DevExpress.Mvvm.UI;assembly=DevExpress.Xpf.Core.v24.1" xmlns:ui="http://schemas.devexpress.com/winfx/2008/xaml/mvvm" xmlns:enums="clr-namespace:PriceTags.Enums"
+        xmlns:local="clr-namespace:PriceTags" xmlns:views="clr-namespace:PriceTags.Views" xmlns:dxmvvm="clr-namespace:DevExpress.Mvvm.UI;assembly=DevExpress.Xpf.Core.v25.1" xmlns:ui="http://schemas.devexpress.com/winfx/2008/xaml/mvvm" xmlns:enums="clr-namespace:PriceTags.Enums"
         mc:Ignorable="d"
         Title="Cenovky">
-    <views:MainView x:Name="MainView"/>
+    <views:MainView x:Name="MainView" />
 </Window>
