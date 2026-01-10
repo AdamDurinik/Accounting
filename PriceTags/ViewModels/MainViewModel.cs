@@ -459,7 +459,7 @@ namespace PriceTags.ViewModels
             }
             catch (Exception ex)
             {
-                GetMessageBoxService()?.ShowMessage("Niečo sa stalo pri stahovaní novej verzie. Urob screenshot a pošli Adamkovi.\n\n" + ex.Message, "Chyba", MessageButton.OK, MessageIcon.Error);
+                GetMessageBoxService()?.ShowMessage("Chyba pri aktualizácii: " + ex.Message, "Chyba", MessageButton.OK, MessageIcon.Error);
             }
         }
     }
