@@ -13,7 +13,7 @@
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
              xmlns:utils="clr-namespace:PriceTags.Utility" 
              xmlns:dx="clr-namespace:DevExpress.Xpf.Core;assembly=DevExpress.Xpf.Core.v24.1"
-             mc:Ignorable="d"
+             mc:Ignorable="d" Background="Aqua"
              d:DataContext="{d:DesignInstance viewmodels:MainViewModel}">
     <dxmvvm:Interaction.Behaviors>
         <dx:DialogService DialogWindowStartupLocation="CenterOwner">
