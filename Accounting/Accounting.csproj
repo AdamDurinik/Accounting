@@ -28,10 +28,20 @@
   <ItemGroup>
     <Folder Include="Readers\" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="DevExpress.Data" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Mvvm" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Wpf" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Wpf.Core" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Wpf.Grid" Version="24.1.7" />
+    <PackageReference Include="Velopack" Version="0.0.1298" />
+  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EPPlus" Version="8.0.5" />
+    <Reference Include="DevExpress.Mvvm.v24.1"> 
+    </Reference>
   </ItemGroup>
+
 
   <ItemGroup>
     <Resource Include="Icons\addFile.png">

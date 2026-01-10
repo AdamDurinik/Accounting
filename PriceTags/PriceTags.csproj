@@ -29,8 +29,8 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
-	<ItemGroup>
-	  <PackageReference Include="DevExpress.Data" Version="24.1.7" />
+  <ItemGroup>
+    <PackageReference Include="DevExpress.Data" Version="24.1.7" />
     <PackageReference Include="DevExpress.Mvvm" Version="24.1.7" />
     <PackageReference Include="DevExpress.Wpf" Version="24.1.7" />
     <PackageReference Include="DevExpress.Wpf.Core" Version="24.1.7" />
@@ -39,8 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DevExpress.Mvvm.v24.1">
-      
+    <Reference Include="DevExpress.Mvvm.v24.1"> 
     </Reference>
   </ItemGroup>
 
