@@ -16,6 +16,7 @@
     <None Remove="Images\business.png" />
     <None Remove="Images\LogoFull.png" />
     <None Remove="Images\LogoOnly.png" />
+    <None Remove="Images\Pricetags.png" />
     <None Remove="Images\printer.png" />
     <None Remove="Images\remove.png" />
     <None Remove="Images\updated.png" />
@@ -28,9 +29,14 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="DevExpress.Data" Version="24.1.7" />
+	  <ItemGroup>
+		  <None Include="..\..\Publish\Pricetags.png">
+			  <Pack>True</Pack>
+			  <PackagePath>\</PackagePath>
+		  </None>
+	  </ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="DevExpress.Data" Version="24.1.7" />
     <PackageReference Include="DevExpress.Mvvm" Version="24.1.7" />
     <PackageReference Include="DevExpress.Wpf" Version="24.1.7" />
     <PackageReference Include="DevExpress.Wpf.Core" Version="24.1.7" />

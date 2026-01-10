@@ -10,8 +10,8 @@ namespace PriceTags
     {
         public void OnStartup(object sender, StartupEventArgs e)
         {
-            VelopackApp.Build().Run();
             RegisterGlobalExceptionHandlers();
+            VelopackApp.Build().Run();
             try
             {
                 var viewModel = new ViewModels.MainViewModel();
