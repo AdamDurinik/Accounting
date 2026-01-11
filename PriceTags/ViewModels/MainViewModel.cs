@@ -90,8 +90,6 @@ namespace PriceTags.ViewModels
             }
 
             var numberOfPages = (SelectedTags.Count() / MaxItemsPerPage) + (SelectedTags.Count() % MaxItemsPerPage == 0 ? 0 : 1);
-
-
             return $"Počet stránok {numberOfPages} / cenovky {SelectedTags.Count()} / {numberOfPages * MaxItemsPerPage}";
         }
 
