@@ -412,7 +412,7 @@ namespace PriceTags.ViewModels
       
         }
 
-        public async Task CheckForUpdates()
+        private async Task CheckForUpdates()
         {
             try
             {
@@ -420,6 +420,7 @@ namespace PriceTags.ViewModels
                 var mgr = new UpdateManager(new SimpleWebSource(updateUrl));
                 var newVersion = await mgr.CheckForUpdatesAsync();
 
+                CurrentVersion = mgr?.CurrentVersion?.ToString() ?? "Neznáma verzia";
                 IsUpdateAvailable = newVersion != null;
                 UpdateText = IsUpdateAvailable ? $"Nová verzia {newVersion.TargetFullRelease.Version} je dostupná na stiahnutie." : "Aplikácia je aktuálna.";
             }
