@@ -476,7 +476,7 @@ namespace PriceTags.ViewModels
                     UpdateText = $"Sťahovanie: {progress}%";
                 });
 
-                UpdateText = "Aktualizácia pripravená. Reštartujem...";
+                UpdateText = "Aktualizácia pripravená. Reštartujem..."; 
 
                 await Task.Delay(1000);
 
