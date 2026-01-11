@@ -460,7 +460,6 @@ namespace PriceTags.ViewModels
             try
             {
                 var updateUrl = $"https://pricetags.foxhint.com/updates/?t={DateTime.Now.Ticks}";
-
                 var mgr = new UpdateManager(new SimpleWebSource(updateUrl));
 
                 var newVersion = await mgr.CheckForUpdatesAsync();
@@ -494,6 +493,7 @@ namespace PriceTags.ViewModels
                 UpdateText = "Chyba pri sťahovaní.";
             }
         }
+    }
     }
 }
 
