@@ -82,7 +82,7 @@ namespace PriceTags.ViewModels
             set => SetProperty(() => PageCountAndTagCount, value);
         }
 
-        public string GetNewPageCountTagCount()
+        public string GetNewPageCountTagCount() 
         {
             if (!SelectedTags.Any())
             {
