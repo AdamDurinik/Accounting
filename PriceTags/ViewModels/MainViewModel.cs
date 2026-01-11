@@ -459,21 +459,39 @@ namespace PriceTags.ViewModels
         {
             try
             {
-                var updateUrl = "https://pricetags.foxhint.com/updates/";
+                var updateUrl = $"https://pricetags.foxhint.com/updates/?t={DateTime.Now.Ticks}";
+
                 var mgr = new UpdateManager(new SimpleWebSource(updateUrl));
 
                 var newVersion = await mgr.CheckForUpdatesAsync();
                 if (newVersion == null)
                 {
+                    UpdateText = "Aplikácia je aktuálna.";
                     return;
                 }
 
-                await mgr.DownloadUpdatesAsync(newVersion);
+                UpdateText = $"Sťahovanie verzie {newVersion.TargetFullRelease.Version}...";
+
+                await mgr.DownloadUpdatesAsync(newVersion, progress =>
+                {
+                    UpdateText = $"Sťahovanie: {progress}%";
+                });
+
+                UpdateText = "Aktualizácia pripravená. Reštartujem...";
+
+                await Task.Delay(1000);
+
                 mgr.ApplyUpdatesAndRestart(newVersion);
             }
             catch (Exception ex)
             {
-                GetMessageBoxService()?.ShowMessage("Chyba pri aktualizácii: " + ex.ToString(), "Chyba", MessageButton.OK, MessageIcon.Error);
+                GetMessageBoxService()?.ShowMessage(
+                    "Chyba pri aktualizácii: " + ex.Message,
+                    "Chyba",
+                    MessageButton.OK,
+                    MessageIcon.Error);
+
+                UpdateText = "Chyba pri sťahovaní.";
             }
         }
     }
