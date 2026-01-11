@@ -244,9 +244,9 @@
                 </Grid>
             </Border>
 
-            <Label Content="{Binding UpdateText}"/>
+            <Label Content="{Binding UpdateText}" Margin="5,0,0,0"/>
 
-            <Label Grid.Row="2" Grid.Column="0"  Content="{Binding CurrentVersion}"/>
+            <Label Grid.Row="2" Grid.Column="0"  Content="{Binding CurrentVersion}" VerticalAlignment="Bottom" Margin="5,0,0,0s"/>
         </Grid>
     </Grid>
 </UserControl>

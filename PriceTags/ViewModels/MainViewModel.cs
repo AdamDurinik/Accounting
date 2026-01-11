@@ -465,7 +465,7 @@ namespace PriceTags.ViewModels
                 var newVersion = await mgr.CheckForUpdatesAsync();
                 if (newVersion == null)
                 {
-                    UpdateText = "Aplikácia je aktuálna.";
+                    UpdateText = "Aplikácia je aktuálna."; 
                     return; 
                 }
 
