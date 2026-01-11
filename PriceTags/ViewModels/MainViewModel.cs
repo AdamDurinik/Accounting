@@ -494,6 +494,6 @@ namespace PriceTags.ViewModels
             }
         }
     }
-    }
+    
 }
 
