@@ -436,7 +436,7 @@ namespace PriceTags.ViewModels
                 if (HasSavedFile())
                 {
                     SaveItems();
-                    Task.Run(CheckForUpdates);
+                    Task.Run(CheckForUpdates); 
                 }
             }
             catch
