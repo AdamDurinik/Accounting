@@ -466,7 +466,7 @@ namespace PriceTags.ViewModels
                 if (newVersion == null)
                 {
                     UpdateText = "Aplikácia je aktuálna.";
-                    return;
+                    return; 
                 }
 
                 UpdateText = $"Sťahovanie verzie {newVersion.TargetFullRelease.Version}...";
