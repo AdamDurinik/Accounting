@@ -54,7 +54,7 @@ namespace PriceTags.ViewModels
 
         public string CurrentVersion
         {
-            get => GetProperty(() => CurrentVersion);
+            get => GetProperty(() => CurrentVersion) ?? "Neznama verzia";
             set => SetProperty(() => CurrentVersion, value);
         }
 
@@ -427,6 +427,7 @@ namespace PriceTags.ViewModels
             catch(Exception ex)
             {
                 UpdateText = ex.Message;
+                CurrentVersion = "Neznáma verzia";
             }
         }
 
