@@ -126,7 +126,7 @@ namespace PriceTags.ViewModels
 
         public string UpdateText
         {
-            get => GetProperty(() => UpdateText);
+            get => GetProperty(() => UpdateText) ?? "it's okay firend";
             set => SetProperty(() => UpdateText, value);
         }
 
