@@ -54,7 +54,7 @@ namespace PriceTags.ViewModels
 
         public string CurrentVersion
         {
-            get => GetProperty(() => CurrentVersion);
+            get => GetProperty(() => CurrentVersion) ?? "Neznama verzia";
             set => SetProperty(() => CurrentVersion, value);
         }
 
@@ -82,7 +82,7 @@ namespace PriceTags.ViewModels
             set => SetProperty(() => PageCountAndTagCount, value);
         }
 
-        public string GetNewPageCountTagCount()
+        public string GetNewPageCountTagCount() 
         {
             if (!SelectedTags.Any())
             {
@@ -90,8 +90,6 @@ namespace PriceTags.ViewModels
             }
 
             var numberOfPages = (SelectedTags.Count() / MaxItemsPerPage) + (SelectedTags.Count() % MaxItemsPerPage == 0 ? 0 : 1);
-
-
             return $"Počet stránok {numberOfPages} / cenovky {SelectedTags.Count()} / {numberOfPages * MaxItemsPerPage}";
         }
 
@@ -122,6 +120,12 @@ namespace PriceTags.ViewModels
                     GetMessageBoxService()?.ShowMessage("Niečo sa stalo pri nastavovaní vybraných položiek. Urob screenshot a pošli Adamkovi.\n\n" + ex.Message, "Chyba", MessageButton.OK, MessageIcon.Error);
                 }
             }
+        }
+
+        public string UpdateText
+        {
+            get => GetProperty(() => UpdateText) ?? "it's okay friend";
+            set => SetProperty(() => UpdateText, value);
         }
 
         public void SaveItems()
@@ -395,24 +399,34 @@ namespace PriceTags.ViewModels
 
         private void StartAutoSaveTimer()
         {
-            if (_autoSaveTimer != null)
-                return;
+            if (_autoSaveTimer != null) return;
 
             _autoSaveTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromSeconds(10)
+                Interval = TimeSpan.FromSeconds(5)
             };
             _autoSaveTimer.Tick += AutoSaveTimer_Tick;
             _autoSaveTimer.Start();
+      
         }
 
-        public async Task CheckForUpdates()
+        private async Task CheckForUpdates()
         {
-            var updateUrl = "https://pricetags.foxhint.com/updates/";
-            var mgr = new UpdateManager(new SimpleWebSource(updateUrl));
-            var newVersion = await mgr.CheckForUpdatesAsync();
+            try
+            {
+                var updateUrl = "https://pricetags.foxhint.com/updates/";
+                IsUpdateAvailable = true;// newVersion != null;
+                var mgr = new UpdateManager(new SimpleWebSource(updateUrl));
+                var newVersion = await mgr.CheckForUpdatesAsync();
 
-            IsUpdateAvailable = newVersion != null;
+                CurrentVersion = mgr?.CurrentVersion?.ToString() ?? "Neznáma verzia";
+                UpdateText = IsUpdateAvailable ? $"Nová verzia {newVersion.TargetFullRelease.Version} je dostupná na stiahnutie." : "Aplikácia je aktuálna.";
+            }
+            catch(Exception ex)
+            {
+                UpdateText = ex.Message;
+                CurrentVersion = "Neznáma verzia";
+            }
         }
 
         private void AutoSaveTimer_Tick(object? sender, EventArgs e)
@@ -422,7 +436,7 @@ namespace PriceTags.ViewModels
                 if (HasSavedFile())
                 {
                     SaveItems();
-                    Task.Run(CheckForUpdates);
+                    Task.Run(CheckForUpdates); 
                 }
             }
             catch
@@ -445,21 +459,39 @@ namespace PriceTags.ViewModels
         {
             try
             {
-                var updateUrl = "https://pricetags.foxhint.com/updates/";
+                var updateUrl = $"https://pricetags.foxhint.com/updates/?t={DateTime.Now.Ticks}";
+
                 var mgr = new UpdateManager(new SimpleWebSource(updateUrl));
 
                 var newVersion = await mgr.CheckForUpdatesAsync();
                 if (newVersion == null)
                 {
+                    UpdateText = "Aplikácia je aktuálna.";
                     return;
                 }
 
-                await mgr.DownloadUpdatesAsync(newVersion);
+                UpdateText = $"Sťahovanie verzie {newVersion.TargetFullRelease.Version}...";
+
+                await mgr.DownloadUpdatesAsync(newVersion, progress =>
+                {
+                    UpdateText = $"Sťahovanie: {progress}%";
+                });
+
+                UpdateText = "Aktualizácia pripravená. Reštartujem...";
+
+                await Task.Delay(1000);
+
                 mgr.ApplyUpdatesAndRestart(newVersion);
             }
             catch (Exception ex)
             {
-                GetMessageBoxService()?.ShowMessage("Chyba pri aktualizácii: " + ex.Message, "Chyba", MessageButton.OK, MessageIcon.Error);
+                GetMessageBoxService()?.ShowMessage(
+                    "Chyba pri aktualizácii: " + ex.Message,
+                    "Chyba",
+                    MessageButton.OK,
+                    MessageIcon.Error);
+
+                UpdateText = "Chyba pri sťahovaní.";
             }
         }
     }

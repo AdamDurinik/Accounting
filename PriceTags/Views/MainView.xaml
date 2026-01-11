@@ -13,7 +13,7 @@
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
              xmlns:utils="clr-namespace:PriceTags.Utility" 
              xmlns:dx="clr-namespace:DevExpress.Xpf.Core;assembly=DevExpress.Xpf.Core.v24.1"
-             mc:Ignorable="d" Background="Aqua"
+             mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewmodels:MainViewModel}">
     <dxmvvm:Interaction.Behaviors>
         <dx:DialogService DialogWindowStartupLocation="CenterOwner">
@@ -47,21 +47,6 @@
         <DataTemplate x:Key="PriceTagPrintTemplate">
             <Border Grid.Column="1" BorderThickness="1" BorderBrush="LightGray" CornerRadius="4" DataContext="{Binding SelectedPriceTag}" Margin="0,0,0,0"
          VerticalAlignment="Top" Grid.Row="1" x:Name="PreviewContainer" Height="125">
-                <!--<Border.Style>
-         <Style TargetType="Border">
-             <Setter Property="Background" Value="Transparent"/>
-             <Style.Triggers>
-                 <DataTrigger Binding="{Binding ShowImage}" Value="True">
-                     <Setter Property="Background">
-                         <Setter.Value>
-                             <ImageBrush ImageSource="/Images/LogoOnly.png" Stretch="Uniform" Opacity="0.1" />
-                         </Setter.Value>
-                     </Setter>
-                 </DataTrigger>
-             </Style.Triggers>
-         </Style>
-     </Border.Style>-->
-
                 <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Width="250" MaxHeight="105" Height="105">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -143,10 +128,12 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             
@@ -256,6 +243,10 @@
                     </Grid>
                 </Grid>
             </Border>
+
+            <Label Content="{Binding UpdateText}"/>
+
+            <Label Grid.Row="2" Grid.Column="0"  Content="{Binding CurrentVersion}"/>
         </Grid>
     </Grid>
 </UserControl>

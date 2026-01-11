@@ -111,8 +111,9 @@ namespace PriceTags
 
                 File.WriteAllText(filePath, logText);
             }
-            catch
+            catch (Exception exx)
             {
+                exx.ToString();
                 // If logging fails, do not throw; fall back to best-effort display.
             }
 
@@ -134,7 +135,7 @@ namespace PriceTags
                 }
                 // No dispatcher available; avoid throwing.
             }
-            catch
+            catch (Exception exxx)
             {
                 // Swallow any exceptions thrown while attempting to show UI.
             }
