@@ -415,11 +415,11 @@ namespace PriceTags.ViewModels
             try
             {
                 var updateUrl = "https://pricetags.foxhint.com/updates/";
+                IsUpdateAvailable = true;// newVersion != null;
                 var mgr = new UpdateManager(new SimpleWebSource(updateUrl));
                 var newVersion = await mgr.CheckForUpdatesAsync();
 
                 CurrentVersion = mgr?.CurrentVersion?.ToString() ?? "Neznáma verzia";
-                IsUpdateAvailable = newVersion != null;
                 UpdateText = IsUpdateAvailable ? $"Nová verzia {newVersion.TargetFullRelease.Version} je dostupná na stiahnutie." : "Aplikácia je aktuálna.";
             }
             catch(Exception ex)
@@ -473,7 +473,7 @@ namespace PriceTags.ViewModels
             }
             catch (Exception ex)
             {
-                GetMessageBoxService()?.ShowMessage("Chyba pri aktualizácii: " + ex.Message, "Chyba", MessageButton.OK, MessageIcon.Error);
+                GetMessageBoxService()?.ShowMessage("Chyba pri aktualizácii: " + ex.ToString(), "Chyba", MessageButton.OK, MessageIcon.Error);
             }
         }
     }
