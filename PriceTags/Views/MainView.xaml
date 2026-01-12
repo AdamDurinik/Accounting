@@ -124,7 +124,7 @@
                 </StackPanel>
             </Border>
         
-        <Grid Grid.Row="1" VerticalAlignment="Top">
+        <Grid Grid.Row="1" VerticalAlignment="Stretch" Margin="0,0,0,50" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -245,8 +245,25 @@
             </Border>
 
             <Label Content="{Binding UpdateText}" Margin="5,0,0,0"/>
-
-            <Label Grid.Row="2" Grid.Column="0"  Content="{Binding CurrentVersion}" VerticalAlignment="Bottom" Margin="5,0,0,0"/>
+            
         </Grid>
+        
+        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Margin="50,0,10,25">
+            <Label Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left"  Content="{Binding CurrentVersion}" VerticalAlignment="Bottom" Margin="5,0,0,0"/>
+
+            <TextBlock Text="{Binding UpdateStatusText}" HorizontalAlignment="Center" Margin="0,0,0,5" 
+                Visibility="{Binding IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+            <dxe:ProgressBarEdit Height="20" 
+             Minimum="0" 
+             Maximum="100" 
+             Value="{Binding UpdateProgress}" 
+             ContentDisplayMode="Value"
+             Visibility="{Binding IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <dxe:ProgressBarEdit.StyleSettings>
+                    <dxe:ProgressBarStyleSettings />
+                </dxe:ProgressBarEdit.StyleSettings>
+            </dxe:ProgressBarEdit>
+        </StackPanel>
     </Grid>
 </UserControl>

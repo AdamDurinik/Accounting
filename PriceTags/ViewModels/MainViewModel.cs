@@ -128,6 +128,22 @@ namespace PriceTags.ViewModels
             set => SetProperty(() => UpdateText, value);
         }
 
+        public int UpdateProgress
+        {
+            get => GetProperty(() => UpdateProgress);
+            set => SetProperty(() => UpdateProgress, value);
+        }
+        public bool IsDownloading
+        {
+            get => GetProperty(() => IsDownloading);
+            set => SetProperty(() => IsDownloading, value);
+        }
+        public string UpdateStatusText
+        {
+            get => GetProperty(() => UpdateStatusText);
+            set => SetProperty(() => UpdateStatusText, value);
+        }
+
         public void SaveItems()
         {
             var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -454,42 +470,33 @@ namespace PriceTags.ViewModels
             return File.Exists(fullFilePath);
         }
 
-        private async Task UpdateApplication()
+        public async Task UpdateApplication()
         {
             try
             {
-                var updateUrl = $"https://pricetags.foxhint.com/updates/?t={DateTime.Now.Ticks}";
-                var mgr = new UpdateManager(new SimpleWebSource(updateUrl));
-
+                var mgr = new UpdateManager("https://pricetags.foxhint.com/updates/");
                 var newVersion = await mgr.CheckForUpdatesAsync();
-                if (newVersion == null)
+
+                if (newVersion != null)
                 {
-                    UpdateText = "Aplikácia je aktuálna."; 
-                    return; 
+                    IsDownloading = true;
+                    UpdateStatusText = $"Sťahujem verziu {newVersion.TargetFullRelease.Version}...";
+
+                    await mgr.DownloadUpdatesAsync(newVersion, progress =>
+                    {
+                        UpdateProgress = progress;
+                    });
+
+                    UpdateStatusText = "Sťahovanie dokončené. Reštartujem...";
+
+                    await Task.Delay(1000);
+
+                    mgr.ApplyUpdatesAndRestart(newVersion);
                 }
-
-                UpdateText = $"Sťahovanie verzie {newVersion.TargetFullRelease.Version}...";
-
-                await mgr.DownloadUpdatesAsync(newVersion, progress =>
-                {
-                    UpdateText = $"Sťahovanie: {progress}%";
-                });
-
-                UpdateText = "Aktualizácia pripravená. Reštartujem..."; 
-
-                await Task.Delay(1000);
-
-                mgr.ApplyUpdatesAndRestart(newVersion);
             }
             catch (Exception ex)
             {
-                GetMessageBoxService()?.ShowMessage(
-                    "Chyba pri aktualizácii: " + ex.Message,
-                    "Chyba",
-                    MessageButton.OK,
-                    MessageIcon.Error);
-
-                UpdateText = "Chyba pri sťahovaní.";
+                IsDownloading = false;
             }
         }
     }
