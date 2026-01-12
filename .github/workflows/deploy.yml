@@ -32,8 +32,10 @@ jobs:
             --packVersion "1.1.${{ github.run_number }}" `
             --packDir "./out" `
             --mainExe "PriceTags.exe" `
+            --packAuthors "FoxHint, Adam Ďuriník" `
             -o "./releases" `
-            --runtime "win-x64"
+            -r "win-x64" `
+      # --signParams "/f F:\Cert\FoxHintSign.pfx /p '${{ secrets.CERT_PASSWORD }}' /fd sha256"
 
       # 4. Deploy to IIS
       - name: Deploy to IIS
