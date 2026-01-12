@@ -34,8 +34,8 @@ jobs:
             "--packDir", "./out",
             "--mainExe", "PriceTags.exe",
             "--packAuthors", "FoxHint, Adam Ďuriník",
-            "--icon", "F:\actions-runner\_work\Accounting\Resources\PriceTags.ico",
-            "--splash", "F:\actions-runner\_work\Accounting\Resources\loading.gif",
+            "-i", "F:\actions-runner\_work\Accounting\Resources\PriceTags.ico",
+            "-s", "F:\actions-runner\_work\Accounting\Resources\loading.gif",
             "-o", "./releases",
             "-r", "win-x64"
           )
