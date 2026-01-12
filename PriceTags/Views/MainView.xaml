@@ -243,12 +243,9 @@
                     </Grid>
                 </Grid>
             </Border>
-
-            <Label Content="{Binding UpdateText}" Margin="5,0,0,0"/>
-            
         </Grid>
         
-        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Margin="50,0,10,25">
+        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Margin="5,0,10,25">
             <Label Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left"  Content="{Binding CurrentVersion}" VerticalAlignment="Bottom" Margin="5,0,0,0"/>
 
             <TextBlock Text="{Binding UpdateStatusText}" HorizontalAlignment="Center" Margin="0,0,0,5" 
