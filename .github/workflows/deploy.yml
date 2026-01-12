@@ -27,17 +27,20 @@ jobs:
         shell: powershell
         run: |
           $vpkPath = "$env:USERPROFILE\.dotnet\tools\vpk.exe"
-          & $vpkPath pack `
-            --packId "PriceTags" `
-            --packVersion "1.1.${{ github.run_number }}" `
-            --packDir "./out" `
-            --mainExe "PriceTags.exe" `
-            --packAuthors "FoxHint, Adam Ďuriník" `
-            --icon "F:\actions-runner\_work\Accounting\Resources\PriceTags.ico" `        
-            --setupIcon "F:\actions-runner\_work\Accounting\Resources\PriceTags.ico" `   
-            --splashImage "F:\actions-runner\_work\Accounting\Resources\loading.gif" ` 
-            -o "./releases" `
-            -r "win-x64" `
+          $vpkArgs = @(
+            "pack",
+            "--packId", "PriceTags",
+            "--packVersion", "1.1.${{ github.run_number }}",
+            "--packDir", "./out",
+            "--mainExe", "PriceTags.exe",
+            "--packAuthors", "FoxHint, Adam Ďuriník",
+            "--icon", "F:\actions-runner\_work\Accounting\Resources\PriceTags.ico",
+            "--setupIcon", "F:\actions-runner\_work\Accounting\Resources\PriceTags.ico",
+            "--splashImage", "F:\actions-runner\_work\Accounting\Resources\loading.gif",
+            "-o", "./releases",
+            "-r", "win-x64"
+          )
+          & $vpkPath @vpkArgs
       # --signParams "/f F:\Cert\FoxHintSign.pfx /p '${{ secrets.CERT_PASSWORD }}' /fd sha256"
 
       # 4. Deploy to IIS
