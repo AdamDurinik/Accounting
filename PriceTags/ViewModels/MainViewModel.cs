@@ -417,10 +417,9 @@ namespace PriceTags.ViewModels
                 var updateUrl = "https://pricetags.foxhint.com/updates/";
                 var mgr = new UpdateManager(new SimpleWebSource(updateUrl));
                 CurrentVersion = mgr?.CurrentVersion?.ToString() ?? "Neznáma verzia";
-
+                UpdateText = string.Empty;
                 var newVersion = await mgr?.CheckForUpdatesAsync();
                 IsUpdateAvailable = newVersion != null;
-                UpdateText = IsUpdateAvailable ? $"Nová verzia {newVersion.TargetFullRelease.Version} je dostupná na stiahnutie." : "Aplikácia je aktuálna.";
             }
             catch(Exception ex)
             {
