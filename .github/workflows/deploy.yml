@@ -33,6 +33,9 @@ jobs:
             --packDir "./out" `
             --mainExe "PriceTags.exe" `
             --packAuthors "FoxHint, Adam Ďuriník" `
+            --icon "F:\actions-runner\_work\Accounting\Resources\PriceTags.ico" `         # Sets the .exe and desktop icon
+            --setupIcon "F:\actions-runner\_work\Accounting\Resources\PriceTags.ico" `    # Sets the Setup.exe icon
+            --splashImage "F:\actions-runner\_work\Accounting\Resources\loading.gif" `  # The image shown during install
             -o "./releases" `
             -r "win-x64" `
       # --signParams "/f F:\Cert\FoxHintSign.pfx /p '${{ secrets.CERT_PASSWORD }}' /fd sha256"
