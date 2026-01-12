@@ -218,7 +218,7 @@
                                TextWrapping="Wrap" utils:AutoFontScaler.IsEnabled="True" FontFamily="standard-block" />
                     
                     <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0" Margin="0,0,0,-10" VerticalAlignment="Bottom">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0" 
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0"  
                                     >
                             <TextBlock Text="{Binding Quantity}" FontSize="10" FontWeight="Bold" />
                             <TextBlock Text="" />
