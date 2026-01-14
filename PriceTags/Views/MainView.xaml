@@ -247,7 +247,6 @@
         
         <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Margin="5,0,10,25">
             <Label Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left"  Content="{Binding CurrentVersion}" VerticalAlignment="Bottom" Margin="5,0,0,0"/>
-            <Label Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left"  Content="Ola toto je test" VerticalAlignment="Bottom" Margin="5,0,0,0"/>
 
             <TextBlock Text="{Binding UpdateStatusText}" HorizontalAlignment="Center" Margin="0,0,0,5" 
                 Visibility="{Binding IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
