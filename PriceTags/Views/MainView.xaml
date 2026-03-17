@@ -13,8 +13,9 @@
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
              xmlns:utils="clr-namespace:PriceTags.Utility" 
              xmlns:dx="clr-namespace:DevExpress.Xpf.Core;assembly=DevExpress.Xpf.Core.v24.1"
-             mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance viewmodels:MainViewModel}">
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance viewmodels:MainViewModel}"
+             Background="#F5F7FA">
     <dxmvvm:Interaction.Behaviors>
         <dx:DialogService DialogWindowStartupLocation="CenterOwner">
             <dx:DialogService.ViewTemplate>
@@ -93,10 +94,11 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
-        <Border BorderBrush="LightGray" BorderThickness="2" CornerRadius="4" Padding="6"
-                   Margin="10,0,10,4" Background="White" Grid.Row="0">         
+        <Border BorderBrush="#E0E0E0" BorderThickness="0,0,0,1" Padding="6"
+                   Margin="0,0,0,0" Background="White" Grid.Row="0">         
                 <StackPanel>
                     <dxb:BarManager>
                         <dxb:BarManager.Bars>
@@ -124,7 +126,7 @@
                 </StackPanel>
             </Border>
         
-        <Grid Grid.Row="1" VerticalAlignment="Stretch" Margin="0,0,0,50" >
+        <Grid Grid.Row="1" VerticalAlignment="Stretch" Margin="10,5,10,5" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -199,9 +201,12 @@
                 </dxg:GridColumn>
             </dxg:GridControl>
 
-            <Border Grid.Column="1" BorderThickness="1" BorderBrush="LightGray" CornerRadius="4" 
+            <TextBlock Grid.Column="1" Grid.Row="0" Text="Náhľad" FontSize="11" Foreground="#888888"
+                       Margin="10,0,10,2" VerticalAlignment="Bottom" />
+
+            <Border Grid.Column="1" BorderThickness="1" BorderBrush="#D0D0D0"
                     DataContext="{Binding SelectedPriceTag}" Margin="10,0,10,0"
-                    VerticalAlignment="Top" Grid.Row="1" x:Name="PreviewContainer" Height="125">
+                    VerticalAlignment="Top" Grid.Row="1" x:Name="PreviewContainer" Height="140" Background="White">
 
                 <Grid HorizontalAlignment="Center" VerticalAlignment="Top" Width="250" MaxHeight="105" Height="105">
                     <Grid.ColumnDefinitions>
@@ -245,8 +250,8 @@
             </Border>
         </Grid>
         
-        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Margin="5,0,10,25">
-            <Label Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left"  Content="{Binding CurrentVersion}" VerticalAlignment="Bottom" Margin="5,0,0,0"/>
+        <StackPanel Grid.Row="2" VerticalAlignment="Bottom" Margin="5,4,10,6">
+            <Label HorizontalAlignment="Left" Content="{Binding CurrentVersion}" VerticalAlignment="Bottom" Margin="5,0,0,0"/>
 
             <TextBlock Text="{Binding UpdateStatusText}" HorizontalAlignment="Center" Margin="0,0,0,5" 
                 Visibility="{Binding IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}"/>

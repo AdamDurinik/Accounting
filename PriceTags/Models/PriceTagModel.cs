@@ -76,7 +76,7 @@ namespace PriceTags.Models
             set => SetProperty(() => LastChange, value);
         }
 
-        public string PricePerUnit => $"Jenot. cena = {PricePerUnitSize:n2}€/{GetUnitSize()}";
+        public string PricePerUnit => $"Jednot. cena = {PricePerUnitSize:n2}€/{GetUnitSize()}";
 
         public double PricePerUnitSize
         {
@@ -117,10 +117,10 @@ namespace PriceTags.Models
         {
             QuantityType.WeightInGrams => "100g",
             QuantityType.WeightInKilograms => "1kg",
-            QuantityType.VolumeInMilliliters => "100mil",
+            QuantityType.VolumeInMilliliters => "100 ml",
             QuantityType.VolumeInLiters => "1l",
-            QuantityType.Count => "1kus",
-            QuantityType.Packets => "1balik",
+            QuantityType.Count => "1 ks",
+            QuantityType.Packets => "1 bal.",
             QuantityType.Boxes => "1box",
             _ => ""
         };

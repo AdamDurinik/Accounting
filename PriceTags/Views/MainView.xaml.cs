@@ -20,6 +20,12 @@ namespace PriceTags.Views
         private void OnLoaded(object sender, System.Windows.RoutedEventArgs e)
         {
             ((INotifyCollectionChanged)PriceTagGrid.ItemsSource).CollectionChanged += OnCollectionChanged;
+            Unloaded += OnUnloaded;
+        }
+
+        private void OnUnloaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            ((INotifyCollectionChanged)PriceTagGrid.ItemsSource).CollectionChanged -= OnCollectionChanged;
         }
 
         private void OnSelectedCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -30,8 +36,11 @@ namespace PriceTags.Views
 
         private void OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            var viewModel = DataContext as ViewModels.MainViewModel;
-            viewModel.PriceTags.ForEach(t => t.Id = viewModel.PriceTags.IndexOf(t) + 1);
+            App.Current.Dispatcher.BeginInvoke(() =>
+            {
+                var viewModel = DataContext as ViewModels.MainViewModel;
+                viewModel.PriceTags.ForEach(t => t.Id = viewModel.PriceTags.IndexOf(t) + 1);
+            });
         }
 
         private void OnSelectionChanged(object? sender, object e)

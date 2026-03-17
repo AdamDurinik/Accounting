@@ -54,7 +54,7 @@ namespace PriceTags.ViewModels
 
         public string CurrentVersion
         {
-            get => GetProperty(() => CurrentVersion) ?? "Neznama verzia";
+            get => GetProperty(() => CurrentVersion) ?? "Neznáma verzia";
             set => SetProperty(() => CurrentVersion, value);
         }
 
@@ -317,7 +317,7 @@ namespace PriceTags.ViewModels
 
             try
             {
-                GetDialogService().ShowDialog(new List<UICommand>() { okCommand, cancelCommand }, "Nápovedy Názvou", viewModel);
+                GetDialogService().ShowDialog(new List<UICommand>() { okCommand, cancelCommand }, "Nápovedy názvov", viewModel);
                 Names.Clear();
                 viewModel.Names.Select(n => n.Name).ForEach(n => Names.Add(n));
             }
