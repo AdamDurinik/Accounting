@@ -372,7 +372,7 @@
                             <!-- top line segment -->
                             <Rectangle Grid.Row="1" Width="1" Fill="#999" HorizontalAlignment="Left" Margin="7,0,0,0"/>
                             <!-- label -->
-                            <TextBlock Grid.Row="2" FontSize="9" Foreground="#999" HorizontalAlignment="Center"
+                            <TextBlock Grid.Row="2" FontSize="9" Foreground="#999" HorizontalAlignment="Left"
                                        Text="{Binding TagHeightMm, StringFormat='{}{0} mm'}">
                                 <TextBlock.LayoutTransform>
                                     <RotateTransform Angle="270"/>
@@ -399,7 +399,7 @@
                             <!-- left line segment -->
                             <Rectangle Grid.Column="1" Height="1" Fill="#999" VerticalAlignment="Top" Margin="0,7,0,0"/>
                             <!-- label -->
-                            <TextBlock Grid.Column="2" FontSize="9" Foreground="#999" VerticalAlignment="Center" HorizontalAlignment="Center"
+                            <TextBlock Grid.Column="2" FontSize="9" Foreground="#999" VerticalAlignment="Top" HorizontalAlignment="Center"
                                        Text="{Binding TagWidthMm, StringFormat='{}{0} mm'}"/>
                             <!-- right line segment -->
                             <Rectangle Grid.Column="3" Height="1" Fill="#999" VerticalAlignment="Top" Margin="0,7,0,0"/>
