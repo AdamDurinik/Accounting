@@ -298,33 +298,6 @@
                             <RowDefinition Height="20"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Border thickness indicator (left side) -->
-                        <Grid Grid.Row="0" Grid.Column="0" Width="30"
-                              Height="{Binding TagHeight}" VerticalAlignment="Top">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <!-- top tick -->
-                            <Rectangle Grid.Row="0" Width="8" Height="1" Fill="#999" HorizontalAlignment="Right" Margin="0,0,4,0"/>
-                            <!-- top line -->
-                            <Rectangle Grid.Row="1" Width="1" Fill="#999" HorizontalAlignment="Right" Margin="0,0,7,0"/>
-                            <!-- label -->
-                            <TextBlock Grid.Row="2" FontSize="9" Foreground="#999" HorizontalAlignment="Center"
-                                       Text="{Binding BorderThicknessValue, StringFormat='{}{0:N1} pt'}">
-                                <TextBlock.LayoutTransform>
-                                    <RotateTransform Angle="270"/>
-                                </TextBlock.LayoutTransform>
-                            </TextBlock>
-                            <!-- bottom line -->
-                            <Rectangle Grid.Row="3" Width="1" Fill="#999" HorizontalAlignment="Right" Margin="0,0,7,0"/>
-                            <!-- bottom tick -->
-                            <Rectangle Grid.Row="4" Width="8" Height="1" Fill="#999" HorizontalAlignment="Right" Margin="0,0,4,0"/>
-                        </Grid>
-
                         <!-- Tag preview -->
                         <Border x:Name="PreviewBorder"
                                 Grid.Row="0" Grid.Column="1"
