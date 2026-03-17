@@ -62,7 +62,7 @@ namespace PriceTags.ViewModels
                 {
                     ApplyTo(_settings);
                     _settings.Save();
-                    IsDirty = false;
+                    IsDirty = false; 
                     CloseRequested?.Invoke();
                 }
                 else if (result == MessageResult.No)
