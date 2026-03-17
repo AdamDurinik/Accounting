@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using PriceTags.Models;
+using System.IO;
 using System.Windows;
 using System.Windows.Threading;
 using Velopack;
@@ -10,7 +11,10 @@ namespace PriceTags
     {
         public void OnStartup(object sender, StartupEventArgs e)
         {
+            DevExpress.Xpf.Core.ApplicationThemeHelper.ApplicationThemeName = "Win11Light";
             RegisterGlobalExceptionHandlers();
+            var settings = PrintSettings.Load();
+            Resources["AppSettings"] = settings;
             VelopackApp.Build().Run();
             try
             {

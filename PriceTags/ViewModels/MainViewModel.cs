@@ -30,6 +30,7 @@ namespace PriceTags.ViewModels
             HintCommand = new DelegateCommand(ShowHintWindow);
             DeleteSelectedCommand = new DelegateCommand(DeleteSelected, () => SelectedTags.Any());
             UpdateApplicationCommand = new DelegateCommand(() => UpdateApplication());
+            SettingsCommand = new DelegateCommand(ShowSettingsWindow);
             Names = new ObservableCollection<string>(HintViewModel.GetNamesFromFile());
             LoadItems();
 
@@ -62,6 +63,7 @@ namespace PriceTags.ViewModels
         public DelegateCommand HintCommand { get; }
         public DelegateCommand DeleteSelectedCommand { get; }
         public DelegateCommand UpdateApplicationCommand { get; }
+        public DelegateCommand SettingsCommand { get; }
 
         public ICommand DeleteRowCommand => new DelegateCommand<PriceTagModel>(RemoveItem);
         public ICommand SaveCommand => new DelegateCommand(SaveItems);
@@ -114,6 +116,8 @@ namespace PriceTags.ViewModels
                 try
                 {
                     SetProperty(() => SelectedTags, value);
+                    PrintCommand?.RaiseCanExecuteChanged();
+                    DeleteSelectedCommand?.RaiseCanExecuteChanged();
                 }
                 catch (Exception ex)
                 {
@@ -232,8 +236,9 @@ namespace PriceTags.ViewModels
                 var mainView = (FrameworkElement)System.Windows.Application.Current.MainWindow.Content;
                 var template = (DataTemplate)mainView.Resources["PriceTagPrintTemplate"];
 
-                const double itemWidth = 250;
-                const double itemHeight = 145;
+                var settings = (PrintSettings)System.Windows.Application.Current.Resources["AppSettings"];
+                double itemWidth = settings.TagWidth;
+                double itemHeight = settings.TagHeight + 20;
 
                 var itemsPerRow = (int)(availableW / itemWidth);
                 var rowsPerPage = (int)(availableH / itemHeight);
@@ -296,6 +301,37 @@ namespace PriceTags.ViewModels
             catch (Exception ex)
             {
                 GetMessageBoxService()?.ShowMessage("Niečo sa stalo pri tlači cenoviek. \n Asi nieje nič vybrané, ak áno; urob screenshot a pošli Adamkovi.\n\n" + ex.Message, "Chyba", MessageButton.OK, MessageIcon.Error);
+            }
+        }
+
+        private void ShowSettingsWindow()
+        {
+            try
+            {
+                var vm = new SettingsViewModel();
+                var view = new Views.SettingsView { DataContext = vm };
+                var win = new System.Windows.Window
+                {
+                    Title = "Nastavenia tlače",
+                    Content = view,
+                    SizeToContent = System.Windows.SizeToContent.WidthAndHeight,
+                    ResizeMode = System.Windows.ResizeMode.NoResize,
+                    WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner,
+                    Owner = System.Windows.Application.Current.MainWindow
+                };
+                bool allowClose = false;
+                vm.CloseRequested = () => { allowClose = true; win.Close(); };
+                win.Closing += (_, e) =>
+                {
+                    if (allowClose || !vm.IsDirty) return;
+                    e.Cancel = true;
+                    vm.CancelCommand.Execute(null);
+                };
+                win.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                GetMessageBoxService()?.ShowMessage("Niečo sa stalo pri zobrazovaní nastavení.\n\n" + ex.Message, "Chyba", MessageButton.OK, MessageIcon.Error);
             }
         }
 

@@ -19,6 +19,7 @@
     <None Remove="Images\Pricetags.png" />
     <None Remove="Images\printer.png" />
     <None Remove="Images\remove.png" />
+    <None Remove="Images\settings.png" />
     <None Remove="Images\updated.png" />
   </ItemGroup>
 
@@ -35,6 +36,8 @@
     <PackageReference Include="DevExpress.Wpf" Version="24.1.7" />
     <PackageReference Include="DevExpress.Wpf.Core" Version="24.1.7" />
     <PackageReference Include="DevExpress.Wpf.Grid" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Wpf.Themes.Win11Dark" Version="24.1.7" />
+    <PackageReference Include="DevExpress.Wpf.Themes.Win11Light" Version="24.1.7" />
     <PackageReference Include="Velopack" Version="0.0.1298" />
   </ItemGroup>
 
@@ -72,6 +75,9 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\save.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\settings.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\updated.png" />

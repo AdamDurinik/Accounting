@@ -1,0 +1,457 @@
+<UserControl x:Class="PriceTags.Views.SettingsView"
+             x:Name="Root"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:dx="clr-namespace:DevExpress.Xpf.Core;assembly=DevExpress.Xpf.Core.v24.1"
+             xmlns:ui="clr-namespace:DevExpress.Mvvm.UI;assembly=DevExpress.Xpf.Core.v24.1"
+             xmlns:enums="clr-namespace:PriceTags.Enums"
+             xmlns:utils="clr-namespace:PriceTags.Utility"
+             xmlns:viewmodels="clr-namespace:PriceTags.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance viewmodels:SettingsViewModel}"
+             Background="{StaticResource AppBgBrush}">
+    <dxmvvm:Interaction.Behaviors>
+        <dx:DXMessageBoxService />
+    </dxmvvm:Interaction.Behaviors>
+    <UserControl.Resources>
+        <dxmvvm:ObjectToObjectConverter x:Key="QuantityTypeToStringConverter">
+            <ui:MapItem Source="{x:Static enums:QuantityType.WeightInGrams}" Target="g" />
+            <ui:MapItem Source="{x:Static enums:QuantityType.WeightInKilograms}" Target="kg" />
+            <ui:MapItem Source="{x:Static enums:QuantityType.VolumeInMilliliters}" Target="ml" />
+            <ui:MapItem Source="{x:Static enums:QuantityType.VolumeInLiters}" Target="l" />
+            <ui:MapItem Source="{x:Static enums:QuantityType.Count}" Target="ks" />
+            <ui:MapItem Source="{x:Static enums:QuantityType.Packets}" Target="bal" />
+            <ui:MapItem Source="{x:Static enums:QuantityType.Boxes}" Target="box" />
+        </dxmvvm:ObjectToObjectConverter>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <!-- Color swatch ToggleButton style -->
+        <Style x:Key="ColorSwatch" TargetType="ToggleButton">
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderBrush" Value="#94A3B8"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border CornerRadius="5"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Background="{TemplateBinding Background}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Main content row: left settings + right preview -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: settings -->
+            <StackPanel Grid.Column="0">
+
+                <!-- Rozmery -->
+                <Border Background="White" CornerRadius="10" BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1" Padding="16" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="Rozmery cenovky" Style="{StaticResource SectionHeader}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="110"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="34"/>
+                                <RowDefinition Height="8"/>
+                                <RowDefinition Height="34"/>
+                                <RowDefinition Height="8"/>
+                                <RowDefinition Height="34"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Šírka (mm)" Style="{StaticResource FieldLabel}"/>
+                            <dxe:SpinEdit Grid.Row="0" Grid.Column="1"
+                                          EditValue="{Binding TagWidthMm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          MinValue="20" MaxValue="190" Increment="1"
+                                          MaskType="Numeric" Mask="N0"/>
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Výška (mm)" Style="{StaticResource FieldLabel}"/>
+                            <dxe:SpinEdit Grid.Row="2" Grid.Column="1"
+                                          EditValue="{Binding TagHeightMm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          MinValue="20" MaxValue="200" Increment="1"
+                                          MaskType="Numeric" Mask="N0"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Písmo -->
+                <Border Background="White" CornerRadius="10" BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1" Padding="16" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="Písmo" Style="{StaticResource SectionHeader}"/>
+
+                        <!-- Názov row -->
+                        <TextBlock Text="Názov" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,4,0,2"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <dxe:ComboBoxEdit Grid.Column="0" EditValue="{Binding NameFontFamily, Mode=TwoWay}"
+                                              ItemsSource="{Binding SystemFonts}"/>
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                <ToggleButton x:Name="NameColorToggle" Style="{StaticResource ColorSwatch}">
+                                    <ToggleButton.Background>
+                                        <SolidColorBrush Color="{Binding NameColor, Mode=OneWay}"/>
+                                    </ToggleButton.Background>
+                                </ToggleButton>
+                                <Popup IsOpen="{Binding IsChecked, ElementName=NameColorToggle, Mode=TwoWay}"
+                                       StaysOpen="False" Placement="Bottom"
+                                       PlacementTarget="{Binding ElementName=NameColorToggle}">
+                                    <Border Background="White" BorderBrush="{StaticResource BorderBrush}"
+                                            BorderThickness="1" CornerRadius="8" Padding="8">
+                                        <dxe:ColorEdit EditValue="{Binding NameColor, Mode=TwoWay}"
+                                                       ShowBorder="False" Width="220"/>
+                                    </Border>
+                                </Popup>
+                            </StackPanel>
+                        </Grid>
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,8">
+                            <CheckBox Content="Tučné"  IsChecked="{Binding NameFontBold,   Mode=TwoWay}" Margin="0,0,16,0"/>
+                            <CheckBox Content="Kurzíva" IsChecked="{Binding NameFontItalic, Mode=TwoWay}"/>
+                        </StackPanel>
+
+                        <!-- Cena row -->
+                        <TextBlock Text="Cena" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,2"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <dxe:ComboBoxEdit Grid.Column="0" EditValue="{Binding PriceFontFamily, Mode=TwoWay}"
+                                              ItemsSource="{Binding SystemFonts}"/>
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                <ToggleButton x:Name="PriceColorToggle" Style="{StaticResource ColorSwatch}">
+                                    <ToggleButton.Background>
+                                        <SolidColorBrush Color="{Binding PriceColor, Mode=OneWay}"/>
+                                    </ToggleButton.Background>
+                                </ToggleButton>
+                                <Popup IsOpen="{Binding IsChecked, ElementName=PriceColorToggle, Mode=TwoWay}"
+                                       StaysOpen="False" Placement="Bottom"
+                                       PlacementTarget="{Binding ElementName=PriceColorToggle}">
+                                    <Border Background="White" BorderBrush="{StaticResource BorderBrush}"
+                                            BorderThickness="1" CornerRadius="8" Padding="8">
+                                        <dxe:ColorEdit EditValue="{Binding PriceColor, Mode=TwoWay}"
+                                                       ShowBorder="False" Width="220"/>
+                                    </Border>
+                                </Popup>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Popis row -->
+                        <TextBlock Text="Popis" FontSize="11" Foreground="{StaticResource TextMutedBrush}" Margin="0,8,0,2"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <dxe:ComboBoxEdit Grid.Column="0" EditValue="{Binding TextFontFamily, Mode=TwoWay}"
+                                              ItemsSource="{Binding SystemFonts}"/>
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                <ToggleButton x:Name="DescColorToggle" Style="{StaticResource ColorSwatch}">
+                                    <ToggleButton.Background>
+                                        <SolidColorBrush Color="{Binding TextColor, Mode=OneWay}"/>
+                                    </ToggleButton.Background>
+                                </ToggleButton>
+                                <Popup IsOpen="{Binding IsChecked, ElementName=DescColorToggle, Mode=TwoWay}"
+                                       StaysOpen="False" Placement="Bottom"
+                                       PlacementTarget="{Binding ElementName=DescColorToggle}">
+                                    <Border Background="White" BorderBrush="{StaticResource BorderBrush}"
+                                            BorderThickness="1" CornerRadius="8" Padding="8">
+                                        <dxe:ColorEdit EditValue="{Binding TextColor, Mode=TwoWay}"
+                                                       ShowBorder="False" Width="220"/>
+                                    </Border>
+                                </Popup>
+                            </StackPanel>
+                        </Grid>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- Farby -->
+                <Border Background="White" CornerRadius="10" BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1" Padding="16" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="Farby" Style="{StaticResource SectionHeader}"/>
+
+                        <!-- Background color -->
+                        <Grid Height="34" Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="110"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Pozadie" Style="{StaticResource FieldLabel}"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <ToggleButton x:Name="BgToggle" Style="{StaticResource ColorSwatch}">
+                                    <ToggleButton.Background>
+                                        <SolidColorBrush Color="{Binding BackgroundColor, Mode=OneWay}"/>
+                                    </ToggleButton.Background>
+                                </ToggleButton>
+                                <Popup IsOpen="{Binding IsChecked, ElementName=BgToggle, Mode=TwoWay}"
+                                       StaysOpen="False" Placement="Bottom"
+                                       PlacementTarget="{Binding ElementName=BgToggle}">
+                                    <Border Background="White" BorderBrush="{StaticResource BorderBrush}"
+                                            BorderThickness="1" CornerRadius="8" Padding="8">
+                                        <dxe:ColorEdit EditValue="{Binding BackgroundColor, Mode=TwoWay}"
+                                                       ShowBorder="False" Width="220"/>
+                                    </Border>
+                                </Popup>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Border color -->
+                        <Grid Height="34" Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="110"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Orámovanie" Style="{StaticResource FieldLabel}"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <ToggleButton x:Name="BorderToggle" Style="{StaticResource ColorSwatch}">
+                                    <ToggleButton.Background>
+                                        <SolidColorBrush Color="{Binding BorderColor, Mode=OneWay}"/>
+                                    </ToggleButton.Background>
+                                </ToggleButton>
+                                <Popup IsOpen="{Binding IsChecked, ElementName=BorderToggle, Mode=TwoWay}"
+                                       StaysOpen="False" Placement="Bottom"
+                                       PlacementTarget="{Binding ElementName=BorderToggle}">
+                                    <Border Background="White" BorderBrush="{StaticResource BorderBrush}"
+                                            BorderThickness="1" CornerRadius="8" Padding="8">
+                                        <dxe:ColorEdit EditValue="{Binding BorderColor, Mode=TwoWay}"
+                                                       ShowBorder="False" Width="220"/>
+                                    </Border>
+                                </Popup>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Text color -->
+                        <Grid Height="34">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="110"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Text" Style="{StaticResource FieldLabel}"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <ToggleButton x:Name="TextToggle" Style="{StaticResource ColorSwatch}">
+                                    <ToggleButton.Background>
+                                        <SolidColorBrush Color="{Binding TextColor, Mode=OneWay}"/>
+                                    </ToggleButton.Background>
+                                </ToggleButton>
+                                <Popup IsOpen="{Binding IsChecked, ElementName=TextToggle, Mode=TwoWay}"
+                                       StaysOpen="False" Placement="Bottom"
+                                       PlacementTarget="{Binding ElementName=TextToggle}">
+                                    <Border Background="White" BorderBrush="{StaticResource BorderBrush}"
+                                            BorderThickness="1" CornerRadius="8" Padding="8">
+                                        <dxe:ColorEdit EditValue="{Binding TextColor, Mode=TwoWay}"
+                                                       ShowBorder="False" Width="220"/>
+                                    </Border>
+                                </Popup>
+                            </StackPanel>
+                        </Grid>
+
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+
+            <!-- Right: live preview -->
+            <Border Grid.Column="2" Background="White" CornerRadius="10"
+                    BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Padding="16"
+                    VerticalAlignment="Top">
+                <StackPanel>
+                    <!-- Dimension arrows wrapper -->
+                    <Grid HorizontalAlignment="Left">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="24"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="20"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Border thickness indicator (left side) -->
+                        <Grid Grid.Row="0" Grid.Column="0" Width="30"
+                              Height="{Binding TagHeight}" VerticalAlignment="Top">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <!-- top tick -->
+                            <Rectangle Grid.Row="0" Width="8" Height="1" Fill="#999" HorizontalAlignment="Right" Margin="0,0,4,0"/>
+                            <!-- top line -->
+                            <Rectangle Grid.Row="1" Width="1" Fill="#999" HorizontalAlignment="Right" Margin="0,0,7,0"/>
+                            <!-- label -->
+                            <TextBlock Grid.Row="2" FontSize="9" Foreground="#999" HorizontalAlignment="Center"
+                                       Text="{Binding BorderThicknessValue, StringFormat='{}{0:N1} pt'}">
+                                <TextBlock.LayoutTransform>
+                                    <RotateTransform Angle="270"/>
+                                </TextBlock.LayoutTransform>
+                            </TextBlock>
+                            <!-- bottom line -->
+                            <Rectangle Grid.Row="3" Width="1" Fill="#999" HorizontalAlignment="Right" Margin="0,0,7,0"/>
+                            <!-- bottom tick -->
+                            <Rectangle Grid.Row="4" Width="8" Height="1" Fill="#999" HorizontalAlignment="Right" Margin="0,0,4,0"/>
+                        </Grid>
+
+                        <!-- Tag preview -->
+                        <Border x:Name="PreviewBorder"
+                                Grid.Row="0" Grid.Column="1"
+                                BorderThickness="{Binding TagBorderThickness}"
+                                CornerRadius="4"
+                                MouseWheel="PreviewBorder_MouseWheel"
+                                Width="{Binding TagWidth}"
+                                Height="{Binding TagHeight}"
+                                Background="{Binding BackgroundBrush}"
+                                BorderBrush="{Binding PreviewBorderBrush}">
+                            <Grid DataContext="{Binding SampleTag}"
+                                  HorizontalAlignment="Center" VerticalAlignment="Top"
+                                  Width="{Binding ElementName=Root, Path=DataContext.TagWidth}"
+                                  MaxHeight="{Binding ElementName=Root, Path=DataContext.InnerGridHeight}"
+                                  Height="{Binding ElementName=Root, Path=DataContext.InnerGridHeight}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="{Binding NameCapital, NotifyOnTargetUpdated=True}" FontSize="36" TextAlignment="Left" Margin="10,5,0,0"
+                                           Height="80" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Top"
+                                           TextWrapping="Wrap" utils:AutoFontScaler.IsEnabled="True" Background="Transparent"
+                                           FontFamily="{Binding ElementName=Root, Path=DataContext.NameFontFamilyObj}"
+                                           FontWeight="{Binding ElementName=Root, Path=DataContext.NameFontWeightObj}"
+                                           FontStyle="{Binding ElementName=Root, Path=DataContext.NameFontStyleObj}"
+                                           Foreground="{Binding ElementName=Root, Path=DataContext.NameBrush}"/>
+                                <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0" Margin="0,0,0,-10" VerticalAlignment="Bottom">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
+                                        <TextBlock Text="{Binding Quantity}" FontSize="10" FontWeight="Bold" Background="Transparent"
+                                                   FontFamily="{Binding ElementName=Root, Path=DataContext.TextFontFamilyObj}"
+                                                   Foreground="{Binding ElementName=Root, Path=DataContext.TextBrush}"/>
+                                        <TextBlock Text="" Background="Transparent"/>
+                                        <TextBlock Text="{Binding QuantityType, Converter={StaticResource QuantityTypeToStringConverter}}" FontSize="10" FontWeight="Bold" Background="Transparent"
+                                                   FontFamily="{Binding ElementName=Root, Path=DataContext.TextFontFamilyObj}"
+                                                   Foreground="{Binding ElementName=Root, Path=DataContext.TextBrush}"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0" Width="150">
+                                        <TextBlock Text="{Binding PricePerUnit}" FontSize="10" FontWeight="Bold" Background="Transparent"
+                                                   FontFamily="{Binding ElementName=Root, Path=DataContext.TextFontFamilyObj}"
+                                                   Foreground="{Binding ElementName=Root, Path=DataContext.TextBrush}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <Grid Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Margin="0,0,10,-20" VerticalAlignment="Bottom" Background="Transparent" HorizontalAlignment="Right">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="Transparent">
+                                        <TextBlock Text="{Binding FullEuroPrice}" FontSize="43" FontWeight="Bold" VerticalAlignment="Bottom" Margin="0,0,0,0" Background="Transparent"
+                                                   FontFamily="{Binding ElementName=Root, Path=DataContext.PriceFontFamilyObj}"
+                                                   Foreground="{Binding ElementName=Root, Path=DataContext.PriceBrush}"/>
+                                        <TextBlock Text="{Binding CentsPrice, StringFormat='.{0:00} €'}" FontSize="25" FontWeight="Bold" VerticalAlignment="Bottom" Margin="0,0,0,5" Background="Transparent"
+                                                   FontFamily="{Binding ElementName=Root, Path=DataContext.PriceFontFamilyObj}"
+                                                   Foreground="{Binding ElementName=Root, Path=DataContext.PriceBrush}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </Border>
+
+                        <!-- Height dimension arrow (right side) -->
+                        <Grid Grid.Row="0" Grid.Column="2" Width="24"
+                              Height="{Binding TagHeight}" VerticalAlignment="Top">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <!-- top tick -->
+                            <Rectangle Grid.Row="0" Width="8" Height="1" Fill="#999" HorizontalAlignment="Left" Margin="4,0,0,0"/>
+                            <!-- top line segment -->
+                            <Rectangle Grid.Row="1" Width="1" Fill="#999" HorizontalAlignment="Left" Margin="7,0,0,0"/>
+                            <!-- label -->
+                            <TextBlock Grid.Row="2" FontSize="9" Foreground="#999" HorizontalAlignment="Center"
+                                       Text="{Binding TagHeightMm, StringFormat='{}{0} mm'}">
+                                <TextBlock.LayoutTransform>
+                                    <RotateTransform Angle="270"/>
+                                </TextBlock.LayoutTransform>
+                            </TextBlock>
+                            <!-- bottom line segment -->
+                            <Rectangle Grid.Row="3" Width="1" Fill="#999" HorizontalAlignment="Left" Margin="7,0,0,0"/>
+                            <!-- bottom tick -->
+                            <Rectangle Grid.Row="4" Width="8" Height="1" Fill="#999" HorizontalAlignment="Left" Margin="4,0,0,0"/>
+                        </Grid>
+
+                        <!-- Width dimension arrow (bottom) -->
+                        <Grid Grid.Row="1" Grid.Column="1"
+                              Width="{Binding TagWidth}" Height="20" HorizontalAlignment="Left">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <!-- left tick -->
+                            <Rectangle Grid.Column="0" Width="1" Height="8" Fill="#999" VerticalAlignment="Top" Margin="0,4,0,0"/>
+                            <!-- left line segment -->
+                            <Rectangle Grid.Column="1" Height="1" Fill="#999" VerticalAlignment="Top" Margin="0,7,0,0"/>
+                            <!-- label -->
+                            <TextBlock Grid.Column="2" FontSize="9" Foreground="#999" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                       Text="{Binding TagWidthMm, StringFormat='{}{0} mm'}"/>
+                            <!-- right line segment -->
+                            <Rectangle Grid.Column="3" Height="1" Fill="#999" VerticalAlignment="Top" Margin="0,7,0,0"/>
+                            <!-- right tick -->
+                            <Rectangle Grid.Column="4" Width="1" Height="8" Fill="#999" VerticalAlignment="Top" Margin="0,4,0,0"/>
+                        </Grid>
+
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Footer: Reset / Cancel / Save -->
+        <Border Grid.Row="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0"
+                Padding="0,12,0,0" Margin="0,10,0,0">
+            <DockPanel>
+                <Button Content="Obnoviť predvolené" Command="{Binding ResetCommand}"
+                        Style="{StaticResource DangerButton}" DockPanel.Dock="Left"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Zrušiť" Command="{Binding CancelCommand}"
+                            Style="{StaticResource GhostButtonLight}" Margin="0,0,8,0"/>
+                    <Button Content="Uložiť" Command="{Binding SaveCommand}"
+                            Style="{StaticResource AccentButton}"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+    </Grid>
+</UserControl>
