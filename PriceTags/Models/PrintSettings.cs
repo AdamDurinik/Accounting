@@ -40,7 +40,7 @@ namespace PriceTags.Models
         // Computed DIP values — used by all existing XAML bindings and print code
         public double TagWidth => TagWidthMm * MmToDip;
         public double TagHeight => TagHeightMm * MmToDip;
-        public double InnerGridHeight => TagHeight - 20;
+        public double InnerGridHeight => Math.Max(0, TagHeight - 20);
 
         public string NameFontFamily
         {

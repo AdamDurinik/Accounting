@@ -220,18 +220,45 @@ namespace PriceTags.ViewModels
             try
             {
                 SaveItems();
+
+                // Show print settings dialog first
+                var psVm = new PrintSettingsViewModel();
+                var psView = new Views.PrintSettingsView { DataContext = psVm };
+                var psWin = new System.Windows.Window
+                {
+                    Title = "Nastavenia tlače",
+                    Content = psView,
+                    SizeToContent = System.Windows.SizeToContent.WidthAndHeight,
+                    ResizeMode = System.Windows.ResizeMode.NoResize,
+                    WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner,
+                    Owner = System.Windows.Application.Current.MainWindow
+                };
+                psVm.CloseRequested = () => psWin.Close();
+                psWin.ShowDialog();
+                if (!psVm.ShouldPrint) return;
+
+                var pageSettings = psVm.BuildSettings();
+
                 var dlg = new System.Windows.Controls.PrintDialog
                 {
-                    PrintTicket = { PageMediaSize = new PageMediaSize(PageMediaSizeName.ISOA4) }
+                    PrintTicket =
+                    {
+                        PageMediaSize    = new PageMediaSize(pageSettings.PageMediaSizeName),
+                        PageOrientation  = pageSettings.PageOrientation,
+                        CopyCount        = pageSettings.Copies
+                    }
                 };
                 if (dlg.ShowDialog() != true) return;
 
                 var printableW = dlg.PrintableAreaWidth;
                 var printableH = dlg.PrintableAreaHeight;
 
-                const double pageMargin = 10;
-                var availableW = Math.Max(0, printableW - pageMargin * 2);
-                var availableH = Math.Max(0, printableH - pageMargin * 2);
+                var marginL = pageSettings.MarginLeftDip;
+                var marginR = pageSettings.MarginRightDip;
+                var marginT = pageSettings.MarginTopDip;
+                var marginB = pageSettings.MarginBottomDip;
+                var availableW = Math.Max(0, printableW - marginL - marginR);
+                var availableH = Math.Max(0, printableH - marginT - marginB);
 
                 var mainView = (FrameworkElement)System.Windows.Application.Current.MainWindow.Content;
                 var template = (DataTemplate)mainView.Resources["PriceTagPrintTemplate"];
@@ -263,7 +290,7 @@ namespace PriceTags.ViewModels
                         HorizontalAlignment = System.Windows.HorizontalAlignment.Left,
                         VerticalAlignment = VerticalAlignment.Top,
                         ItemWidth = itemWidth,
-                        Margin = new Thickness(pageMargin) // inset content from all printable edges
+                        Margin = new Thickness(marginL, marginT, marginR, marginB)
                     };
 
                     foreach (var tag in items.Skip(i).Take(itemsPerPage))

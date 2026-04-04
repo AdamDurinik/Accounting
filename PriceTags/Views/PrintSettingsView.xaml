@@ -1,0 +1,178 @@
+<UserControl x:Class="PriceTags.Views.PrintSettingsView"
+             x:Name="Root"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:viewmodels="clr-namespace:PriceTags.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance viewmodels:PrintSettingsViewModel}"
+             Background="{StaticResource AppBgBrush}">
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Main row: left settings + right preview -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: settings cards -->
+            <StackPanel Grid.Column="0">
+
+                <!-- Paper -->
+                <Border Background="White" CornerRadius="10" BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1" Padding="16" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="Papier" Style="{StaticResource SectionHeader}"/>
+
+                        <TextBlock Text="Veľkosť" Style="{StaticResource FieldLabel}" Margin="0,0,0,4"/>
+                        <dxe:ComboBoxEdit EditValue="{Binding PaperSizeName, Mode=TwoWay}"
+                                          ItemsSource="{Binding PaperSizes}"
+                                          IsTextEditable="False" Margin="0,0,0,10"/>
+
+                        <TextBlock Text="Orientácia" Style="{StaticResource FieldLabel}" Margin="0,0,0,6"/>
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton Content="Na výšku" IsChecked="{Binding IsPortrait, Mode=TwoWay}"
+                                         Margin="0,0,16,0" VerticalContentAlignment="Center"/>
+                            <RadioButton Content="Na šírku" IsChecked="{Binding IsLandscape, Mode=TwoWay}"
+                                         VerticalContentAlignment="Center"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Margins -->
+                <Border Background="White" CornerRadius="10" BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1" Padding="16" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="Okraje (mm)" Style="{StaticResource SectionHeader}"/>
+
+                        <!-- Cross layout: top/left/right/bottom around a center page icon -->
+                        <Grid HorizontalAlignment="Center" Margin="0,4,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="8"/>
+                                <ColumnDefinition Width="90"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="6"/>
+                                <RowDefinition Height="40"/>
+                                <RowDefinition Height="6"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Top -->
+                            <StackPanel Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center">
+                                <TextBlock Text="Vrchný" FontSize="10" Foreground="{StaticResource TextMutedBrush}"
+                                           HorizontalAlignment="Center" Margin="0,0,0,2"/>
+                                <dxe:SpinEdit EditValue="{Binding MarginTopMm, Mode=TwoWay}"
+                                              MinValue="0" MaxValue="50" Increment="0.5"
+                                              MaskType="Numeric" Mask="N1" Width="80"/>
+                            </StackPanel>
+
+                            <!-- Left -->
+                            <StackPanel Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">
+                                <TextBlock Text="Ľavý" FontSize="10" Foreground="{StaticResource TextMutedBrush}"
+                                           HorizontalAlignment="Center" Margin="0,0,0,2"/>
+                                <dxe:SpinEdit EditValue="{Binding MarginLeftMm, Mode=TwoWay}"
+                                              MinValue="0" MaxValue="50" Increment="0.5"
+                                              MaskType="Numeric" Mask="N1" Width="80"/>
+                            </StackPanel>
+
+                            <!-- Center page icon -->
+                            <Border Grid.Row="2" Grid.Column="2"
+                                    Background="#F0F0F0" BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1" CornerRadius="2"
+                                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <Border Margin="4" Background="White"
+                                        BorderBrush="#CCCCCC" BorderThickness="1"/>
+                            </Border>
+
+                            <!-- Right -->
+                            <StackPanel Grid.Row="2" Grid.Column="4" VerticalAlignment="Center">
+                                <TextBlock Text="Pravý" FontSize="10" Foreground="{StaticResource TextMutedBrush}"
+                                           HorizontalAlignment="Center" Margin="0,0,0,2"/>
+                                <dxe:SpinEdit EditValue="{Binding MarginRightMm, Mode=TwoWay}"
+                                              MinValue="0" MaxValue="50" Increment="0.5"
+                                              MaskType="Numeric" Mask="N1" Width="80"/>
+                            </StackPanel>
+
+                            <!-- Bottom -->
+                            <StackPanel Grid.Row="4" Grid.Column="2" HorizontalAlignment="Center">
+                                <TextBlock Text="Spodný" FontSize="10" Foreground="{StaticResource TextMutedBrush}"
+                                           HorizontalAlignment="Center" Margin="0,0,0,2"/>
+                                <dxe:SpinEdit EditValue="{Binding MarginBottomMm, Mode=TwoWay}"
+                                              MinValue="0" MaxValue="50" Increment="0.5"
+                                              MaskType="Numeric" Mask="N1" Width="80"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Copies -->
+                <Border Background="White" CornerRadius="10" BorderBrush="{StaticResource BorderBrush}"
+                        BorderThickness="1" Padding="16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Kópie" Style="{StaticResource FieldLabel}"
+                                   VerticalAlignment="Center"/>
+                        <dxe:SpinEdit Grid.Column="1"
+                                      EditValue="{Binding Copies, Mode=TwoWay}"
+                                      MinValue="1" MaxValue="99" Increment="1"
+                                      MaskType="Numeric" Mask="N0"/>
+                    </Grid>
+                </Border>
+
+            </StackPanel>
+
+            <!-- Right: page preview -->
+            <Border Grid.Column="2" Background="White" CornerRadius="10"
+                    BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Padding="16"
+                    VerticalAlignment="Top">
+                <StackPanel>
+                    <TextBlock Text="Náhľad strany" Style="{StaticResource SectionHeader}"/>
+                    <TextBlock Text="Zobrazuje okraje a tlačiteľnú plochu"
+                               Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="0,0,0,12"/>
+
+                    <!-- Page preview: outer = paper, inner = printable area -->
+                    <Border Width="{Binding PreviewPageWidth}"
+                            Height="{Binding PreviewPageHeight}"
+                            Background="#D0D0D0"
+                            BorderBrush="#AAAAAA"
+                            BorderThickness="1"
+                            HorizontalAlignment="Left">
+                        <!-- Printable area inset by margins -->
+                        <Border Margin="{Binding PreviewMargin}"
+                                Background="White"
+                                BorderBrush="#94A3B8"
+                                BorderThickness="1"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Footer: Cancel / Print -->
+        <Border Grid.Row="1" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0"
+                Padding="0,12,0,0" Margin="0,10,0,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Zrušiť" Command="{Binding CancelCommand}"
+                        Style="{StaticResource GhostButtonLight}" Margin="0,0,8,0"/>
+                <Button Content="Tlačiť" Command="{Binding PrintCommand}"
+                        Style="{StaticResource AccentButton}"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

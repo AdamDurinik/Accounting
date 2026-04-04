@@ -332,7 +332,7 @@ namespace PriceTags.ViewModels
 
         public double TagWidth => _tagWidthMm * MmToDip;
         public double TagHeight => _tagHeightMm * MmToDip;
-        public double InnerGridHeight => TagHeight - 20;
+        public double InnerGridHeight => Math.Max(0, TagHeight - 20);
         public Thickness TagBorderThickness => new(_borderThicknessValue);
         public SolidColorBrush BackgroundBrush => new(_backgroundColor);
         public SolidColorBrush PreviewBorderBrush => new(_borderColor);
